@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - GAROU VERSION</title>
+    <title>XK TEAM CLOUD - FIXED TOTAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
-            /* Variabel Warna Solid untuk Tier */
             --t-basic: #a1a1aa;
             --t-ultra: #00e5ff;
             --t-vixo: #00e676;
@@ -24,22 +23,24 @@
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            /* BACKGROUND GAROU KEMBALI AKTIF */
-            background-image: url('garou.png'); 
-            background-size: cover; background-position: center;
-            background-attachment: fixed; background-color: #0c0416;
+            /* Pasang background langsung di body, bukan di overlay luar */
+            background: url('garou.png') no-repeat center center fixed;
+            background-size: cover;
+            background-color: #0c0416;
         }
 
-        /* Lapisan redup background agar teks form mudah dibaca */
+        /* TRICK FIX: Lapisan hitam pelindung dipaksa mundur ke z-index minus dan dilarang merespon sentuhan */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.45); z-index: 1; pointer-events: none;
+            background: rgba(0, 0, 0, 0.5); 
+            z-index: -1; 
+            pointer-events: none; 
         }
 
-        /* Wadah Utama dibikin border neon statis (Anti-Block Klik) */
+        /* Wadah Utama dikunci di lapisan paling depan agar bebas dari gangguan background */
         .main-box {
             width: 92%; max-width: 420px;
-            background: rgba(15, 6, 28, 0.75);
+            background: rgba(15, 6, 28, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 2px solid var(--accent-purple);
@@ -47,7 +48,8 @@
             padding: 25px;
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
             box-sizing: border-box;
-            position: relative; z-index: 10;
+            position: relative; 
+            z-index: 9999; /* Posisi mutlak di depan layar */
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -61,9 +63,11 @@
         .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; }
         .tab-btn {
             flex: 1; padding: 12px 0; border: 1px solid var(--accent-purple);
-            background: rgba(0, 0, 0, 0.75); color: #fff; border-radius: 8px;
+            background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 8px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9.5px;
-            transition: 0.2s; -webkit-tap-highlight-color: transparent;
+            transition: 0.2s; 
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation; /* Maksimalkan respon ketukan layar HP */
         }
         .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
 
@@ -74,7 +78,7 @@
         input, select { 
             width: 100%; padding: 10px 12px; margin: 5px 0 10px 0; border-radius: 8px; 
             border: 1px solid rgba(188, 19, 254, 0.5); 
-            background: rgba(0, 0, 0, 0.85); color: #fff; box-sizing: border-box; outline: none;
+            background: rgba(0, 0, 0, 0.9); color: #fff; box-sizing: border-box; outline: none;
             font-size: 11.5px; font-family: 'Poppins';
         }
         .custom-limit-box { display: none; }
@@ -83,10 +87,11 @@
             width: 100%; padding: 13px; background: var(--accent-purple);
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: 700; font-size: 11px; cursor: pointer; margin-top: 12px;
+            touch-action: manipulation;
         }
 
         .member-card {
-            background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(188, 19, 254, 0.3);
+            background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(188, 19, 254, 0.3);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
         }
@@ -98,11 +103,11 @@
         .b-mod { color: #38bdf8; text-shadow: 0 0 3px rgba(56,189,248,0.4); } 
         .b-apk { color: #f43f5e; text-shadow: 0 0 3px rgba(244,63,94,0.4); }
         
-        /* FIX TOTAL: Ditambahkan color solid + border warna per tier agar menyala kontras */
+        /* Pewarnaan solid menyala yang lolos uji render mobile browser */
         .badge-tier { 
             font-size: 7.5px; padding: 2px 7px; border-radius: 10px; border: 1px solid currentColor; 
             font-weight: 700; font-family: 'Orbitron'; margin-left: 6px; text-transform: uppercase; 
-            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.5);
+            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.6);
         }
         .t-basic { color: var(--t-basic) !important; text-shadow: 0 0 5px var(--t-basic); } 
         .t-ultra { color: var(--t-ultra) !important; text-shadow: 0 0 5px var(--t-ultra); } 
@@ -195,7 +200,7 @@
         <div id="result"></div>
     </div>
 
-    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
         <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
             <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
@@ -410,7 +415,4 @@
         const id = document.getElementById('editTargetId').value;
         
         const data = {
-            key: document.getElementById('editKey').value.trim(),
-            expired: document.getElementById('editExp').value,
-            device_limit: document.getElementById('editLimit').value,
-    
+     
