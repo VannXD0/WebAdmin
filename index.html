@@ -107,12 +107,14 @@
             display: block; text-align: center; text-decoration: none;
             box-sizing: border-box;
         }
+        .gen-btn:active { transform: scale(0.98); }
 
         .member-card {
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px; padding: 12px; margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
             cursor: pointer; position: relative;
+            transition: 0.1s;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
@@ -141,6 +143,7 @@
         .icon-btn:hover { transform: scale(1.15); }
         .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
 
+        #memberList { max-height: 280px; overflow-y: auto; padding-right: 5px; }
         #memberList::-webkit-scrollbar { width: 4px; }
         #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
     </style>
@@ -179,7 +182,7 @@
                 <label>INPUT CUSTOM LIMIT</label>
                 <input type="number" id="modCustomLimit" value="1" min="1">
             </div>
-            <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
+            <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
         </div>
 
         <div id="apk" class="form-section">
@@ -211,20 +214,20 @@
             </div>
             <label>EXPIRED DATE</label>
             <input type="date" id="apkExp">
-            <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
+            <button class="gen-btn" id="genApkBtn">ADD APK ACCESS</button>
         </div>
 
         <div id="members" class="form-section">
-            <button onclick="loadMembers()" style="width: 100%; padding: 8px; background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; border-radius: 6px; font-family: 'Orbitron'; font-size: 9px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
+            <button id="forceRefreshBtn" style="width: 100%; padding: 8px; background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; border-radius: 6px; font-family: 'Orbitron'; font-size: 9px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
                 <i class="fas fa-sync-alt"></i> FORCE REFRESH DATA
             </button>
-            <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
+            <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;">Loading members...</div>
         </div>
     </div>
 
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
         <div style="background:#14071f; border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
-            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
+            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
             <input type="hidden" id="editTargetId">
             
@@ -253,8 +256,8 @@
             <input type="number" id="editLimit" min="1">
             
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
-                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
+                <button id="saveEditBtn" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
+                <button id="closeModalBtn" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
             </div>
         </div>
     </div>
@@ -262,33 +265,53 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // Otomatis refresh list data saat tab Members diaktifkan via Radio Button
-        const tabMembers = document.getElementById('tab3');
-        if(tabMembers) {
-            tabMembers.addEventListener('change', () => {
-                if(tabMembers.checked) { loadMembers(); }
-            });
-        }
+    // ========== HELPER ==========
+    function toggleCustomLimit(type) {
+        const selectEl = document.getElementById(type + 'Limit');
+        const divBox = document.getElementById(type + 'CustomDiv');
+        if(divBox) divBox.style.display = (selectEl.value === 'custom') ? 'block' : 'none';
+    }
 
-        // Penanganan Logout Balik ke Halaman login.html
-        const btnLogout = document.getElementById('btn-logout-panel');
-        if(btnLogout) {
-            btnLogout.addEventListener('click', (e) => {
+    // ========== LOGOUT (Pastikan Bisa Diklik) ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        const logoutBtn = document.getElementById('btn-logout-panel');
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.clear();
                 sessionStorage.clear();
                 window.location.href = 'login.html';
             });
         }
+
+        // Tab Members: saat tab members diaktifkan, load data
+        const tabMembers = document.getElementById('tab3');
+        if(tabMembers) {
+            tabMembers.addEventListener('change', () => {
+                if(tabMembers.checked) loadMembers();
+            });
+        }
+
+        // Refresh button di tab members
+        const refreshBtn = document.getElementById('forceRefreshBtn');
+        if(refreshBtn) refreshBtn.addEventListener('click', loadMembers);
+
+        // Generate MODULE (event)
+        const genModule = document.getElementById('genModuleBtn');
+        if(genModule) genModule.addEventListener('click', () => generate('module'));
+
+        // Generate APK
+        const genApk = document.getElementById('genApkBtn');
+        if(genApk) genApk.addEventListener('click', () => generate('apk'));
+
+        // Modal Save & Cancel
+        const saveEdit = document.getElementById('saveEditBtn');
+        if(saveEdit) saveEdit.addEventListener('click', saveEditHandler);
+        const closeModal = document.getElementById('closeModalBtn');
+        if(closeModal) closeModal.addEventListener('click', closeModalHandler);
     });
 
-    function toggleCustomLimit(type) {
-        const selectVal = document.getElementById(type + 'Limit').value;
-        const divBox = document.getElementById(type + 'CustomDiv');
-        if(divBox) divBox.style.display = (selectVal === 'custom') ? 'block' : 'none';
-    }
-
+    // ========== GENERATE ==========
     async function generate(type) {
         const idInput = type === 'module' ? 'modId' : 'apkId';
         const expInput = type === 'module' ? 'modExp' : 'apkExp';
@@ -327,98 +350,80 @@
         try {
             await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
             
-            let dialogPesan = "";
+            let msg = "";
             if(type === 'module') {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE\n\nLisensi berhasil disinkronisasi ke Cloud!`;
+                msg = `✅ MODULE GENERATED\nID: ${id}\nKEY: ${key}\nEXP: ${exp}\nLIMIT: ${limit}`;
             } else {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id}\n🔑 KEY/TOKEN: ${key}\n🔐 PASSWORD: ${data.password}\n🎖️ TIER: ${data.tier.toUpperCase()}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE\n\nData akses APK berhasil ditambahkan!`;
+                msg = `✅ APK GENERATED\nUSER: ${id}\nKEY: ${key}\nPASS: ${data.password}\nTIER: ${data.tier}\nEXP: ${exp}\nLIMIT: ${limit}`;
             }
-            
-            alert(dialogPesan);
-
+            alert(msg);
             document.getElementById(idInput).value = '';
             document.getElementById(expInput).value = '';
             if(type === 'apk') document.getElementById('apkPass').value = '';
-            
-            loadMembers();
-            
+            if(document.getElementById('tab3').checked) loadMembers();
+            else loadMembers(); // tetap refresh agar data terbaru di cache
         } catch(e) { 
-            alert("❌ DATABASE ERROR: Gagal mengirim lisensi ke Cloud!"); 
+            alert("❌ Database error: " + e.message); 
         }
     }
 
+    // ========== LOAD MEMBERS ==========
     async function loadMembers() {
         const listDiv = document.getElementById('memberList');
         if(!listDiv) return;
         listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
         
-        let hasData = false;
         try {
+            let any = false;
+            const allData = {};
+
+            // fetch users & apk_access
+            const [resUsers, resApk] = await Promise.all([
+                fetch(`${DB_URL}users.json`),
+                fetch(`${DB_URL}apk_access.json`)
+            ]);
+            const users = await resUsers.json();
+            const apkAccess = await resApk.json();
+
             listDiv.innerHTML = '';
 
-            // 1. Ambil Data Node Users (Module)
-            try {
-                const resUsers = await fetch(`${DB_URL}users.json`);
-                const dataUsers = await resUsers.json();
-                if(dataUsers) {
-                    hasData = true;
-                    for (let id in dataUsers) { createCard(id, dataUsers[id], 'users', listDiv); }
+            if(users && typeof users === 'object') {
+                for(let id in users) {
+                    any = true;
+                    const obj = users[id];
+                    const card = createCardElement(id, obj, 'users');
+                    listDiv.appendChild(card);
                 }
-            } catch(e) { console.error("Gagal load node users"); }
-
-            // 2. Ambil Data Node APK Access
-            try {
-                const resApk = await fetch(`${DB_URL}apk_access.json`);
-                const dataApk = await resApk.json();
-                if(dataApk) {
-                    hasData = true;
-                    for (let id in dataApk) { createCard(id, dataApk[id], 'apk_access', listDiv); }
-                }
-            } catch(e) { console.error("Gagal load node apk_access"); }
-
-            if(!hasData) {
-                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
             }
-        } catch (e) { 
-            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed network sync.</p>'; 
+            if(apkAccess && typeof apkAccess === 'object') {
+                for(let id in apkAccess) {
+                    any = true;
+                    const obj = apkAccess[id];
+                    const card = createCardElement(id, obj, 'apk_access');
+                    listDiv.appendChild(card);
+                }
+            }
+
+            if(!any) listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">No members found</p>';
+
+            // Re-attach selection highlight (biar ga bentrok)
+            document.querySelectorAll('.member-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if(e.target.closest('.action-controls')) return;
+                    document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                });
+            });
+        } catch(e) {
+            listDiv.innerHTML = '<p style="color:red; text-align:center;">Error loading data</p>';
         }
     }
 
-    function createCard(id, obj, type, parent) {
+    function createCardElement(id, obj, type) {
+        const isMod = (type === 'users');
         const card = document.createElement('div');
         card.className = 'member-card';
+        card.setAttribute('data-type', type);
+        card.setAttribute('data-id', id);
         
-        card.addEventListener('click', () => {
-            document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        });
-
-        const isMod = type === 'users';
-        const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
-        
-        const currentTier = obj.tier || 'basic';
-        const tierHTML = isMod ? '' : `<span class="badge-tier t-${currentTier}">${currentTier}</span>`;
-        const passHTML = isMod ? '' : ` | PASS: ${obj.password || '-'}`;
-
-        card.innerHTML = `
-            <div class="member-info">
-                ${badgeHTML} <b>${id}</b> ${tierHTML}
-                <p>KEY: ${obj.key || '-'} ${passHTML}</p>
-                <p>EXP: ${obj.expired || '-'} | LIMIT: ${obj.device_limit || '1'}</p>
-            </div>
-            <div class="action-controls">
-                <div class="icon-btn icon-edit" onclick="openEditModal(event, '${type}', '${id}')">
-                    <i class="fas fa-edit"></i>
-                </div>
-                <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
-                    <i class="fas fa-trash-alt"></i>
-                </div>
-            </div>`;
-        parent.appendChild(card);
-    }
-
-    async function deleteMember(event, type, id) {
-        event.stopPropagation();
-        if(confirm(`Hapus akses ${id}?`)) {
-            try {
-                
+   
