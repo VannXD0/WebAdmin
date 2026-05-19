@@ -1,3 +1,4 @@
+<!-- File: index.html (Admin Panel) -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -164,19 +165,23 @@
     </style>
 </head>
 <body>
+<script>
+    // CEK LOGIN — jika belum login, redirect ke login.html
+    if (localStorage.getItem('admin_logged_in') !== 'true') {
+        window.location.href = 'login.html';
+    }
+</script>
 <div class="glass-panel">
     <div class="header">
         <h2><i class="fas fa-cloud-upload-alt"></i> XK TEAM CLOUD</h2>
         <button class="logout-btn" id="logoutBtn">LOGOUT</button>
     </div>
-
     <div class="tabs">
         <div class="tab-btn" data-tab="module">MODULE</div>
         <div class="tab-btn" data-tab="apk">APK</div>
         <div class="tab-btn" data-tab="members">MEMBERS</div>
     </div>
 
-    <!-- MODULE PANEL -->
     <div id="module-pane" class="content-pane">
         <label>DEVICE ID</label>
         <input type="text" id="modId" placeholder="Android ID">
@@ -184,15 +189,12 @@
         <input type="date" id="modExp">
         <label>DEVICE LIMIT</label>
         <select id="modLimit">
-            <option value="1">1 DEVICE</option>
-            <option value="5">5 DEVICE</option>
-            <option value="999">UNLIMITED</option>
+            <option value="1">1 DEVICE</option><option value="5">5 DEVICE</option><option value="999">UNLIMITED</option>
         </select>
         <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
         <div id="modResult" class="result-msg"></div>
     </div>
 
-    <!-- APK PANEL -->
     <div id="apk-pane" class="content-pane">
         <label>USERNAME</label>
         <input type="text" id="apkUser" placeholder="Username APK">
@@ -200,12 +202,8 @@
         <input type="text" id="apkPass" placeholder="Password (optional)">
         <label>DEVICE LIMIT</label>
         <select id="apkLimitSelect">
-            <option value="1">1 DEVICE</option>
-            <option value="2">2 DEVICE</option>
-            <option value="3">3 DEVICE</option>
-            <option value="4">4 DEVICE</option>
-            <option value="5">5 DEVICE</option>
-            <option value="custom">Custom (angka)</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="custom">Custom</option>
         </select>
         <div id="customLimitContainer" class="custom-limit-container">
             <label>Custom Limit</label>
@@ -217,17 +215,15 @@
         <div id="apkResult" class="result-msg"></div>
     </div>
 
-    <!-- MEMBERS PANEL -->
     <div id="members-pane" class="content-pane">
         <button id="refreshMembersBtn" style="background:#bc13fe; border:none; padding:6px 12px; border-radius:30px; color:white; margin-bottom:12px; cursor:pointer;"><i class="fas fa-sync-alt"></i> Refresh</button>
         <div id="memberList">Loading members...</div>
     </div>
 </div>
 
-<!-- MODAL EDIT -->
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:360px; border:1px solid #bc13fe;">
-        <h3 style="color:white; margin-bottom:12px;">Edit Member</h3>
+        <h3 style="color:white;">Edit Member</h3>
         <label>Username</label>
         <input type="text" id="editUser" readonly style="background:#1e2a3a;">
         <label>Key</label>
@@ -250,21 +246,13 @@
 
 <script>
     (function(){
-        // ========== CEK LOGIN, JIKA BELUM REDIRECT KE login.html ==========
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            window.location.href = 'login.html';
-            return;
-        }
-
-        // LOGOUT
+        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+        // logout
         document.getElementById('logoutBtn').onclick = () => {
             localStorage.removeItem('admin_logged_in');
             window.location.href = 'login.html';
         };
-
-        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
-
-        // ---------- TAB SWITCHING ----------
+        // tabs
         const tabs = document.querySelectorAll('.tab-btn');
         const panes = {
             module: document.getElementById('module-pane'),
@@ -272,41 +260,29 @@
             members: document.getElementById('members-pane')
         };
         function setActiveTab(tabId) {
-            for (let [id, pane] of Object.entries(panes)) {
-                pane.classList.remove('active');
-            }
+            Object.values(panes).forEach(p => p.classList.remove('active'));
             panes[tabId].classList.add('active');
-            for (let btn of tabs) {
+            tabs.forEach(btn => {
                 if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
                 else btn.classList.remove('active');
-            }
+            });
             if (tabId === 'members') loadMembers();
         }
-        for (let btn of tabs) {
-            btn.onclick = () => {
-                let tab = btn.getAttribute('data-tab');
-                setActiveTab(tab);
-            };
-        }
+        tabs.forEach(btn => btn.onclick = () => setActiveTab(btn.getAttribute('data-tab')));
         setActiveTab('module');
 
-        // Custom limit logic
         const limitSelect = document.getElementById('apkLimitSelect');
         const customContainer = document.getElementById('customLimitContainer');
-        limitSelect.onchange = () => {
-            customContainer.style.display = limitSelect.value === 'custom' ? 'block' : 'none';
-        };
+        limitSelect.onchange = () => customContainer.style.display = limitSelect.value === 'custom' ? 'block' : 'none';
         customContainer.style.display = 'none';
 
-        // Helper show result
         function showResult(divId, msg) {
-            let div = document.getElementById(divId);
+            const div = document.getElementById(divId);
             div.innerHTML = msg;
             div.style.display = 'block';
-            setTimeout(() => { div.innerHTML = ''; }, 4000);
+            setTimeout(() => div.innerHTML = '', 4000);
         }
 
-        // ---------- GENERATE MODULE ----------
         document.getElementById('genModuleBtn').onclick = async () => {
             const id = document.getElementById('modId').value.trim();
             const exp = document.getElementById('modExp').value;
@@ -314,14 +290,11 @@
             if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
             const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
             const data = { key, expired: exp, device_limit: parseInt(limit), status: "active" };
-            try {
-                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('modResult', `✅ DONE! KEY: ${key}`);
-                if (panes.members.classList.contains('active')) loadMembers();
-            } catch(e) { alert('Database error!'); }
+            await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            showResult('modResult', `✅ DONE! KEY: ${key}`);
+            if (panes.members.classList.contains('active')) loadMembers();
         };
 
-        // ---------- GENERATE APK ----------
         document.getElementById('genApkBtn').onclick = async () => {
             const username = document.getElementById('apkUser').value.trim();
             let password = document.getElementById('apkPass').value.trim();
@@ -336,117 +309,57 @@
             if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
             const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
             const data = { key, password, expired: exp, device_limit: limit, devices: {}, status: "active" };
-            try {
-                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>📱 LIMIT: ${limit}`);
-                if (panes.members.classList.contains('active')) loadMembers();
-            } catch(e) { alert('Database error!'); }
+            await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>📱 LIMIT: ${limit}`);
+            if (panes.members.classList.contains('active')) loadMembers();
         };
 
-        // ---------- LOAD MEMBERS ----------
         async function loadMembers() {
             const listDiv = document.getElementById('memberList');
-            listDiv.innerHTML = '<div style="color:white;">Loading...</div>';
-            try {
-                const res = await fetch(`${DB_URL}.json`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                listDiv.innerHTML = '';
-                let hasData = false;
-                // MODULE (users)
-                if (data.users && typeof data.users === 'object') {
-                    for (let id in data.users) {
-                        hasData = true;
-                        const obj = data.users[id];
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <b>${escapeHtml(id)} (MODULE)</b><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
-                            </div>
-                            <div class="member-actions">
-                                <i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i>
-                                <i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i>
-                            </div>
-                        `;
-                        listDiv.appendChild(card);
-                    }
-                }
-                // APK access
-                if (data.apk_access && typeof data.apk_access === 'object') {
-                    for (let id in data.apk_access) {
-                        hasData = true;
-                        const obj = data.apk_access[id];
-                        let devicesHtml = '<div class="device-list"><strong>📱 Registered devices:</strong>';
-                        if (obj.devices && Object.keys(obj.devices).length) {
-                            for (let dev in obj.devices) {
-                                devicesHtml += `<div class="device-item"><span>${escapeHtml(dev)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(dev)}">🗑️</span></div>`;
-                            }
-                        } else {
-                            devicesHtml += '<div><em>No devices</em></div>';
-                        }
-                        devicesHtml += '</div>';
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <b>${escapeHtml(id)} (APK)</b><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                ${obj.password ? `🔒 PASS: ${escapeHtml(obj.password)}<br>` : ''}
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
-                            </div>
-                            ${devicesHtml}
-                            <div class="member-actions">
-                                <i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i>
-                                <i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i>
-                            </div>
-                        `;
-                        listDiv.appendChild(card);
-                    }
-                }
-                if (!hasData) listDiv.innerHTML = '<div style="color:#aaa;">No members found</div>';
-
-                // Attach delete device events
-                document.querySelectorAll('.del-device').forEach(el => {
-                    el.onclick = async (e) => {
-                        e.stopPropagation();
-                        const key = el.getAttribute('data-key');
-                        const device = el.getAttribute('data-device');
-                        if (confirm(`Hapus device ${device} dari ${key}?`)) {
-                            await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
-                            loadMembers();
-                        }
-                    };
-                });
-                // Edit & Delete member events
-                document.querySelectorAll('[data-edit]').forEach(el => {
-                    el.onclick = () => {
-                        const type = el.getAttribute('data-type');
-                        const id = el.getAttribute('data-id');
-                        openEditModal(type, id);
-                    };
-                });
-                document.querySelectorAll('[data-del]').forEach(el => {
-                    el.onclick = async () => {
-                        const type = el.getAttribute('data-type');
-                        const id = el.getAttribute('data-id');
-                        if (confirm(`Hapus ${id} ?`)) {
-                            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
-                            loadMembers();
-                        }
-                    };
-                });
-            } catch(e) {
-                listDiv.innerHTML = '<div style="color:red;">Error loading members</div>';
+            listDiv.innerHTML = 'Loading...';
+            const res = await fetch(`${DB_URL}.json`);
+            const data = await res.json();
+            listDiv.innerHTML = '';
+            let hasData = false;
+            if (data.users) for (let id in data.users) {
+                hasData = true;
+                const obj = data.users[id];
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `<div class="member-info"><b>${escapeHtml(id)} (MODULE)</b><br>🔑 KEY: ${escapeHtml(obj.key)}<br>📅 EXP: ${escapeHtml(obj.expired)} | 📱 LIMIT: ${escapeHtml(obj.device_limit)}</div>
+                <div class="member-actions"><i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i><i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i></div>`;
+                listDiv.appendChild(card);
             }
+            if (data.apk_access) for (let id in data.apk_access) {
+                hasData = true;
+                const obj = data.apk_access[id];
+                let devHtml = '<div class="device-list"><strong>📱 Devices:</strong>';
+                if (obj.devices) for (let d in obj.devices) devHtml += `<div class="device-item"><span>${escapeHtml(d)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(d)}">🗑️</span></div>`;
+                else devHtml += '<div><em>No devices</em></div>';
+                devHtml += '</div>';
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `<div class="member-info"><b>${escapeHtml(id)} (APK)</b><br>🔑 KEY: ${escapeHtml(obj.key)}<br>${obj.password?`🔒 PASS: ${escapeHtml(obj.password)}<br>`:''}📅 EXP: ${escapeHtml(obj.expired)} | 📱 LIMIT: ${escapeHtml(obj.device_limit)}</div>${devHtml}
+                <div class="member-actions"><i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i><i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i></div>`;
+                listDiv.appendChild(card);
+            }
+            if (!hasData) listDiv.innerHTML = '<div style="color:#aaa;">No data</div>';
+            document.querySelectorAll('.del-device').forEach(el => el.onclick = async (e) => {
+                e.stopPropagation();
+                const key = el.getAttribute('data-key'), device = el.getAttribute('data-device');
+                if (confirm(`Hapus device ${device}?`)) await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
+                loadMembers();
+            });
+            document.querySelectorAll('[data-edit]').forEach(el => el.onclick = () => openEdit(el.getAttribute('data-type'), el.getAttribute('data-id')));
+            document.querySelectorAll('[data-del]').forEach(el => el.onclick = async () => {
+                if (confirm('Hapus member?')) await fetch(`${DB_URL}${el.getAttribute('data-type')}/${el.getAttribute('data-id')}.json`, { method: 'DELETE' });
+                loadMembers();
+            });
         }
 
-        let currentEditType = null, currentEditId = null;
-        async function openEditModal(type, id) {
-            currentEditType = type;
-            currentEditId = id;
+        let currentEditType, currentEditId;
+        async function openEdit(type, id) {
+            currentEditType = type; currentEditId = id;
             const res = await fetch(`${DB_URL}${type}/${id}.json`);
             const data = await res.json();
             if (!data) return;
@@ -455,14 +368,32 @@
             document.getElementById('editExp').value = data.expired || '';
             document.getElementById('editLimit').value = data.device_limit || 1;
             const isApk = (type === 'apk_access');
-            const passLabel = document.getElementById('editPassLabel');
-            const passInput = document.getElementById('editPass');
-            if (isApk) {
-                passLabel.style.display = 'block';
-                passInput.style.display = 'block';
-                passInput.value = data.password || '';
-            } else {
-                passLabel.style.display = 'none';
-                passInput.style.display = 'none';
+            document.getElementById('editPassLabel').style.display = isApk ? 'block' : 'none';
+            document.getElementById('editPass').style.display = isApk ? 'block' : 'none';
+            if (isApk) document.getElementById('editPass').value = data.password || '';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+        document.getElementById('saveEditBtn').onclick = async () => {
+            const newKey = document.getElementById('editKey').value;
+            const newExp = document.getElementById('editExp').value;
+            const newLimit = parseInt(document.getElementById('editLimit').value);
+            const newPass = document.getElementById('editPass').value;
+            const update = { key: newKey, expired: newExp, device_limit: newLimit, status: 'active' };
+            if (currentEditType === 'apk_access' && newPass) update.password = newPass;
+            if (currentEditType === 'apk_access') {
+                const existing = await fetch(`${DB_URL}${currentEditType}/${currentEditId}.json`);
+                const exData = await existing.json();
+                if (exData && exData.devices) update.devices = exData.devices;
             }
-            docu
+            await fetch(`${DB_URL}${currentEditType}/${currentEditId}.json`, { method: 'PUT', body: JSON.stringify(update) });
+            document.getElementById('editModal').style.display = 'none';
+            loadMembers();
+        };
+        document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').style.display = 'none';
+        document.getElementById('refreshMembersBtn').onclick = loadMembers;
+
+        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+    })();
+</script>
+</body>
+</html>
