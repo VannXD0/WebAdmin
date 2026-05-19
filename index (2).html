@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TEAM CLOUD - FINAL STABLE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --accent-purple: #bc13fe; 
+            --accent-cyan: #00e5ff;
+            --t-basic: #a1a1aa;
+            --t-ultra: #00e5ff;
+            --t-vixo: #00e676;
+            --t-delta: #ff6d00;
+            --t-sonic: #ffd600;
+            --t-lunar: #ffffff;
+            --t-athena: #ff1744;
+            --t-private: #ffab00;
+        }
+        
+        body, html {
+            margin: 0; padding: 0; width: 100%; min-height: 100%;
+            font-family: 'Poppins', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            background: 
+                radial-gradient(circle at 15% 85%, rgba(188, 19, 254, 0.22), transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(0, 229, 255, 0.18), transparent 50%),
+                #07020d;
+            background-attachment: fixed;
+        }
+
+        .tab-switcher { display: none; }
+
+        .main-box {
+            width: 92%; max-width: 420px;
+            background: #12071f;
+            border: 1px solid rgba(188, 19, 254, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.15);
+            box-sizing: border-box;
+        }
+
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+        h2 { 
+            font-family: 'Orbitron'; font-weight: 700; color: #fff; 
+            letter-spacing: 0.5px; font-size: 15px; margin: 0; 
+            text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+        }
+        
+        .logout-link {
+            background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
+            color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
+            text-decoration: none; display: inline-block; text-align: center;
+            outline: none; transition: 0.2s;
+        }
+        .logout-link:hover { background: rgba(255, 77, 77, 0.25); }
+
+        .tab-menu { 
+            display: flex; gap: 8px; margin-bottom: 20px; 
+            background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .tab-label {
+            flex: 1; padding: 11px 0; text-align: center;
+            color: #777; border-radius: 7px;
+            cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9px;
+            transition: 0.2s; -webkit-tap-highlight-color: transparent;
+            display: block; user-select: none;
+        }
+
+        #tab1:checked ~ .tab-menu .label-mod,
+        #tab2:checked ~ .tab-menu .label-apk,
+        #tab3:checked ~ .tab-menu .label-mem {
+            background: rgba(188, 19, 254, 0.25); 
+            color: #fff; 
+            border: 1px solid rgba(188, 19, 254, 0.7);
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
+        }
+
+        .form-section { display: none; text-align: left; }
+        
+        #tab1:checked ~ #module,
+        #tab2:checked ~ #apk,
+        #tab3:checked ~ #members { 
+            display: block !important; 
+        }
+
+        label { color: rgba(255, 255, 255, 0.85); font-size: 9.5px; font-weight: 600; display: block; margin-top: 14px; font-family: 'Poppins'; }
+        input, select { 
+            width: 100%; padding: 11px 14px; margin: 6px 0 10px 0; border-radius: 8px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            background: #000000; color: #fff; box-sizing: border-box; outline: none;
+            font-size: 11.5px; font-family: 'Poppins';
+        }
+        input:focus, select:focus { border-color: var(--accent-purple); }
+        .custom-limit-box { display: none; }
+
+        .gen-btn { 
+            width: 100%; padding: 13px; 
+            background: linear-gradient(135deg, var(--accent-purple), #7902d4);
+            color: white; border: none; border-radius: 8px; 
+            font-family: 'Orbitron'; font-weight: 700; font-size: 10.5px; cursor: pointer; margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(188, 19, 254, 0.4);
+            display: block; text-align: center; text-decoration: none;
+            box-sizing: border-box;
+        }
+        .gen-btn:active { transform: scale(0.98); }
+
+        .member-card {
+            background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px; padding: 12px; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; position: relative;
+            transition: 0.1s;
+        }
+        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
+        .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
+        .member-info p { margin: 3px 0 0 0; font-size: 9.5px; color: #aaa; line-height: 1.4; }
+        
+        .badge-type { font-weight: 700; font-family: 'Orbitron'; font-size: 8px; margin-right: 4px; }
+        .b-mod { color: #38bdf8; } .b-apk { color: #f43f5e; }
+        
+        .badge-tier { 
+            font-size: 7.5px; padding: 2px 7px; border-radius: 10px; border: 1px solid currentColor; 
+            font-weight: 700; font-family: 'Orbitron'; margin-left: 6px; text-transform: uppercase; 
+            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.6);
+        }
+        .t-basic { color: var(--t-basic) !important; text-shadow: 0 0 5px var(--t-basic); } 
+        .t-ultra { color: var(--t-ultra) !important; text-shadow: 0 0 5px var(--t-ultra); } 
+        .t-vixo { color: var(--t-vixo) !important; text-shadow: 0 0 5px var(--t-vixo); } 
+        .t-delta { color: var(--t-delta) !important; text-shadow: 0 0 5px var(--t-delta); } 
+        .t-sonic { color: var(--t-sonic) !important; text-shadow: 0 0 5px var(--t-sonic); } 
+        .t-lunar { color: var(--t-lunar) !important; text-shadow: 0 0 5px var(--t-lunar); } 
+        .t-athena { color: var(--t-athena) !important; text-shadow: 0 0 5px var(--t-athena); } 
+        .t-private { color: var(--t-private) !important; text-shadow: 0 0 5px var(--t-private); }
+
+        .action-controls { display: none; gap: 12px; }
+        .member-card.selected .action-controls { display: flex; }
+        .icon-btn { cursor: pointer; font-size: 13px; padding: 5px; transition: 0.2s; }
+        .icon-btn:hover { transform: scale(1.15); }
+        .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
+
+        #memberList { max-height: 280px; overflow-y: auto; padding-right: 5px; }
+        #memberList::-webkit-scrollbar { width: 4px; }
+        #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="main-box">
+        <input type="radio" name="cloud-tabs" id="tab1" class="tab-switcher" checked>
+        <input type="radio" name="cloud-tabs" id="tab2" class="tab-switcher">
+        <input type="radio" name="cloud-tabs" id="tab3" class="tab-switcher">
+
+        <div class="header-area">
+            <h2>XK TEAM CLOUD</h2>
+            <button class="logout-link" id="btn-logout-panel">LOGOUT</button>
+        </div>
+        
+        <div class="tab-menu">
+            <label for="tab1" class="tab-label label-mod">MODULE</label>
+            <label for="tab2" class="tab-label label-apk">APK</label>
+            <label for="tab3" class="tab-label label-mem">MEMBERS</label>
+        </div>
+
+        <div id="module" class="form-section">
+            <label>DEVICE ID</label>
+            <input type="text" id="modId" placeholder="Android ID Buyer...">
+            <label>EXPIRED DATE</label>
+            <input type="date" id="modExp">
+            <label>DEVICE LIMIT</label>
+            <select id="modLimit" onchange="toggleCustomLimit('mod')">
+                <option value="1">1 DEVICE</option>
+                <option value="2">2 DEVICE</option>
+                <option value="5">5 DEVICE</option>
+                <option value="custom">CUSTOM LIMIT</option>
+            </select>
+            <div id="modCustomDiv" class="custom-limit-box">
+                <label>INPUT CUSTOM LIMIT</label>
+                <input type="number" id="modCustomLimit" value="1" min="1">
+            </div>
+            <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
+        </div>
+
+        <div id="apk" class="form-section">
+            <label>USERNAME APK</label>
+            <input type="text" id="apkId" placeholder="Buat Username...">
+            <label>PASSWORD (Kosong = Auto)</label>
+            <input type="text" id="apkPass" placeholder="Password akun...">
+            <label>TIER AKUN</label>
+            <select id="apkTier">
+                <option value="basic">Basic</option>
+                <option value="ultra">Ultra</option>
+                <option value="vixo">Vixo</option>
+                <option value="delta">Delta</option>
+                <option value="sonic">Sonic</option>
+                <option value="lunar">Lunar</option>
+                <option value="athena">Athena</option>
+                <option value="private">Private</option>
+            </select>
+            <label>DEVICE LIMIT</label>
+            <select id="apkLimit" onchange="toggleCustomLimit('apk')">
+                <option value="1">1 DEVICE</option>
+                <option value="2">2 DEVICE</option>
+                <option value="5">5 DEVICE</option>
+                <option value="custom">CUSTOM LIMIT</option>
+            </select>
+            <div id="apkCustomDiv" class="custom-limit-box">
+                <label>INPUT CUSTOM LIMIT</label>
+                <input type="number" id="apkCustomLimit" value="1" min="1">
+            </div>
+            <label>EXPIRED DATE</label>
+            <input type="date" id="apkExp">
+            <button class="gen-btn" id="genApkBtn">ADD APK ACCESS</button>
+        </div>
+
+        <div id="members" class="form-section">
+            <button id="forceRefreshBtn" style="width: 100%; padding: 8px; background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; border-radius: 6px; font-family: 'Orbitron'; font-size: 9px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
+                <i class="fas fa-sync-alt"></i> FORCE REFRESH DATA
+            </button>
+            <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;">Loading members...</div>
+        </div>
+    </div>
+
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
+        <div style="background:#14071f; border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
+            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
+            <input type="hidden" id="editType">
+            <input type="hidden" id="editTargetId">
+            
+            <label>ACCESS KEY</label>
+            <input type="text" id="editKey">
+            
+            <div id="apkEditOnly" style="display:none;">
+                <label>PASSWORD</label>
+                <input type="text" id="editPass">
+                <label>TIER AKUN</label>
+                <select id="editTier">
+                    <option value="basic">Basic</option>
+                    <option value="ultra">Ultra</option>
+                    <option value="vixo">Vixo</option>
+                    <option value="delta">Delta</option>
+                    <option value="sonic">Sonic</option>
+                    <option value="lunar">Lunar</option>
+                    <option value="athena">Athena</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+            
+            <label>EXPIRED DATE</label>
+            <input type="date" id="editExp">
+            <label>DEVICE LIMIT</label>
+            <input type="number" id="editLimit" min="1">
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button id="saveEditBtn" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
+                <button id="closeModalBtn" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+    // ========== HELPER ==========
+    function toggleCustomLimit(type) {
+        const selectEl = document.getElementById(type + 'Limit');
+        const divBox = document.getElementById(type + 'CustomDiv');
+        if(divBox) divBox.style.display = (selectEl.value === 'custom') ? 'block' : 'none';
+    }
+
+    // ========== INITIALIZER ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        // PENANGANAN LOGOUT STABIL
+        const logoutBtn = document.getElementById('btn-logout-panel');
+        if(logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+            });
+        }
+
+        // Otomatis refresh list data saat radio button tab members di-klik
+        const tabMembers = document.getElementById('tab3');
+        if(tabMembers) {
+            tabMembers.addEventListener('change', () => {
+                if(tabMembers.checked) loadMembers();
+            });
+        }
+
+        // Refresh button di dalam tab members
+        const refreshBtn = document.getElementById('forceRefreshBtn');
+        if(refreshBtn) refreshBtn.addEventListener('click', loadMembers);
+
+        // Generate Buttons
+        const genModule = document.getElementById('genModuleBtn');
+        if(genModule) genModule.addEventListener('click', () => generate('module'));
+
+        const genApk = document.getElementById('genApkBtn');
+        if(genApk) genApk.addEventListener('click', () => generate('apk'));
+
+        // Modal Controls
+        const saveEdit = document.getElementById('saveEditBtn');
+        if(saveEdit) saveEdit.addEventListener('click', saveEditHandler);
+        
+        const closeModal = document.getElementById('closeModalBtn');
+        if(closeModal) closeModal.addEventListener('click', closeModalHandler);
+    });
+
+    // ========== GENERATE LISENSI ==========
+    async function generate(type) {
+        const idInput = type === 'module' ? 'modId' : 'apkId';
+        const expInput = type === 'module' ? 'modExp' : 'apkExp';
+        
+        const id = document.getElementById(idInput).value.trim();
+        const exp = document.getElementById(expInput).value;
+        
+        if(!id || !exp) { alert("Harap isi semua kolom!"); return; }
+
+        let limit = "1";
+        if (type === 'module') {
+            const choose = document.getElementById('modLimit').value;
+            limit = choose === 'custom' ? document.getElementById('modCustomLimit').value : choose;
+        } else {
+            const choose = document.getElementById('apkLimit').value;
+            limit = choose === 'custom' ? document.getElementById('apkCustomLimit').value : choose;
+        }
+
+        const key = type === 'module' ? "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase() : "APK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        const path = type === 'module' ? `users/${id}` : `apk_access/${id}`;
+        
+        const data = { 
+            key: key, 
+            expired: exp,
+            status: "active",
+            device_limit: limit
+        };
+
+        if (type === 'apk') {
+            let pass = document.getElementById('apkPass').value.trim();
+            if (pass === "") pass = Math.random().toString(36).substring(2, 7).toUpperCase();
+            data.password = pass;
+            data.tier = document.getElementById('apkTier').value;
+        }
+        
+        try {
+            await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            
+            let msg = "";
+            if(type === 'module') {
+                msg = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE`;
+            } else {
+                msg = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id}\n🔑 KEY/TOKEN: ${key}\n🔐 PASSWORD: ${data.password}\n🎖️ TIER: ${data.tier.toUpperCase()}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE`;
+            }
+            alert(msg);
+
+            document.getElementById(idInput).value = '';
+            document.getElementById(expInput).value = '';
+            if(type === 'apk') document.getElementById('apkPass').value = '';
+            
+            loadMembers();
+        } catch(e) { 
+            alert("❌ Database error: " + e.message); 
+        }
+    }
+
+    // ========== FETCH & SYNC MEMBERS DATA ==========
+    async function loadMembers() {
+        const listDiv = document.getElementById('memberList');
+        if(!listDiv) return;
+        listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
+        
+        try {
+            let any = false;
+
+            const [resUsers, resApk] = await Promise.all([
+                fetch(`${DB_URL}users.json`),
+                fetch(`${DB_URL}apk_access.json`)
+            ]);
+            const users = await resUsers.json();
+            const apkAccess = await resApk.json();
+
+            listDiv.innerHTML = '';
+
+            // Render node users (Module)
+            if(users && typeof users === 'object') {
+                for(let id in users) {
+                    any = true;
+                    const card = createCardElement(id, users[id], 'users');
+                    listDiv.appendChild(card);
+                }
+            }
+            
+            // Render node apk_access (APK)
+            if(apkAccess && typeof apkAccess === 'object') {
+                for(let id in apkAccess) {
+                    any = true;
+                    const card = createCardElement(id, apkAccess[id], 'apk_access');
+                    listDiv.appendChild(card);
+                }
+            }
+
+            if(!any) listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">No members found</p>';
+
+        } catch(e) {
+            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Error loading network data</p>';
+        }
+    }
+
+    // ========== RENDER KARTU MEMBER ==========
+    function createCardElement(id, obj, type) {
+        const isMod = (type === 'users');
+        const card = document.createElement('div');
+        card.className = 'member-card';
+        
+        // Klik kartu untuk memilih (Highlight)
+        card.addEventListener('click', (e) => {
+            if(e.target.closest('.action-controls')) return;
+            document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        });
+
+        const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
+        const currentTier = obj.tier || 'basic';
+        const tierHTML = isMod ? '' : `<span class="badge-tier t-${currentTier}">${currentTier}</span>`;
+        const passHTML = isMod ? '' : ` | PASS: ${obj.password || '-'}`;
+
+        card.innerHTML = `
+            <div class="member-info">
+                ${badgeHTML} <b>${id}</b> ${tierHTML}
+                <p>KEY: ${obj.key || '-'} ${passHTML}</p>
+                <p>EXP: ${obj.expired || '-'} | LIMIT: ${obj.device_limit || '1'} DEVICE</p>
+            </div>
+            <div class="action-controls">
+                <div class="icon-btn icon-edit" onclick="openEditModal(event, '${type}', '${id}')">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>`;
+        return card;
+    }
+
+    // ========== MANAGEMENT DATA ACTIONS ==========
+    async function deleteMember(event, type, id) {
+        event.stopPropagation();
+        if(confirm(`Hapus seluruh akses cloud untuk ${id}?`)) {
+            try {
+                await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
+                loadMembers();
+            } catch(e) { alert("Gagal menghapus member!"); }
+        }
+    }
+
+    async function openEditModal(event, type, id) {
+        event.stopPropagation();
+        try {
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const obj = await res.json();
+            if(!obj) return;
+
+            document.getElementById('editType').value = type;
+            document.getElementById('editTargetId').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+
+            const apkOnlySection = document.getElementById('apkEditOnly');
+            if (type === 'apk_access') {
+                apkOnlySection.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
+            } else {
+                apkOnlySection.style.display = 'none';
+                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
+            }
+
+            document.getElementById('editModal').style.display = 'flex';
+        } catch(e) { alert("Gagal mengambil data detail!"); }
+    }
+
+    function closeModalHandler() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    async function saveEditHandler() {
+        const type = document.getElementById('editType').value;
+        const id = document.getElementById('editTargetId').value;
+        
+        const data = {
+            key: document.getElementById('editKey').value.trim(),
+            expired: document.getElementById('editExp').value,
+            device_limit: document.getElementById('editLimit').value,
+            status: "active"
+        };
+
+        if (type === 'apk_access') {
+            data.password = document.getElementById('editPass').value.trim();
+            data.tier = document.getElementById('editTier').value;
+        }
+
+        try {
+            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            closeModalHandler();
+            loadMembers();
+        } catch(e) { alert("Gagal menyimpan perubahan cloud!"); }
+    }
+</script>
+</body>
+</html>
