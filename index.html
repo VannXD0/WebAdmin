@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XK TEAM CLOUD - FIXED CLICK ABLE</title>
+    <title>XK TEAM CLOUD - AURORA STABLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -23,14 +23,9 @@
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            background-image: url('garou.png'); 
-            background-size: cover; background-position: center;
-            background-attachment: fixed; background-color: #000;
-        }
-
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.1); z-index: -1;
+            /* BACKGROUND AURORA STYLE MURNI KODE */
+            background: radial-gradient(circle at 50% 50%, #1a0033 0%, #050010 100%);
+            background-color: #050010;
         }
 
         .lightning-border {
@@ -40,13 +35,14 @@
 
         .glass-container { 
             position: relative;
-            background: rgba(15, 5, 25, 0.55); 
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(15, 5, 25, 0.65); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 25px; border-radius: 20px; 
             border: 1px solid rgba(188, 19, 254, 0.4);
             text-align: center;
             z-index: 20;
+            box-shadow: 0 0 30px rgba(188, 19, 254, 0.15);
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -261,150 +257,4 @@
         const selectVal = document.getElementById(type + 'Limit').value;
         const divBox = document.getElementById(type + 'CustomDiv');
         if(divBox) divBox.style.display = (selectVal === 'custom') ? 'block' : 'none';
-    }
-
-    async function generate(type) {
-        const idInput = type === 'module' ? 'modId' : 'apkId';
-        const expInput = type === 'module' ? 'modExp' : 'apkExp';
-        
-        const id = document.getElementById(idInput).value.trim();
-        const exp = document.getElementById(expInput).value;
-        
-        if(!id || !exp) { alert("Harap isi semua kolom!"); return; }
-
-        let limitVal = "1";
-        if (type === 'module') {
-            const choose = document.getElementById('modLimit').value;
-            limitVal = choose === 'custom' ? document.getElementById('modCustomLimit').value : choose;
-        } else {
-            const choose = document.getElementById('apkLimit').value;
-            limitVal = choose === 'custom' ? document.getElementById('apkCustomLimit').value : choose;
-        }
-
-        const key = type === 'module' ? "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase() : "APK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-        const path = type === 'module' ? `users/${id}` : `apk_access/${id}`;
-        
-        const data = { 
-            key: key, 
-            expired: exp,
-            status: "active",
-            device_limit: limitVal
-        };
-
-        if (type === 'apk') {
-            let pass = document.getElementById('apkPass').value.trim();
-            if (pass === "") pass = Math.random().toString(36).substring(2, 7).toUpperCase();
-            data.password = pass;
-            data.tier = document.getElementById('apkTier').value;
-        }
-        
-        try {
-            await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            
-            const resDiv = document.getElementById('result');
-            resDiv.style.display = 'block';
-            resDiv.innerText = "DONE! KEY: " + key;
-
-            let dialogPesan = "";
-            if(type === 'module') {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limitVal} DEVICE\n\nLisensi berhasil disinkronisasi ke Cloud!`;
-            } else {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id}\n🔑 KEY/TOKEN: ${key}\n🔐 PASSWORD: ${data.password}\n🎖️ TIER: ${data.tier.toUpperCase()}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limitVal} DEVICE\n\nData akses APK berhasil ditambahkan!`;
-            }
-            
-            alert(dialogPesan);
-
-            document.getElementById(idInput).value = '';
-            document.getElementById(expInput).value = '';
-            if(type === 'apk') document.getElementById('apkPass').value = '';
-            
-        } catch(e) { 
-            alert("Database Error! Gagal menembak lisensi."); 
-        }
-    }
-
-    async function loadMembers() {
-        const listDiv = document.getElementById('memberList');
-        listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
-        
-        try {
-            const res = await fetch(`${DB_URL}.json`);
-            const data = await res.json();
-            listDiv.innerHTML = '';
-
-            const render = (obj, type) => {
-                for (let id in obj) {
-                    const card = document.createElement('div');
-                    card.className = 'member-card';
-                    card.onclick = () => {
-                        document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
-                        card.classList.add('selected');
-                    };
-                    
-                    const isMod = type === 'users';
-                    const labelBadge = isMod ? '<b style="color:#38bdf8;">[MOD]</b>' : '<b style="color:#f43f5e;">[APK]</b>';
-                    const devLimit = obj[id].device_limit || '1';
-                    
-                    const currentTier = obj[id].tier || 'basic';
-                    const tierHTML = isMod ? '' : `<span class="badge-tier t-${currentTier}">${currentTier}</span>`;
-                    const passHTML = isMod ? '' : ` | PASS: ${obj[id].password || '-'}`;
-
-                    card.innerHTML = `
-                        <div class="member-info">
-                            <b>${labelBadge} ${id}</b> ${tierHTML}
-                            <p>KEY: ${obj[id].key || '-'} ${passHTML}</p>
-                            <p style="font-size:8px; color:#aaa;">LIMIT: ${devLimit} DEVICE | EXP: ${obj[id].expired || '-'}</p>
-                        </div>
-                        <div class="action-controls">
-                            <div class="icon-btn icon-edit" onclick="openEditModal(event, '${type}', '${id}')">
-                                <i class="fas fa-edit"></i>
-                            </div>
-                            <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
-                                <i class="fas fa-trash-alt"></i>
-                            </div>
-                        </div>`;
-                    listDiv.appendChild(card);
-                }
-            };
-
-            if (data && data.users) render(data.users, 'users');
-            if (data && data.apk_access) render(data.apk_access, 'apk_access');
-            
-            if ((!data || !data.users) && (!data || !data.apk_access)) {
-                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
-            }
-        } catch (e) { 
-            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync. Cek Firebase Rules Tuan!</p>'; 
-        }
-    }
-
-    async function deleteMember(event, type, id) {
-        event.stopPropagation();
-        if(confirm(`Hapus akses ${id}?`)) {
-            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
-            loadMembers();
-        }
-    }
-
-    async function openEditModal(event, type, id) {
-        event.stopPropagation();
-        try {
-            const res = await fetch(`${DB_URL}${type}/${id}.json`);
-            const obj = await res.json();
-            if(!obj) return;
-
-            document.getElementById('editType').value = type;
-            document.getElementById('editTargetId').value = id;
-            document.getElementById('editKey').value = obj.key || '';
-            document.getElementById('editExp').value = obj.expired || '';
-            document.getElementById('editLimit').value = obj.device_limit || '1';
-
-            const apkOnlySection = document.getElementById('apkEditOnly');
-            if (type === 'apk_access') {
-                apkOnlySection.style.display = 'block';
-                document.getElementById('editPass').value = obj.password || '';
-                document.getElementById('editTier').value = obj.tier || 'basic';
-                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
-            } else {
-                apkOnlySection.style.display = 'none';
-  
+    
