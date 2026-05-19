@@ -2,15 +2,14 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XK TEAM CLOUD - FIX CLICK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TEAM CLOUD - FIX TOTAL SCREEN BLOCK</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
             --lightning: #e0aaff; 
-            /* Variabel Warna Tier Menyala */
             --t-basic: #a1a1aa;
             --t-ultra: #06b6d4;
             --t-vixo: #10b981;
@@ -30,94 +29,100 @@
             background-attachment: fixed; background-color: #000;
         }
 
-        /* Overlay sangat tipis */
+        /* FIX 1: Lapisan hitam background dimatikan respon kliknya agar tidak menutupi tombol */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.2); z-index: -1; /* Pindah ke paling belakang */
+            background: rgba(0, 0, 0, 0.25); z-index: 1; pointer-events: none;
         }
 
         .lightning-border {
             position: relative; padding: 2px; border-radius: 22px;
             background: transparent; overflow: hidden;
             width: 92%; max-width: 420px;
-            z-index: 10; /* Pastikan container di depan */
+            z-index: 5;
         }
 
+        /* FIX 2: Animasi petir dipaksa mengabaikan sentuhan jari (anti-blocking) */
         .lightning-border::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, var(--accent-purple), var(--lightning), transparent 40%);
             animation: rotate 3s linear infinite;
-            z-index: -1; /* Biar animasi petir nggak nutupin tombol */
+            z-index: -1; pointer-events: none;
         }
 
         @keyframes rotate { 100% { transform: rotate(360deg); } }
 
+        /* FIX 3: Naikkan z-index wadah utama agar berada di paling depan */
         .glass-container { 
             position: relative;
-            background: rgba(15, 5, 25, 0.55); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(12, 4, 22, 0.7); 
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             padding: 25px; border-radius: 20px; 
             border: 1px solid rgba(188, 19, 254, 0.4);
             text-align: center;
-            z-index: 20; /* Lapisan paling depan untuk konten */
+            z-index: 100;
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         h2 { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; pointer-events: none; }
         
         .logout-btn {
-            background: #ff4d4d; border: none; padding: 5px 12px; border-radius: 20px;
+            background: #ff4d4d; border: none; padding: 6px 14px; border-radius: 20px;
             color: white; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
+            position: relative; z-index: 200;
         }
 
-        .tab-menu { display: flex; gap: 5px; margin-bottom: 15px; position: relative; z-index: 30; }
+        /* FIX 4: Menu tab ditinggikan layapannya dan dipastikan merespon ketukan layar HP */
+        .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; position: relative; z-index: 500; }
         .tab-btn {
-            flex: 1; padding: 12px; border: 1px solid var(--accent-purple);
-            background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 8px;
+            flex: 1; padding: 12px 0; border: 1px solid var(--accent-purple);
+            background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 8px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9.5px;
-            transition: 0.3s;
-            -webkit-tap-highlight-color: transparent; /* Fix buat HP */
+            transition: 0.2s; position: relative; z-index: 600;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
         .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
 
-        .form-section { display: none; text-align: left; }
+        .form-section { display: none; text-align: left; position: relative; z-index: 150; }
         .form-section.active { display: block; }
 
-        label { color: #fff; font-size: 9.5px; font-weight: 600; display: block; margin-top: 10px; }
+        label { color: #fff; font-size: 9.5px; font-weight: 600; display: block; margin-top: 12px; font-family: 'Poppins'; }
         input, select { 
-            width: 100%; padding: 11px; margin: 5px 0 12px 0; border-radius: 8px; 
+            width: 100%; padding: 10px 12px; margin: 5px 0 10px 0; border-radius: 8px; 
             border: 1px solid rgba(188, 19, 254, 0.5); 
-            background: rgba(0, 0, 0, 0.75); color: #fff; box-sizing: border-box; outline: none;
-            font-size: 11.5px; font-family: 'Poppins';
+            background: rgba(0, 0, 0, 0.85); color: #fff; box-sizing: border-box; outline: none;
+            font-size: 11.5px; font-family: 'Poppins'; position: relative; z-index: 200;
         }
         .custom-limit-box { display: none; }
 
+        /* FIX 5: Naikkan prioritas tombol generator */
         .gen-btn { 
-            width: 100%; padding: 14px; background: var(--accent-purple);
+            width: 100%; padding: 13px; background: var(--accent-purple);
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: 700; font-size: 11px; cursor: pointer;
-            z-index: 30; position: relative; margin-top: 5px;
+            position: relative; z-index: 300; margin-top: 12px;
+            touch-action: manipulation;
         }
 
         .member-card {
-            background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(188, 19, 254, 0.3);
+            background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(188, 19, 254, 0.3);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 30;
+            position: relative; z-index: 250;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.15); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
-        .member-info p { margin: 2px 0 0 0; font-size: 9.5px; color: #ddd; line-height: 1.4; }
+        .member-info p { margin: 3px 0 0 0; font-size: 9.5px; color: #ccc; line-height: 1.4; }
         
         .badge-type { font-weight: 700; font-family: 'Orbitron'; font-size: 8px; margin-right: 4px; }
         .b-mod { color: #38bdf8; text-shadow: 0 0 3px rgba(56,189,248,0.4); } 
         .b-apk { color: #f43f5e; text-shadow: 0 0 3px rgba(244,63,94,0.4); }
         
-        /* Badge Tier Berwarna Menyala */
         .badge-tier { 
             font-size: 7.5px; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; 
             font-weight: 700; font-family: 'Orbitron'; margin-left: 5px; text-transform: uppercase; 
+            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.4);
         }
         .t-basic { color: var(--t-basic); text-shadow: 0 0 4px var(--t-basic); } 
         .t-ultra { color: var(--t-ultra); text-shadow: 0 0 4px var(--t-ultra); } 
@@ -128,16 +133,14 @@
         .t-athena { color: var(--t-athena); text-shadow: 0 0 4px var(--t-athena); } 
         .t-private { color: var(--t-private); text-shadow: 0 0 4px var(--t-private); }
 
-        .action-controls { display: none; gap: 12px; }
+        .action-controls { display: none; gap: 12px; position: relative; z-index: 400; }
         .member-card.selected .action-controls { display: flex; }
-        .icon-btn { cursor: pointer; font-size: 13px; padding: 4px; }
+        .icon-btn { cursor: pointer; font-size: 13px; padding: 5px; }
         .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
 
-        /* Custom Scrollbar */
         #memberList::-webkit-scrollbar { width: 4px; }
         #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
-        
-        #result { display:none; margin-top:15px; color:#00ff00; font-family:'Orbitron'; font-size:11px; font-weight:bold; line-height: 1.4; }
+        #result { display:none; margin-top:15px; color:#00ff00; font-family:'Orbitron'; font-size:11px; font-weight:bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -215,7 +218,7 @@
     </div>
 
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
+        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left; box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);">
             <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
             <input type="hidden" id="editTargetId">
@@ -254,19 +257,20 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    // LOGIKA OPEN TAB ASLI MILIK TUAN 100% (HANYA DITAMBAH PROTESI SEPERTI KODE LAMA)
+    // SINKRONISASI TOTAL: Mengatasi masalah parameter event hilang di engine browser HP tertentu
     function openTab(name) {
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        const target = document.getElementById(name);
-        if(target) target.style.display = 'block';
+        const targetForm = document.getElementById(name);
+        if(targetForm) targetForm.style.display = 'block';
         
-        if(event && event.currentTarget) {
-            event.currentTarget.classList.add('active');
-        } else {
-            const fallbackBtn = document.getElementById('btn-' + name);
-            if(fallbackBtn) fallbackBtn.classList.add('active');
+        // Cari tombol aktif secara manual lewat ID (Solusi paling anti-macet)
+        const targetBtn = document.getElementById('btn-' + name);
+        if(targetBtn) {
+            targetBtn.classList.add('active');
+        } else if (window.event && window.event.currentTarget) {
+            window.event.currentTarget.classList.add('active');
         }
         
         const resDiv = document.getElementById('result');
@@ -401,14 +405,4 @@
             if(!obj) return;
 
             document.getElementById('editType').value = type;
-            document.getElementById('editTargetId').value = id;
-            document.getElementById('editKey').value = obj.key || '';
-            document.getElementById('editExp').value = obj.expired || '';
-            document.getElementById('editLimit').value = obj.device_limit || '1';
-
-            const apkOnlySection = document.getElementById('apkEditOnly');
-            if (type === 'apk_access') {
-                apkOnlySection.style.display = 'block';
-                document.getElementById('editPass').value = obj.password || '';
-                document.getElementById('editTier').value = obj.tier || 'basic';
-                document.getElementById('modalTitle').innerText =
+  
