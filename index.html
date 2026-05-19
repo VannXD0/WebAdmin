@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - AURORA FINAL</title>
+    <title>XK TEAM CLOUD - ULTRA RESPONSIVE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -24,7 +24,6 @@
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            /* Latar belakang Aurora menyatu di body, anti-blocking klik */
             background: 
                 radial-gradient(circle at 15% 85%, rgba(188, 19, 254, 0.22), transparent 50%),
                 radial-gradient(circle at 85% 15%, rgba(0, 229, 255, 0.18), transparent 50%),
@@ -32,17 +31,14 @@
             background-attachment: fixed;
         }
 
-        /* Kotak Utama - Dipaksa berada di lapisan paling depan */
         .main-box {
             width: 92%; max-width: 420px;
-            background: #12071f; /* Warna solid gelap elegan, tanpa blur agar enteng */
+            background: #12071f;
             border: 1px solid rgba(188, 19, 254, 0.4);
             border-radius: 16px;
             padding: 25px;
             box-shadow: 0 10px 30px rgba(188, 19, 254, 0.15);
             box-sizing: border-box;
-            position: relative;
-            z-index: 9999; /* Lapisan tertinggi */
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
@@ -55,21 +51,22 @@
         .logout-btn {
             background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
             color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
-            transition: 0.2s; -webkit-tap-highlight-color: transparent;
+            text-decoration: none; display: inline-block; text-align: center;
         }
-        .logout-btn:active { background: #ff4d4d; color: white; }
 
+        /* STRUKTUR TAB BARU: Menggunakan Tag Anchor (Link) agar Lolos Sensor Browser Mobile */
         .tab-menu { 
             display: flex; gap: 8px; margin-bottom: 20px; 
             background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .tab-btn {
-            flex: 1; padding: 11px 0; border: none;
+            flex: 1; padding: 11px 0; text-align: center;
             background: transparent; color: #777; border-radius: 7px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9px;
+            text-decoration: none; display: block;
             transition: 0.2s; -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation; /* Mempercepat respon ketukan di HP */
+            touch-action: manipulation;
         }
         .tab-btn.active { 
             background: rgba(188, 19, 254, 0.25); 
@@ -87,7 +84,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1); 
             background: #000000; color: #fff; box-sizing: border-box; outline: none;
             font-size: 11.5px; font-family: 'Poppins';
-            position: relative; z-index: 10000;
         }
         input:focus, select:focus { border-color: var(--accent-purple); }
         .custom-limit-box { display: none; }
@@ -98,15 +94,14 @@
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: 700; font-size: 10.5px; cursor: pointer; margin-top: 15px;
             box-shadow: 0 4px 12px rgba(188, 19, 254, 0.4);
-            touch-action: manipulation; transition: 0.1s;
-            position: relative; z-index: 10000;
+            touch-action: manipulation; display: block; text-align: center; text-decoration: none;
         }
-        .gen-btn:active { transform: scale(0.98); }
 
         .member-card {
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
+            -webkit-tap-highlight-color: transparent;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
@@ -144,13 +139,13 @@
     <div class="main-box">
         <div class="header-area">
             <h2>XK TEAM CLOUD</h2>
-            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+            <a href="#" class="logout-btn" role="button" id="btn-logout">LOGOUT</a>
         </div>
         
         <div class="tab-menu">
-            <button class="tab-btn active" id="btn-module" onclick="openTab('module')">MODULE</button>
-            <button class="tab-btn" id="btn-apk" onclick="openTab('apk')">APK</button>
-            <button class="tab-btn" id="btn-members" onclick="openTab('members'); loadMembers();">MEMBERS</button>
+            <a href="#" class="tab-btn active" id="btn-module">MODULE</a>
+            <a href="#" class="tab-btn" id="btn-apk">APK</a>
+            <a href="#" class="tab-btn" id="btn-members">MEMBERS</a>
         </div>
 
         <div id="module" class="form-section active">
@@ -169,7 +164,7 @@
                 <label>INPUT CUSTOM LIMIT</label>
                 <input type="number" id="modCustomLimit" value="1" min="1">
             </div>
-            <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
+            <a href="#" class="gen-btn" id="submit-module">GENERATE MODULE</a>
         </div>
 
         <div id="apk" class="form-section">
@@ -201,7 +196,7 @@
             </div>
             <label>EXPIRED DATE</label>
             <input type="date" id="apkExp">
-            <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
+            <a href="#" class="gen-btn" id="submit-apk">ADD APK ACCESS</a>
         </div>
 
         <div id="members" class="form-section">
@@ -242,14 +237,44 @@
             <input type="number" id="editLimit" min="1">
             
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
-                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
+                <a href="#" id="modal-save" style="flex:1; background:#bc13fe; color:white; padding:11px; border-radius:6px; font-weight:700; font-family:'Orbitron'; font-size:10.5px; text-align:center; text-decoration:none;">SAVE</a>
+                <a href="#" id="modal-cancel" style="flex:1; background:#ff4d4d; color:white; padding:11px; border-radius:6px; font-weight:700; font-family:'Orbitron'; font-size:10.5px; text-align:center; text-decoration:none;">CANCEL</a>
             </div>
         </div>
     </div>
 
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+    // SISTEM DETEKSI SENTUHAN ULTRA RESPONSIF MOBILE (TOUCH + CLICK MOCK)
+    function bindFastClick(elementId, callback) {
+        const el = document.getElementById(elementId);
+        if(!el) return;
+        
+        let moved = false;
+        el.addEventListener('touchmove', () => { moved = true; });
+        el.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            if(!moved) callback(e);
+            moved = false;
+        });
+        el.addEventListener('click', (e) => {
+            e.preventDefault();
+            callback(e);
+        });
+    }
+
+    // Bind Aksi Utama Cloud Admin
+    document.addEventListener("DOMContentLoaded", () => {
+        bindFastClick('btn-module', () => openTab('module'));
+        bindFastClick('btn-apk', () => openTab('apk'));
+        bindFastClick('btn-members', () => { openTab('members'); loadMembers(); });
+        bindFastClick('btn-logout', () => logout());
+        bindFastClick('submit-module', () => generate('module'));
+        bindFastClick('submit-apk', () => generate('apk'));
+        bindFastClick('modal-save', () => saveEdit());
+        bindFastClick('modal-cancel', () => closeModal());
+    });
 
     function openTab(name) {
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
@@ -259,11 +284,7 @@
         if(targetForm) targetForm.style.display = 'block';
         
         const targetBtn = document.getElementById('btn-' + name);
-        if(targetBtn) {
-            targetBtn.classList.add('active');
-        } else if (window.event && window.event.currentTarget) {
-            window.event.currentTarget.classList.add('active');
-        }
+        if(targetBtn) targetBtn.classList.add('active');
         
         const resDiv = document.getElementById('result');
         if(resDiv) resDiv.style.display = 'none';
@@ -352,10 +373,15 @@
     function createCard(id, obj, type, parent) {
         const card = document.createElement('div');
         card.className = 'member-card';
-        card.onclick = () => {
+        
+        // Proteksi klik kartu member list
+        const handleSelect = (e) => {
+            e.preventDefault();
             document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
         };
+        card.addEventListener('touchend', handleSelect);
+        card.addEventListener('click', handleSelect);
 
         const isMod = type === 'users';
         const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
@@ -371,46 +397,24 @@
                 <p>EXP: ${obj.expired || '-'} | LIMIT: ${obj.device_limit || '1'}</p>
             </div>
             <div class="action-controls">
-                <div class="icon-btn icon-edit" onclick="openEditModal(event, '${type}', '${id}')">
+                <div class="icon-btn icon-edit" id="edit-${type}-${id}">
                     <i class="fas fa-edit"></i>
                 </div>
-                <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
+                <div class="icon-btn icon-trash" id="del-${type}-${id}">
                     <i class="fas fa-trash-alt"></i>
                 </div>
             </div>`;
         parent.appendChild(card);
-    }
 
-    async function deleteMember(event, type, id) {
-        event.stopPropagation();
-        if(confirm(`Hapus akses ${id}?`)) {
-            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
-            loadMembers();
-        }
-    }
-
-    async function openEditModal(event, type, id) {
-        event.stopPropagation();
-        try {
-            const res = await fetch(`${DB_URL}${type}/${id}.json`);
-            const obj = await res.json();
-            if(!obj) return;
-
-            document.getElementById('editType').value = type;
-            document.getElementById('editTargetId').value = id;
-            document.getElementById('editKey').value = obj.key || '';
-            document.getElementById('editExp').value = obj.expired || '';
-            document.getElementById('editLimit').value = obj.device_limit || '1';
-
-            const apkOnlySection = document.getElementById('apkEditOnly');
-            if (type === 'apk_access') {
-                apkOnlySection.style.display = 'block';
-                document.getElementById('editPass').value = obj.password || '';
-                document.getElementById('editTier').value = obj.tier || 'basic';
-                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
-            } else {
-                apkOnlySection.style.display = 'none';
-                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
+        // Bind tombol edit dan hapus internal card secara instan
+        setTimeout(() => {
+            const btnEdit = document.getElementById(`edit-${type}-${id}`);
+            const btnDel = document.getElementById(`del-${type}-${id}`);
+            
+            if(btnEdit) {
+                btnEdit.addEventListener('click', (e) => { e.stopPropagation(); openEditModal(e, type, id); });
+                btnEdit.addEventListener('touchend', (e) => { e.stopPropagation(); openEditModal(e, type, id); });
             }
-
-            document.getElementById('editMod
+            if(btnDel) {
+                btnDel.addEventListener('click', (e) => { e.stopPropagation(); deleteMember(e, type, id); });
+                btnDel.addEventLi
