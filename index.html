@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>XK TEAM CLOUD - PREMIUM ADMIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -10,7 +10,7 @@
         :root { 
             --accent-purple: #bc13fe; 
             --lightning: #e0aaff; 
-            /* Variabel Warna Tier Ekstrem */
+            /* Variabel Warna Tier Pembuat Konten Menyala */
             --t-basic: #a1a1aa;
             --t-ultra: #06b6d4;
             --t-vixo: #10b981;
@@ -53,7 +53,7 @@
 
         .glass-container { 
             position: relative;
-            background: rgba(12, 4, 22, 0.6); 
+            background: rgba(12, 4, 22, 0.65); 
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             padding: 25px; border-radius: 20px; 
@@ -61,8 +61,23 @@
             z-index: 20;
         }
 
-        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
-        h2 { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; pointer-events: none; letter-spacing: 1px; }
+        .header-area { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 22px; 
+        }
+        
+        h2 { 
+            font-family: 'Orbitron'; 
+            font-weight: 700; 
+            color: #fff; 
+            text-shadow: 0 0 10px var(--accent-purple); 
+            font-size: 16px; 
+            margin: 0; 
+            pointer-events: none; 
+            letter-spacing: 1px; 
+        }
         
         .logout-btn {
             background: #ff4d4d; border: none; padding: 6px 14px; border-radius: 20px;
@@ -102,7 +117,7 @@
         }
         .gen-btn:hover { background: #a60be3; transform: scale(0.99); }
 
-        /* Style Members Cards */
+        /* Style List Members Area */
         .member-card {
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(188, 19, 254, 0.25);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
@@ -117,7 +132,7 @@
         .b-mod { color: #38bdf8; text-shadow: 0 0 3px rgba(56,189,248,0.4); } 
         .b-apk { color: #f43f5e; text-shadow: 0 0 3px rgba(244,63,94,0.4); }
         
-        /* Badge Tier Dinamis & Berwarna */
+        /* Pewarnaan Dinamis Tier pada List Member */
         .badge-tier { 
             font-size: 7.5px; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; 
             font-weight: 700; font-family: 'Orbitron'; margin-left: 5px; text-transform: uppercase; 
@@ -153,9 +168,9 @@
             </div>
             
             <div class="tab-menu">
-                <button class="tab-btn active" id="btn-module" onclick="openTab(event, 'module')">MODULE</button>
-                <button class="tab-btn" id="btn-apk" onclick="openTab(event, 'apk')">APK</button>
-                <button class="tab-btn" id="btn-members" onclick="openTab(event, 'members'); loadMembers();">MEMBERS</button>
+                <button class="tab-btn active" id="btn-module" onclick="jalankanTab('module')">MODULE</button>
+                <button class="tab-btn" id="btn-apk" onclick="jalankanTab('apk')">APK</button>
+                <button class="tab-btn" id="btn-members" onclick="jalankanTab('members')">MEMBERS</button>
             </div>
 
             <div id="module" class="form-section active">
@@ -255,18 +270,36 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    function openTab(e, name) {
+    // SOLUSI KRUSIAL: Fungsi navigasi tab murni independen tanpa memanggil event browser bawaan
+    function jalankanTab(name) {
+        // Sembunyikan seluruh section form
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
+        
+        // Bersihkan status tombol aktif
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        document.getElementById(name).style.display = 'block';
-        e.currentTarget.classList.add('active');
-        document.getElementById('result').style.display = 'none';
+        // Tampilkan target panel dengan validasi objek aman
+        const formTarget = document.getElementById(name);
+        if (formTarget) formTarget.style.display = 'block';
+        
+        // Nyalakan tombol tab target secara presisi lewat ID elemen manual
+        const tombolTarget = document.getElementById('btn-' + name);
+        if (tombolTarget) tombolTarget.classList.add('active');
+        
+        // Kosongkan status display pengumuman result
+        const containerRes = document.getElementById('result');
+        if (containerRes) containerRes.style.display = 'none';
+
+        // Otomatis sinkronisasi data firebase jika masuk ke tab members
+        if (name === 'members') {
+            loadMembers();
+        }
     }
 
     function toggleCustomLimit(type) {
         const selectVal = document.getElementById(type + 'Limit').value;
-        document.getElementById(type + 'CustomDiv').style.display = (selectVal === 'custom') ? 'block' : 'none';
+        const customDiv = document.getElementById(type + 'CustomDiv');
+        if (customDiv) customDiv.style.display = (selectVal === 'custom') ? 'block' : 'none';
     }
 
     function logout() {
@@ -278,8 +311,13 @@
         const idInput = type === 'module' ? 'modId' : 'apkId';
         const expInput = type === 'module' ? 'modExp' : 'apkExp';
         
-        const id = document.getElementById(idInput).value.trim();
-        const exp = document.getElementById(expInput).value;
+        const idEl = document.getElementById(idInput);
+        const expEl = document.getElementById(expInput);
+        
+        if(!idEl || !expEl) return;
+        
+        const id = idEl.value.trim();
+        const exp = expEl.value;
         
         if(!id || !exp) { alert("Harap isi semua kolom!"); return; }
 
@@ -312,15 +350,18 @@
         try {
             await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
             const resDiv = document.getElementById('result');
-            resDiv.style.display = 'block';
-            resDiv.innerHTML = type === 'module' ? `DONE! KEY: ${key}` : `DONE!<br>KEY: ${key}<br>PASS: ${data.password}`;
-            document.getElementById(idInput).value = '';
+            if (resDiv) {
+                resDiv.style.display = 'block';
+                resDiv.innerHTML = type === 'module' ? `DONE! KEY: ${key}` : `DONE!<br>KEY: ${key}<br>PASS: ${data.password}`;
+            }
+            idEl.value = '';
             if(type === 'apk') document.getElementById('apkPass').value = '';
         } catch(e) { alert("Database Error!"); }
     }
 
     async function loadMembers() {
         const listDiv = document.getElementById('memberList');
+        if (!listDiv) return;
         listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
         
         try {
@@ -328,17 +369,17 @@
             const data = await res.json();
             listDiv.innerHTML = '';
 
-            if (data.users) {
+            if (data && data.users) {
                 for (let id in data.users) {
                     createCard(id, data.users[id], 'users', listDiv);
                 }
             }
-            if (data.apk_access) {
+            if (data && data.apk_access) {
                 for (let id in data.apk_access) {
                     createCard(id, data.apk_access[id], 'apk_access', listDiv);
                 }
             }
-            if (!data.users && !data.apk_access) {
+            if (!data || (!data.users && !data.apk_access)) {
                 listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
             }
         } catch (e) { listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; }
@@ -355,7 +396,6 @@
         const isMod = type === 'users';
         const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
         
-        // FIX BARUSAN: Mengambil nama tier asli, jika tidak ada default ke basic
         const currentTier = obj.tier || 'basic';
         const tierHTML = isMod ? '' : `<span class="badge-tier t-${currentTier}">${currentTier}</span>`;
         const passHTML = isMod ? '' : ` | PASS: ${obj.password || '-'}`;
@@ -371,4 +411,4 @@
                     <i class="fas fa-edit"></i>
                 </div>
                 <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
-    
+             
