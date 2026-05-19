@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             background-image: url('garou.png');
             background-size: cover;
@@ -21,7 +21,6 @@
             justify-content: center;
             padding: 20px;
         }
-        /* Panel utama — style solid seperti gambar */
         .admin-panel {
             max-width: 550px;
             width: 100%;
@@ -188,7 +187,7 @@
     </div>
 
     <!-- MODULE PANEL -->
-    <div id="module-pane" class="content-pane">
+    <div id="module-pane" class="content-pane active">
         <label>DEVICE ID</label>
         <input type="text" id="modId" placeholder="Android ID Buyer...">
         <label>EXPIRED DATE</label>
@@ -284,7 +283,7 @@
 
 <script>
     (function(){
-        // ========== CEK LOGIN (WAJIB) ==========
+        // ========== LOGIN CHECK ==========
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
             return;
@@ -313,6 +312,7 @@
             if (tabId === 'members') loadMembers();
         }
         tabs.forEach(btn => btn.onclick = () => setActiveTab(btn.getAttribute('data-tab')));
+        // default active module
         setActiveTab('module');
 
         // Custom limit logic
@@ -375,7 +375,7 @@
             } catch(e) { alert('Database error!'); }
         };
 
-        // ========== LOAD MEMBERS (LENGKAP DENGAN DEVICE, TIER, EDIT) ==========
+        // ========== LOAD MEMBERS ==========
         async function loadMembers() {
             const listDiv = document.getElementById('memberList');
             listDiv.innerHTML = '<div style="color:white;">Loading members...</div>';
@@ -453,4 +453,5 @@
                         }
                     };
                 });
-             
+                // Edit & Delete member events
+                document.q
