@@ -24,7 +24,7 @@
             overflow-x: hidden;
         }
         
-        /* Animasi Background Ungu & Efek Partikel */
+        /* Animasi Background Berputar Halus */
         body::before {
             content: '';
             position: fixed;
@@ -43,7 +43,7 @@
         .admin-panel {
             max-width: 560px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.4); /* Lebih transparan sesuai request */
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 2rem;
@@ -116,7 +116,7 @@
         }
         .gen-btn:hover { background: linear-gradient(95deg, #7c0dbf, #d43dff); transform: scale(0.98); }
 
-        /* Styling List Member */
+        /* List Member */
         .member-card {
             background: rgba(0,0,0,0.6); border: 1px solid rgba(188,19,254,0.3);
             border-radius: 16px; padding: 14px; margin-bottom: 12px;
@@ -127,16 +127,16 @@
         .member-info { color: #ddd; font-size: 0.75rem; line-height: 1.5; }
         .member-info b { color: white; font-size: 0.85rem; }
         
-        /* Indikator Kurung Sesuai Request */
+        /* Indikator Kurung Kotak */
         .type-badge { font-weight: bold; font-family: 'Orbitron'; margin-right: 4px; }
         .type-mod { color: #38bdf8; }
         .type-apk { color: #f43f5e; }
 
-        /* Pewarnaan Neon Khusus Tiap Tier APK */
+        /* Warna Neon Eksklusif Tiap Tier APK */
         .tier-badge {
             padding: 2px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold;
             margin-left: 6px; text-transform: uppercase; border: 1px solid currentColor;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.4); display: inline-block;
         }
         .tier-basic { color: #a1a1aa; text-shadow: 0 0 4px #a1a1aa; }
         .tier-ultra { color: #06b6d4; text-shadow: 0 0 4px #06b6d4; }
@@ -303,7 +303,7 @@
         };
 
         function activateTab(tabId) {
-            Object.values(panes).forEach(pane => pane && pane.classList.remove('active'));
+            Object.values(panes).forEach(pane => { if(pane) pane.classList.remove('active'); });
             if (panes[tabId]) panes[tabId].classList.add('active');
             tabBtns.forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
@@ -357,64 +357,5 @@
                 if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
             }
             if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
-            const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, expired: exp, device_limit: limit, status: "active" };
-            try {
-                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('modResult', `✅ MODULE GENERATED! KEY: ${key}`);
-                document.getElementById('modId').value = '';
-            } catch(e) { alert('Database error!'); }
-        });
-
-        // ========== GENERATE APK ==========
-        document.getElementById('genApkBtn').addEventListener('click', async () => {
-            const username = document.getElementById('apkUser').value.trim();
-            let password = document.getElementById('apkPass').value.trim();
-            const exp = document.getElementById('apkExp').value;
-            const tier = document.getElementById('apkTier').value;
-            let limit = parseInt(apkSelect.value);
-            if (apkSelect.value === 'custom') {
-                limit = parseInt(document.getElementById('apkCustomLimit').value);
-                if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
-            }
-            if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
-            if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
-            const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, password, expired: exp, device_limit: limit, tier, status: "active" };
-            try {
-                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('apkResult', `✅ APK ACCESS ADDED!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}`);
-                document.getElementById('apkUser').value = '';
-                document.getElementById('apkPass').value = '';
-            } catch(e) { alert('Database error!'); }
-        });
-
-        document.getElementById('refreshMembersBtn').addEventListener('click', loadMembers);
-
-        // ========== LOAD & RENDER MEMBERS ==========
-        async function loadMembers() {
-            const container = document.getElementById('memberList');
-            if (!container) return;
-            container.innerHTML = '<div style="color:white; text-align:center;">Loading database...</div>';
-            try {
-                const res = await fetch(`${DB_URL}.json`);
-                const data = await res.json();
-                container.innerHTML = '';
-                let any = false;
-
-                // 1. Render Users Module
-                if (data && data.users) {
-                    for (let id in data.users) {
-                        any = true;
-                        const obj = data.users[id];
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <span class="type-badge type-mod">[MODULE]</span> <b>${escapeHtml(id)}</b><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
-                            </div>
-                            <div class="member-actions">
-                                <i class="fas fa-pen btn-edit" data-type="users" data-id="${id}" title="Edit"></i>
+            const key = "XK-" + Math.random().toString
     
