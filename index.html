@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XK TEAM CLOUD - COMPLETE FIXED</title>
+    <title>XK TEAM CLOUD - FIXED CLICK ABLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
-            --lightning: #e0aaff; 
             --t-basic: #a1a1aa;
             --t-ultra: #00e5ff;
             --t-vixo: #00e676;
@@ -35,26 +34,15 @@
         }
 
         .lightning-border {
-            position: relative; padding: 2px; border-radius: 22px;
-            background: transparent; overflow: hidden;
             width: 92%; max-width: 420px;
             z-index: 10;
         }
 
-        .lightning-border::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(transparent, var(--accent-purple), var(--lightning), transparent 40%);
-            animation: rotate 3s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-
         .glass-container { 
             position: relative;
-            background: rgba(15, 5, 25, 0.4); 
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: rgba(15, 5, 25, 0.55); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 25px; border-radius: 20px; 
             border: 1px solid rgba(188, 19, 254, 0.4);
             text-align: center;
@@ -358,4 +346,65 @@
                     const devLimit = obj[id].device_limit || '1';
                     
                     const currentTier = obj[id].tier || 'basic';
-    
+                    const tierHTML = isMod ? '' : `<span class="badge-tier t-${currentTier}">${currentTier}</span>`;
+                    const passHTML = isMod ? '' : ` | PASS: ${obj[id].password || '-'}`;
+
+                    card.innerHTML = `
+                        <div class="member-info">
+                            <b>${labelBadge} ${id}</b> ${tierHTML}
+                            <p>KEY: ${obj[id].key || '-'} ${passHTML}</p>
+                            <p style="font-size:8px; color:#aaa;">LIMIT: ${devLimit} DEVICE | EXP: ${obj[id].expired || '-'}</p>
+                        </div>
+                        <div class="action-controls">
+                            <div class="icon-btn icon-edit" onclick="openEditModal(event, '${type}', '${id}')">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
+                                <i class="fas fa-trash-alt"></i>
+                            </div>
+                        </div>`;
+                    listDiv.appendChild(card);
+                }
+            };
+
+            if (data && data.users) render(data.users, 'users');
+            if (data && data.apk_access) render(data.apk_access, 'apk_access');
+            
+            if ((!data || !data.users) && (!data || !data.apk_access)) {
+                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
+            }
+        } catch (e) { 
+            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync. Cek Firebase Rules Tuan!</p>'; 
+        }
+    }
+
+    async function deleteMember(event, type, id) {
+        event.stopPropagation();
+        if(confirm(`Hapus akses ${id}?`)) {
+            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
+            loadMembers();
+        }
+    }
+
+    async function openEditModal(event, type, id) {
+        event.stopPropagation();
+        try {
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const obj = await res.json();
+            if(!obj) return;
+
+            document.getElementById('editType').value = type;
+            document.getElementById('editTargetId').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+
+            const apkOnlySection = document.getElementById('apkEditOnly');
+            if (type === 'apk_access') {
+                apkOnlySection.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
+            } else {
+                apkOnlySection.style.display = 'none';
+  
