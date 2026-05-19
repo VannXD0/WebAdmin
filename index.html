@@ -2,15 +2,15 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - PREMIUM ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XK TEAM CLOUD - FIX CLICK</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
             --lightning: #e0aaff; 
-            /* Variabel Warna Tier Pembuat Konten Menyala */
+            /* Variabel Warna Tier Menyala */
             --t-basic: #a1a1aa;
             --t-ultra: #06b6d4;
             --t-vixo: #10b981;
@@ -30,113 +30,94 @@
             background-attachment: fixed; background-color: #000;
         }
 
+        /* Overlay sangat tipis */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.25); z-index: -1;
+            background: rgba(0, 0, 0, 0.2); z-index: -1; /* Pindah ke paling belakang */
         }
 
         .lightning-border {
             position: relative; padding: 2px; border-radius: 22px;
             background: transparent; overflow: hidden;
-            width: 92%; max-width: 440px;
-            z-index: 10;
+            width: 92%; max-width: 420px;
+            z-index: 10; /* Pastikan container di depan */
         }
 
         .lightning-border::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, var(--accent-purple), var(--lightning), transparent 40%);
             animation: rotate 3s linear infinite;
-            z-index: -1;
+            z-index: -1; /* Biar animasi petir nggak nutupin tombol */
         }
 
         @keyframes rotate { 100% { transform: rotate(360deg); } }
 
         .glass-container { 
             position: relative;
-            background: rgba(12, 4, 22, 0.65); 
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            background: rgba(15, 5, 25, 0.55); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: 25px; border-radius: 20px; 
-            border: 1px solid rgba(188, 19, 254, 0.35);
-            z-index: 20;
+            border: 1px solid rgba(188, 19, 254, 0.4);
+            text-align: center;
+            z-index: 20; /* Lapisan paling depan untuk konten */
         }
 
-        .header-area { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 22px; 
-        }
-        
-        h2 { 
-            font-family: 'Orbitron'; 
-            font-weight: 700; 
-            color: #fff; 
-            text-shadow: 0 0 10px var(--accent-purple); 
-            font-size: 16px; 
-            margin: 0; 
-            pointer-events: none; 
-            letter-spacing: 1px; 
-        }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h2 { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; pointer-events: none; }
         
         .logout-btn {
-            background: #ff4d4d; border: none; padding: 6px 14px; border-radius: 20px;
-            color: white; font-weight: 600; cursor: pointer; font-size: 9px; font-family: 'Orbitron';
-            transition: 0.2s;
+            background: #ff4d4d; border: none; padding: 5px 12px; border-radius: 20px;
+            color: white; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
         }
-        .logout-btn:hover { background: #cc0000; box-shadow: 0 0 8px #ff4d4d; }
 
-        .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; position: relative; z-index: 30; }
+        .tab-menu { display: flex; gap: 5px; margin-bottom: 15px; position: relative; z-index: 30; }
         .tab-btn {
-            flex: 1; padding: 11px 0; border: 1px solid rgba(188, 19, 254, 0.6);
-            background: rgba(0, 0, 0, 0.65); color: #fff; border-radius: 8px;
+            flex: 1; padding: 12px; border: 1px solid var(--accent-purple);
+            background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 8px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9.5px;
-            letter-spacing: 0.5px; transition: 0.2s;
-            -webkit-tap-highlight-color: transparent;
+            transition: 0.3s;
+            -webkit-tap-highlight-color: transparent; /* Fix buat HP */
         }
-        .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); border-color: var(--accent-purple); }
+        .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
 
         .form-section { display: none; text-align: left; }
         .form-section.active { display: block; }
 
-        label { color: #fff; font-size: 9.5px; font-weight: 600; display: block; margin-top: 12px; font-family: 'Poppins'; letter-spacing: 0.3px; }
+        label { color: #fff; font-size: 9.5px; font-weight: 600; display: block; margin-top: 10px; }
         input, select { 
-            width: 100%; padding: 10px 12px; margin: 5px 0 10px 0; border-radius: 8px; 
-            border: 1px solid rgba(188, 19, 254, 0.45); 
-            background: rgba(0, 0, 0, 0.8); color: #fff; box-sizing: border-box; outline: none;
-            font-size: 11.5px; font-family: 'Poppins'; transition: 0.2s;
+            width: 100%; padding: 11px; margin: 5px 0 12px 0; border-radius: 8px; 
+            border: 1px solid rgba(188, 19, 254, 0.5); 
+            background: rgba(0, 0, 0, 0.75); color: #fff; box-sizing: border-box; outline: none;
+            font-size: 11.5px; font-family: 'Poppins';
         }
-        input:focus, select:focus { border-color: var(--accent-purple); box-shadow: 0 0 8px rgba(188, 19, 254, 0.4); }
         .custom-limit-box { display: none; }
 
         .gen-btn { 
-            width: 100%; padding: 13px; background: var(--accent-purple);
+            width: 100%; padding: 14px; background: var(--accent-purple);
             color: white; border: none; border-radius: 8px; 
-            font-family: 'Orbitron'; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; cursor: pointer;
-            margin-top: 14px; box-shadow: 0 0 12px rgba(188, 19, 254, 0.35); transition: 0.2s;
+            font-family: 'Orbitron'; font-weight: 700; font-size: 11px; cursor: pointer;
+            z-index: 30; position: relative; margin-top: 5px;
         }
-        .gen-btn:hover { background: #a60be3; transform: scale(0.99); }
 
-        /* Style List Members Area */
         .member-card {
-            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(188, 19, 254, 0.25);
+            background: rgba(0, 0, 0, 0.65); border: 1px solid rgba(188, 19, 254, 0.3);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 30; transition: 0.2s;
+            position: relative; z-index: 30;
         }
-        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
-        .member-info b { color: #fff; font-size: 12.5px; font-family: 'Poppins'; font-weight: 600; }
-        .member-info p { margin: 3px 0 0 0; font-size: 9.5px; color: #ccc; line-height: 1.4; font-family: 'Poppins'; }
+        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.15); }
+        .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
+        .member-info p { margin: 2px 0 0 0; font-size: 9.5px; color: #ddd; line-height: 1.4; }
         
-        .badge-type { font-weight: 700; font-family: 'Orbitron'; font-size: 8px; margin-right: 4px; letter-spacing: 0.5px; }
+        .badge-type { font-weight: 700; font-family: 'Orbitron'; font-size: 8px; margin-right: 4px; }
         .b-mod { color: #38bdf8; text-shadow: 0 0 3px rgba(56,189,248,0.4); } 
         .b-apk { color: #f43f5e; text-shadow: 0 0 3px rgba(244,63,94,0.4); }
         
-        /* Pewarnaan Dinamis Tier pada List Member */
+        /* Badge Tier Berwarna Menyala */
         .badge-tier { 
             font-size: 7.5px; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; 
             font-weight: 700; font-family: 'Orbitron'; margin-left: 5px; text-transform: uppercase; 
-            background: rgba(0,0,0,0.3); display: inline-block; vertical-align: middle;
         }
         .t-basic { color: var(--t-basic); text-shadow: 0 0 4px var(--t-basic); } 
         .t-ultra { color: var(--t-ultra); text-shadow: 0 0 4px var(--t-ultra); } 
@@ -149,13 +130,14 @@
 
         .action-controls { display: none; gap: 12px; }
         .member-card.selected .action-controls { display: flex; }
-        .icon-btn { cursor: pointer; font-size: 13px; padding: 5px; transition: 0.2s; }
+        .icon-btn { cursor: pointer; font-size: 13px; padding: 4px; }
         .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
-        .icon-btn:hover { transform: scale(1.15); }
 
-        #result { display:none; margin-top:15px; color:#00ff00; font-family:'Orbitron'; font-size:11px; font-weight:700; text-align: center; line-height: 1.4; }
+        /* Custom Scrollbar */
         #memberList::-webkit-scrollbar { width: 4px; }
         #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
+        
+        #result { display:none; margin-top:15px; color:#00ff00; font-family:'Orbitron'; font-size:11px; font-weight:bold; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -168,9 +150,9 @@
             </div>
             
             <div class="tab-menu">
-                <button class="tab-btn active" id="btn-module" onclick="jalankanTab('module')">MODULE</button>
-                <button class="tab-btn" id="btn-apk" onclick="jalankanTab('apk')">APK</button>
-                <button class="tab-btn" id="btn-members" onclick="jalankanTab('members')">MEMBERS</button>
+                <button class="tab-btn active" id="btn-module" onclick="openTab('module')">MODULE</button>
+                <button class="tab-btn" id="btn-apk" onclick="openTab('apk')">APK</button>
+                <button class="tab-btn" id="btn-members" onclick="openTab('members'); loadMembers();">MEMBERS</button>
             </div>
 
             <div id="module" class="form-section active">
@@ -206,7 +188,8 @@
                     <option value="sonic">Sonic</option>
                     <option value="lunar">Lunar</option>
                     <option value="athena">Athena</option>
-                    <option value="private">Private</option> </select>
+                    <option value="private">Private</option>
+                </select>
                 <label>DEVICE LIMIT</label>
                 <select id="apkLimit" onchange="toggleCustomLimit('apk')">
                     <option value="1">1 DEVICE</option>
@@ -232,8 +215,8 @@
     </div>
 
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left; box-shadow: 0 0 20px rgba(188, 19, 254, 0.45);">
-            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center; letter-spacing: 0.5px;" id="modalTitle">EDIT ACCESS</h3>
+        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
+            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
             <input type="hidden" id="editTargetId">
             
@@ -252,7 +235,8 @@
                     <option value="sonic">Sonic</option>
                     <option value="lunar">Lunar</option>
                     <option value="athena">Athena</option>
-                    <option value="private">Private</option> </select>
+                    <option value="private">Private</option>
+                </select>
             </div>
             
             <label>EXPIRED DATE</label>
@@ -261,8 +245,8 @@
             <input type="number" id="editLimit" min="1">
             
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px; letter-spacing:0.5px;">SAVE</button>
-                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px; letter-spacing:0.5px;">CANCEL</button>
+                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
+                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
             </div>
         </div>
     </div>
@@ -270,36 +254,29 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    // SOLUSI KRUSIAL: Fungsi navigasi tab murni independen tanpa memanggil event browser bawaan
-    function jalankanTab(name) {
-        // Sembunyikan seluruh section form
+    // LOGIKA OPEN TAB ASLI MILIK TUAN 100% (HANYA DITAMBAH PROTESI SEPERTI KODE LAMA)
+    function openTab(name) {
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
-        
-        // Bersihkan status tombol aktif
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
-        // Tampilkan target panel dengan validasi objek aman
-        const formTarget = document.getElementById(name);
-        if (formTarget) formTarget.style.display = 'block';
+        const target = document.getElementById(name);
+        if(target) target.style.display = 'block';
         
-        // Nyalakan tombol tab target secara presisi lewat ID elemen manual
-        const tombolTarget = document.getElementById('btn-' + name);
-        if (tombolTarget) tombolTarget.classList.add('active');
-        
-        // Kosongkan status display pengumuman result
-        const containerRes = document.getElementById('result');
-        if (containerRes) containerRes.style.display = 'none';
-
-        // Otomatis sinkronisasi data firebase jika masuk ke tab members
-        if (name === 'members') {
-            loadMembers();
+        if(event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        } else {
+            const fallbackBtn = document.getElementById('btn-' + name);
+            if(fallbackBtn) fallbackBtn.classList.add('active');
         }
+        
+        const resDiv = document.getElementById('result');
+        if(resDiv) resDiv.style.display = 'none';
     }
 
     function toggleCustomLimit(type) {
         const selectVal = document.getElementById(type + 'Limit').value;
-        const customDiv = document.getElementById(type + 'CustomDiv');
-        if (customDiv) customDiv.style.display = (selectVal === 'custom') ? 'block' : 'none';
+        const divBox = document.getElementById(type + 'CustomDiv');
+        if(divBox) divBox.style.display = (selectVal === 'custom') ? 'block' : 'none';
     }
 
     function logout() {
@@ -311,13 +288,8 @@
         const idInput = type === 'module' ? 'modId' : 'apkId';
         const expInput = type === 'module' ? 'modExp' : 'apkExp';
         
-        const idEl = document.getElementById(idInput);
-        const expEl = document.getElementById(expInput);
-        
-        if(!idEl || !expEl) return;
-        
-        const id = idEl.value.trim();
-        const exp = expEl.value;
+        const id = document.getElementById(idInput).value.trim();
+        const exp = document.getElementById(expInput).value;
         
         if(!id || !exp) { alert("Harap isi semua kolom!"); return; }
 
@@ -333,11 +305,11 @@
         const key = type === 'module' ? "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase() : "APK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
         const path = type === 'module' ? `users/${id}` : `apk_access/${id}`;
         
-        let data = { 
+        const data = { 
             key: key, 
             expired: exp,
-            device_limit: limit,
-            status: "active"
+            status: "active",
+            device_limit: limit
         };
 
         if (type === 'apk') {
@@ -350,18 +322,18 @@
         try {
             await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
             const resDiv = document.getElementById('result');
-            if (resDiv) {
+            if(resDiv) {
                 resDiv.style.display = 'block';
-                resDiv.innerHTML = type === 'module' ? `DONE! KEY: ${key}` : `DONE!<br>KEY: ${key}<br>PASS: ${data.password}`;
+                resDiv.innerHTML = type === 'module' ? "DONE! KEY: " + key : `DONE!<br>KEY: ${key}<br>PASS: ${data.password}`;
             }
-            idEl.value = '';
+            document.getElementById(idInput).value = '';
             if(type === 'apk') document.getElementById('apkPass').value = '';
         } catch(e) { alert("Database Error!"); }
     }
 
     async function loadMembers() {
         const listDiv = document.getElementById('memberList');
-        if (!listDiv) return;
+        if(!listDiv) return;
         listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
         
         try {
@@ -369,17 +341,13 @@
             const data = await res.json();
             listDiv.innerHTML = '';
 
-            if (data && data.users) {
-                for (let id in data.users) {
-                    createCard(id, data.users[id], 'users', listDiv);
-                }
+            if(data && data.users) {
+                for (let id in data.users) { createCard(id, data.users[id], 'users', listDiv); }
             }
-            if (data && data.apk_access) {
-                for (let id in data.apk_access) {
-                    createCard(id, data.apk_access[id], 'apk_access', listDiv);
-                }
+            if(data && data.apk_access) {
+                for (let id in data.apk_access) { createCard(id, data.apk_access[id], 'apk_access', listDiv); }
             }
-            if (!data || (!data.users && !data.apk_access)) {
+            if(!data || (!data.users && !data.apk_access)) {
                 listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
             }
         } catch (e) { listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; }
@@ -411,4 +379,36 @@
                     <i class="fas fa-edit"></i>
                 </div>
                 <div class="icon-btn icon-trash" onclick="deleteMember(event, '${type}', '${id}')">
-             
+                    <i class="fas fa-trash-alt"></i>
+                </div>
+            </div>`;
+        parent.appendChild(card);
+    }
+
+    async function deleteMember(event, type, id) {
+        event.stopPropagation();
+        if(confirm(`Hapus akses ${id}?`)) {
+            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
+            loadMembers();
+        }
+    }
+
+    async function openEditModal(event, type, id) {
+        event.stopPropagation();
+        try {
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const obj = await res.json();
+            if(!obj) return;
+
+            document.getElementById('editType').value = type;
+            document.getElementById('editTargetId').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+
+            const apkOnlySection = document.getElementById('apkEditOnly');
+            if (type === 'apk_access') {
+                apkOnlySection.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText =
