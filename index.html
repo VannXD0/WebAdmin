@@ -1,4 +1,3 @@
-<!-- File: index.html (Admin Panel) -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -23,9 +22,9 @@
             background-attachment: fixed;
         }
         .glass-panel {
-            max-width: 550px;
+            max-width: 600px;
             width: 100%;
-            background: rgba(12,20,35,0.85);
+            background: rgba(12,20,35,0.75);
             backdrop-filter: blur(16px);
             border-radius: 2rem;
             padding: 1.5rem;
@@ -99,7 +98,11 @@
             margin-top: 5px;
             outline: none;
         }
-        button.gen-btn {
+        .custom-limit-container {
+            display: none;
+            margin-top: 5px;
+        }
+        .gen-btn {
             width: 100%;
             margin-top: 20px;
             background: linear-gradient(95deg, #9a0cd3, #bc13fe);
@@ -159,18 +162,17 @@
             font-size: 0.7rem;
             text-align: center;
         }
-        .custom-limit-container {
-            display: none;
+        .tier-badge {
+            display: inline-block;
+            background: rgba(188,19,254,0.3);
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.65rem;
+            margin-left: 6px;
         }
     </style>
 </head>
 <body>
-<script>
-    // CEK LOGIN — jika belum login, redirect ke login.html
-    if (localStorage.getItem('admin_logged_in') !== 'true') {
-        window.location.href = 'login.html';
-    }
-</script>
 <div class="glass-panel">
     <div class="header">
         <h2><i class="fas fa-cloud-upload-alt"></i> XK TEAM CLOUD</h2>
@@ -182,32 +184,58 @@
         <div class="tab-btn" data-tab="members">MEMBERS</div>
     </div>
 
+    <!-- MODULE PANEL -->
     <div id="module-pane" class="content-pane">
         <label>DEVICE ID</label>
-        <input type="text" id="modId" placeholder="Android ID">
+        <input type="text" id="modId" placeholder="Android ID / User ID">
         <label>EXPIRED DATE</label>
         <input type="date" id="modExp">
         <label>DEVICE LIMIT</label>
-        <select id="modLimit">
-            <option value="1">1 DEVICE</option><option value="5">5 DEVICE</option><option value="999">UNLIMITED</option>
+        <select id="modLimitSelect">
+            <option value="1">1 DEVICE</option>
+            <option value="2">2 DEVICE</option>
+            <option value="3">3 DEVICE</option>
+            <option value="4">4 DEVICE</option>
+            <option value="5">5 DEVICE</option>
+            <option value="custom">Custom (angka)</option>
         </select>
+        <div id="modCustomContainer" class="custom-limit-container">
+            <label>Custom Device Limit</label>
+            <input type="number" id="modCustomLimit" min="1" max="999" value="1">
+        </div>
         <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
         <div id="modResult" class="result-msg"></div>
     </div>
 
+    <!-- APK PANEL -->
     <div id="apk-pane" class="content-pane">
         <label>USERNAME</label>
         <input type="text" id="apkUser" placeholder="Username APK">
         <label>PASSWORD (kosong = auto)</label>
         <input type="text" id="apkPass" placeholder="Password (optional)">
+        <label>TIER</label>
+        <select id="apkTier">
+            <option value="Basic">Basic</option>
+            <option value="Ultra">Ultra</option>
+            <option value="Vixo">Vixo</option>
+            <option value="Delta">Delta</option>
+            <option value="Sonic">Sonic</option>
+            <option value="Lunar">Lunar</option>
+            <option value="Athena">Athena</option>
+            <option value="Privet">Privet</option>
+        </select>
         <label>DEVICE LIMIT</label>
         <select id="apkLimitSelect">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-            <option value="4">4</option><option value="5">5</option><option value="custom">Custom</option>
+            <option value="1">1 DEVICE</option>
+            <option value="2">2 DEVICE</option>
+            <option value="3">3 DEVICE</option>
+            <option value="4">4 DEVICE</option>
+            <option value="5">5 DEVICE</option>
+            <option value="custom">Custom (angka)</option>
         </select>
-        <div id="customLimitContainer" class="custom-limit-container">
-            <label>Custom Limit</label>
-            <input type="number" id="customLimit" min="1" max="999" value="1">
+        <div id="apkCustomContainer" class="custom-limit-container">
+            <label>Custom Device Limit</label>
+            <input type="number" id="apkCustomLimit" min="1" max="999" value="1">
         </div>
         <label>EXPIRED DATE</label>
         <input type="date" id="apkExp">
@@ -215,22 +243,29 @@
         <div id="apkResult" class="result-msg"></div>
     </div>
 
+    <!-- MEMBERS PANEL -->
     <div id="members-pane" class="content-pane">
         <button id="refreshMembersBtn" style="background:#bc13fe; border:none; padding:6px 12px; border-radius:30px; color:white; margin-bottom:12px; cursor:pointer;"><i class="fas fa-sync-alt"></i> Refresh</button>
         <div id="memberList">Loading members...</div>
     </div>
 </div>
 
+<!-- Modal Edit -->
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; align-items:center; justify-content:center;">
-    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:360px; border:1px solid #bc13fe;">
+    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #bc13fe;">
         <h3 style="color:white;">Edit Member</h3>
-        <label>Username</label>
+        <label>Username/ID</label>
         <input type="text" id="editUser" readonly style="background:#1e2a3a;">
         <label>Key</label>
         <input type="text" id="editKey">
         <label id="editPassLabel" style="display:none;">Password</label>
         <input type="text" id="editPass" style="display:none;">
-        <label>Expired</label>
+        <label id="editTierLabel" style="display:none;">Tier</label>
+        <select id="editTier" style="display:none;">
+            <option>Basic</option><option>Ultra</option><option>Vixo</option><option>Delta</option>
+            <option>Sonic</option><option>Lunar</option><option>Athena</option><option>Privet</option>
+        </select>
+        <label>Expired Date</label>
         <input type="date" id="editExp">
         <label>Device Limit</label>
         <select id="editLimit">
@@ -246,13 +281,19 @@
 
 <script>
     (function(){
-        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
-        // logout
+        // ========== CEK LOGIN ==========
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+            return;
+        }
         document.getElementById('logoutBtn').onclick = () => {
             localStorage.removeItem('admin_logged_in');
             window.location.href = 'login.html';
         };
-        // tabs
+
+        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+        
+        // ========== TAB SWITCHING ==========
         const tabs = document.querySelectorAll('.tab-btn');
         const panes = {
             module: document.getElementById('module-pane'),
@@ -271,10 +312,16 @@
         tabs.forEach(btn => btn.onclick = () => setActiveTab(btn.getAttribute('data-tab')));
         setActiveTab('module');
 
-        const limitSelect = document.getElementById('apkLimitSelect');
-        const customContainer = document.getElementById('customLimitContainer');
-        limitSelect.onchange = () => customContainer.style.display = limitSelect.value === 'custom' ? 'block' : 'none';
-        customContainer.style.display = 'none';
+        // ========== CUSTOM LIMIT HANDLERS ==========
+        const modLimitSelect = document.getElementById('modLimitSelect');
+        const modCustom = document.getElementById('modCustomContainer');
+        modLimitSelect.onchange = () => modCustom.style.display = modLimitSelect.value === 'custom' ? 'block' : 'none';
+        modCustom.style.display = 'none';
+
+        const apkLimitSelect = document.getElementById('apkLimitSelect');
+        const apkCustom = document.getElementById('apkCustomContainer');
+        apkLimitSelect.onchange = () => apkCustom.style.display = apkLimitSelect.value === 'custom' ? 'block' : 'none';
+        apkCustom.style.display = 'none';
 
         function showResult(divId, msg) {
             const div = document.getElementById(divId);
@@ -283,117 +330,130 @@
             setTimeout(() => div.innerHTML = '', 4000);
         }
 
+        // ========== GENERATE MODULE ==========
         document.getElementById('genModuleBtn').onclick = async () => {
             const id = document.getElementById('modId').value.trim();
             const exp = document.getElementById('modExp').value;
-            const limit = document.getElementById('modLimit').value;
+            let limit = parseInt(modLimitSelect.value);
+            if (modLimitSelect.value === 'custom') {
+                let custom = parseInt(document.getElementById('modCustomLimit').value);
+                if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                limit = custom;
+            }
             if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
             const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, expired: exp, device_limit: parseInt(limit), status: "active" };
-            await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            showResult('modResult', `✅ DONE! KEY: ${key}`);
-            if (panes.members.classList.contains('active')) loadMembers();
+            const data = { key, expired: exp, device_limit: limit, status: "active" };
+            try {
+                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('modResult', `✅ DONE! KEY: ${key}`);
+                if (panes.members.classList.contains('active')) loadMembers();
+            } catch(e) { alert('Database error!'); }
         };
 
+        // ========== GENERATE APK ==========
         document.getElementById('genApkBtn').onclick = async () => {
             const username = document.getElementById('apkUser').value.trim();
             let password = document.getElementById('apkPass').value.trim();
             const exp = document.getElementById('apkExp').value;
-            let limit = parseInt(limitSelect.value);
-            if (limitSelect.value === 'custom') {
-                let custom = parseInt(document.getElementById('customLimit').value);
+            const tier = document.getElementById('apkTier').value;
+            let limit = parseInt(apkLimitSelect.value);
+            if (apkLimitSelect.value === 'custom') {
+                let custom = parseInt(document.getElementById('apkCustomLimit').value);
                 if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
                 limit = custom;
             }
-            if (!username || !exp) { alert('Isi Username dan Expired'); return; }
+            if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
             if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
             const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, password, expired: exp, device_limit: limit, devices: {}, status: "active" };
-            await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>📱 LIMIT: ${limit}`);
-            if (panes.members.classList.contains('active')) loadMembers();
+            const data = { key, password, expired: exp, device_limit: limit, tier, devices: {}, status: "active" };
+            try {
+                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>🎚️ TIER: ${tier}<br>📱 LIMIT: ${limit}`);
+                if (panes.members.classList.contains('active')) loadMembers();
+            } catch(e) { alert('Database error!'); }
         };
 
+        // ========== LOAD MEMBERS (LENGKAP) ==========
         async function loadMembers() {
             const listDiv = document.getElementById('memberList');
-            listDiv.innerHTML = 'Loading...';
-            const res = await fetch(`${DB_URL}.json`);
-            const data = await res.json();
-            listDiv.innerHTML = '';
-            let hasData = false;
-            if (data.users) for (let id in data.users) {
-                hasData = true;
-                const obj = data.users[id];
-                const card = document.createElement('div');
-                card.className = 'member-card';
-                card.innerHTML = `<div class="member-info"><b>${escapeHtml(id)} (MODULE)</b><br>🔑 KEY: ${escapeHtml(obj.key)}<br>📅 EXP: ${escapeHtml(obj.expired)} | 📱 LIMIT: ${escapeHtml(obj.device_limit)}</div>
-                <div class="member-actions"><i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i><i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i></div>`;
-                listDiv.appendChild(card);
-            }
-            if (data.apk_access) for (let id in data.apk_access) {
-                hasData = true;
-                const obj = data.apk_access[id];
-                let devHtml = '<div class="device-list"><strong>📱 Devices:</strong>';
-                if (obj.devices) for (let d in obj.devices) devHtml += `<div class="device-item"><span>${escapeHtml(d)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(d)}">🗑️</span></div>`;
-                else devHtml += '<div><em>No devices</em></div>';
-                devHtml += '</div>';
-                const card = document.createElement('div');
-                card.className = 'member-card';
-                card.innerHTML = `<div class="member-info"><b>${escapeHtml(id)} (APK)</b><br>🔑 KEY: ${escapeHtml(obj.key)}<br>${obj.password?`🔒 PASS: ${escapeHtml(obj.password)}<br>`:''}📅 EXP: ${escapeHtml(obj.expired)} | 📱 LIMIT: ${escapeHtml(obj.device_limit)}</div>${devHtml}
-                <div class="member-actions"><i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i><i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i></div>`;
-                listDiv.appendChild(card);
-            }
-            if (!hasData) listDiv.innerHTML = '<div style="color:#aaa;">No data</div>';
-            document.querySelectorAll('.del-device').forEach(el => el.onclick = async (e) => {
-                e.stopPropagation();
-                const key = el.getAttribute('data-key'), device = el.getAttribute('data-device');
-                if (confirm(`Hapus device ${device}?`)) await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
-                loadMembers();
-            });
-            document.querySelectorAll('[data-edit]').forEach(el => el.onclick = () => openEdit(el.getAttribute('data-type'), el.getAttribute('data-id')));
-            document.querySelectorAll('[data-del]').forEach(el => el.onclick = async () => {
-                if (confirm('Hapus member?')) await fetch(`${DB_URL}${el.getAttribute('data-type')}/${el.getAttribute('data-id')}.json`, { method: 'DELETE' });
-                loadMembers();
-            });
-        }
+            listDiv.innerHTML = '<div style="color:white;">Loading...</div>';
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                listDiv.innerHTML = '';
+                let hasAny = false;
 
-        let currentEditType, currentEditId;
-        async function openEdit(type, id) {
-            currentEditType = type; currentEditId = id;
-            const res = await fetch(`${DB_URL}${type}/${id}.json`);
-            const data = await res.json();
-            if (!data) return;
-            document.getElementById('editUser').value = id;
-            document.getElementById('editKey').value = data.key || '';
-            document.getElementById('editExp').value = data.expired || '';
-            document.getElementById('editLimit').value = data.device_limit || 1;
-            const isApk = (type === 'apk_access');
-            document.getElementById('editPassLabel').style.display = isApk ? 'block' : 'none';
-            document.getElementById('editPass').style.display = isApk ? 'block' : 'none';
-            if (isApk) document.getElementById('editPass').value = data.password || '';
-            document.getElementById('editModal').style.display = 'flex';
-        }
-        document.getElementById('saveEditBtn').onclick = async () => {
-            const newKey = document.getElementById('editKey').value;
-            const newExp = document.getElementById('editExp').value;
-            const newLimit = parseInt(document.getElementById('editLimit').value);
-            const newPass = document.getElementById('editPass').value;
-            const update = { key: newKey, expired: newExp, device_limit: newLimit, status: 'active' };
-            if (currentEditType === 'apk_access' && newPass) update.password = newPass;
-            if (currentEditType === 'apk_access') {
-                const existing = await fetch(`${DB_URL}${currentEditType}/${currentEditId}.json`);
-                const exData = await existing.json();
-                if (exData && exData.devices) update.devices = exData.devices;
-            }
-            await fetch(`${DB_URL}${currentEditType}/${currentEditId}.json`, { method: 'PUT', body: JSON.stringify(update) });
-            document.getElementById('editModal').style.display = 'none';
-            loadMembers();
-        };
-        document.getElementById('closeModalBtn').onclick = () => document.getElementById('editModal').style.display = 'none';
-        document.getElementById('refreshMembersBtn').onclick = loadMembers;
+                // MODULE / users
+                if (data.users && typeof data.users === 'object') {
+                    for (let id in data.users) {
+                        hasAny = true;
+                        const obj = data.users[id];
+                        const card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML = `
+                            <div class="member-info">
+                                <b>🔷 ${escapeHtml(id)} (MODULE)</b><br>
+                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
+                            </div>
+                            <div class="member-actions">
+                                <i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i>
+                                <i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i>
+                            </div>
+                        `;
+                        listDiv.appendChild(card);
+                    }
+                }
 
-        function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
-    })();
-</script>
-</body>
-</html>
+                // APK access
+                if (data.apk_access && typeof data.apk_access === 'object') {
+                    for (let id in data.apk_access) {
+                        hasAny = true;
+                        const obj = data.apk_access[id];
+                        let devicesHtml = '<div class="device-list"><strong>📱 Registered devices:</strong>';
+                        if (obj.devices && Object.keys(obj.devices).length) {
+                            for (let dev in obj.devices) {
+                                devicesHtml += `<div class="device-item"><span>${escapeHtml(dev)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(dev)}">🗑️</span></div>`;
+                            }
+                        } else {
+                            devicesHtml += '<div><em>No devices</em></div>';
+                        }
+                        devicesHtml += '</div>';
+                        const card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML = `
+                            <div class="member-info">
+                                <b>📱 ${escapeHtml(id)} (APK)</b>
+                                <span class="tier-badge">${escapeHtml(obj.tier || 'Basic')}</span><br>
+                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
+                                ${obj.password ? `🔒 PASS: ${escapeHtml(obj.password)}<br>` : ''}
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
+                            </div>
+                            ${devicesHtml}
+                            <div class="member-actions">
+                                <i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i>
+                                <i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i>
+                            </div>
+                        `;
+                        listDiv.appendChild(card);
+                    }
+                }
+
+                if (!hasAny) listDiv.innerHTML = '<div style="color:#aaa;">No members found</div>';
+
+                // Delete device events
+                document.querySelectorAll('.del-device').forEach(el => {
+                    el.onclick = async (e) => {
+                        e.stopPropagation();
+                        const key = el.getAttribute('data-key');
+                        const device = el.getAttribute('data-device');
+                        if (confirm(`Hapus device ${device} dari ${key}?`)) {
+                            await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
+                            loadMembers();
+                        }
+                    };
+                });
+                // Edit & Delete member events
+                document.querySelectorAll('[data-edit]').forEach(el => {
+                    el.oncli
