@@ -3,37 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - CLEAN VERSION</title>
+    <title>XK TEAM CLOUD - GAROU VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
+            /* Variabel Warna Solid untuk Tier */
             --t-basic: #a1a1aa;
-            --t-ultra: #06b6d4;
-            --t-vixo: #10b981;
-            --t-delta: #f97316;
-            --t-sonic: #eab308;
-            --t-lunar: #f8fafc;
-            --t-athena: #ef4444;
-            --t-private: #f59e0b;
+            --t-ultra: #00e5ff;
+            --t-vixo: #00e676;
+            --t-delta: #ff6d00;
+            --t-sonic: #ffd600;
+            --t-lunar: #ffffff;
+            --t-athena: #ff1744;
+            --t-private: #ffab00;
         }
         
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            background-color: #0c0416;
+            /* BACKGROUND GAROU KEMBALI AKTIF */
+            background-image: url('garou.png'); 
+            background-size: cover; background-position: center;
+            background-attachment: fixed; background-color: #0c0416;
         }
 
+        /* Lapisan redup background agar teks form mudah dibaca */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.45); z-index: 1; pointer-events: none;
+        }
+
+        /* Wadah Utama dibikin border neon statis (Anti-Block Klik) */
         .main-box {
             width: 92%; max-width: 420px;
-            background: rgba(20, 10, 35, 0.9);
+            background: rgba(15, 6, 28, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 2px solid var(--accent-purple);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
             box-sizing: border-box;
+            position: relative; z-index: 10;
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
@@ -47,9 +61,9 @@
         .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; }
         .tab-btn {
             flex: 1; padding: 12px 0; border: 1px solid var(--accent-purple);
-            background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 8px;
+            background: rgba(0, 0, 0, 0.75); color: #fff; border-radius: 8px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9.5px;
-            transition: 0.2s;
+            transition: 0.2s; -webkit-tap-highlight-color: transparent;
         }
         .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
 
@@ -84,19 +98,20 @@
         .b-mod { color: #38bdf8; text-shadow: 0 0 3px rgba(56,189,248,0.4); } 
         .b-apk { color: #f43f5e; text-shadow: 0 0 3px rgba(244,63,94,0.4); }
         
+        /* FIX TOTAL: Ditambahkan color solid + border warna per tier agar menyala kontras */
         .badge-tier { 
-            font-size: 7.5px; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; 
-            font-weight: 700; font-family: 'Orbitron'; margin-left: 5px; text-transform: uppercase; 
-            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.4);
+            font-size: 7.5px; padding: 2px 7px; border-radius: 10px; border: 1px solid currentColor; 
+            font-weight: 700; font-family: 'Orbitron'; margin-left: 6px; text-transform: uppercase; 
+            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.5);
         }
-        .t-basic { color: var(--t-basic); text-shadow: 0 0 4px var(--t-basic); } 
-        .t-ultra { color: var(--t-ultra); text-shadow: 0 0 4px var(--t-ultra); } 
-        .t-vixo { color: var(--t-vixo); text-shadow: 0 0 4px var(--t-vixo); } 
-        .t-delta { color: var(--t-delta); text-shadow: 0 0 4px var(--t-delta); } 
-        .t-sonic { color: var(--t-sonic); text-shadow: 0 0 4px var(--t-sonic); } 
-        .t-lunar { color: var(--t-lunar); text-shadow: 0 0 4px var(--t-lunar); } 
-        .t-athena { color: var(--t-athena); text-shadow: 0 0 4px var(--t-athena); } 
-        .t-private { color: var(--t-private); text-shadow: 0 0 4px var(--t-private); }
+        .t-basic { color: var(--t-basic) !important; text-shadow: 0 0 5px var(--t-basic); } 
+        .t-ultra { color: var(--t-ultra) !important; text-shadow: 0 0 5px var(--t-ultra); } 
+        .t-vixo { color: var(--t-vixo) !important; text-shadow: 0 0 5px var(--t-vixo); } 
+        .t-delta { color: var(--t-delta) !important; text-shadow: 0 0 5px var(--t-delta); } 
+        .t-sonic { color: var(--t-sonic) !important; text-shadow: 0 0 5px var(--t-sonic); } 
+        .t-lunar { color: var(--t-lunar) !important; text-shadow: 0 0 5px var(--t-lunar); } 
+        .t-athena { color: var(--t-athena) !important; text-shadow: 0 0 5px var(--t-athena); } 
+        .t-private { color: var(--t-private) !important; text-shadow: 0 0 5px var(--t-private); }
 
         .action-controls { display: none; gap: 12px; }
         .member-card.selected .action-controls { display: flex; }
@@ -398,20 +413,4 @@
             key: document.getElementById('editKey').value.trim(),
             expired: document.getElementById('editExp').value,
             device_limit: document.getElementById('editLimit').value,
-            status: "active"
-        };
-
-        if (type === 'apk_access') {
-            data.password = document.getElementById('editPass').value.trim();
-            data.tier = document.getElementById('editTier').value;
-        }
-
-        try {
-            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            closeModal();
-            loadMembers();
-        } catch(e) { alert("Gagal menyimpan perubahan!"); }
-    }
-</script>
-</body>
-</html>
+    
