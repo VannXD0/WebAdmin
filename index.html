@@ -29,6 +29,8 @@
             padding: 20px;
             border: 1px solid #bc13fe;
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+            position: relative;
+            z-index: 10;
         }
         .header {
             display: flex;
@@ -53,6 +55,11 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 0.7rem;
+            transition: 0.2s;
+            z-index: 20;
+        }
+        .logout-btn:hover {
+            background: #cc0000;
         }
         .tabs {
             display: flex;
@@ -72,6 +79,7 @@
             font-family: 'Orbitron';
             font-size: 0.8rem;
             transition: 0.2s;
+            z-index: 20;
         }
         .tab-btn.active {
             background: #bc13fe;
@@ -115,6 +123,10 @@
             color: white;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
+        }
+        .gen-btn:hover {
+            opacity: 0.9;
         }
         .member-card {
             background: rgba(0,0,0,0.7);
@@ -181,7 +193,7 @@
         <button class="logout-btn" id="logoutBtn">LOGOUT</button>
     </div>
     <div class="tabs">
-        <div class="tab-btn" data-tab="module">MODULE</div>
+        <div class="tab-btn active" data-tab="module">MODULE</div>
         <div class="tab-btn" data-tab="apk">APK</div>
         <div class="tab-btn" data-tab="members">MEMBERS</div>
     </div>
@@ -253,7 +265,7 @@
 </div>
 
 <!-- MODAL EDIT -->
-<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; align-items:center; justify-content:center;">
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1001; align-items:center; justify-content:center;">
     <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #bc13fe;">
         <h3 style="color:white;">Edit Member</h3>
         <label>Username / ID</label>
@@ -288,10 +300,16 @@
             window.location.href = 'login.html';
             return;
         }
-        document.getElementById('logoutBtn').onclick = () => {
-            localStorage.removeItem('admin_logged_in');
-            window.location.href = 'login.html';
-        };
+
+        // Logout
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.onclick = function(e) {
+                e.preventDefault();
+                localStorage.removeItem('admin_logged_in');
+                window.location.href = 'login.html';
+            };
+        }
 
         const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
@@ -302,82 +320,118 @@
             apk: document.getElementById('apk-pane'),
             members: document.getElementById('members-pane')
         };
-        function setActiveTab(tabId) {
-            Object.values(panes).forEach(p => p.classList.remove('active'));
-            panes[tabId].classList.add('active');
-            tabs.forEach(btn => {
-                if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-            if (tabId === 'members') loadMembers();
-        }
-        tabs.forEach(btn => btn.onclick = () => setActiveTab(btn.getAttribute('data-tab')));
-        // default active module
-        setActiveTab('module');
 
-        // Custom limit logic
+        function setActiveTab(tabId) {
+            // Nonaktifkan semua pane
+            Object.values(panes).forEach(pane => {
+                if (pane) pane.classList.remove('active');
+            });
+            // Aktifkan pane yang dipilih
+            const activePane = panes[tabId];
+            if (activePane) activePane.classList.add('active');
+            // Update class tombol tab
+            tabs.forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            if (tabId === 'members') {
+                loadMembers();
+            }
+        }
+
+        // Pasang event listener untuk setiap tab
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tabId = this.getAttribute('data-tab');
+                if (tabId) setActiveTab(tabId);
+            });
+        });
+
+        // ========== CUSTOM LIMIT HANDLERS ==========
         const modLimitSelect = document.getElementById('modLimitSelect');
         const modCustom = document.getElementById('modCustomContainer');
-        modLimitSelect.onchange = () => modCustom.style.display = modLimitSelect.value === 'custom' ? 'block' : 'none';
-        modCustom.style.display = 'none';
+        if (modLimitSelect) {
+            modLimitSelect.addEventListener('change', function() {
+                modCustom.style.display = this.value === 'custom' ? 'block' : 'none';
+            });
+            modCustom.style.display = 'none';
+        }
+
         const apkLimitSelect = document.getElementById('apkLimitSelect');
         const apkCustom = document.getElementById('apkCustomContainer');
-        apkLimitSelect.onchange = () => apkCustom.style.display = apkLimitSelect.value === 'custom' ? 'block' : 'none';
-        apkCustom.style.display = 'none';
+        if (apkLimitSelect) {
+            apkLimitSelect.addEventListener('change', function() {
+                apkCustom.style.display = this.value === 'custom' ? 'block' : 'none';
+            });
+            apkCustom.style.display = 'none';
+        }
 
         function showResult(divId, msg) {
             const div = document.getElementById(divId);
-            div.innerHTML = msg;
-            div.style.display = 'block';
-            setTimeout(() => div.innerHTML = '', 4000);
+            if (div) {
+                div.innerHTML = msg;
+                div.style.display = 'block';
+                setTimeout(() => div.innerHTML = '', 4000);
+            }
         }
 
         // ========== GENERATE MODULE ==========
-        document.getElementById('genModuleBtn').onclick = async () => {
-            const id = document.getElementById('modId').value.trim();
-            const exp = document.getElementById('modExp').value;
-            let limit = parseInt(modLimitSelect.value);
-            if (modLimitSelect.value === 'custom') {
-                let custom = parseInt(document.getElementById('modCustomLimit').value);
-                if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
-                limit = custom;
-            }
-            if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
-            const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, expired: exp, device_limit: limit, status: "active" };
-            try {
-                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('modResult', `✅ DONE! KEY: ${key}`);
-                if (panes.members.classList.contains('active')) loadMembers();
-            } catch(e) { alert('Database error!'); }
-        };
+        const genModuleBtn = document.getElementById('genModuleBtn');
+        if (genModuleBtn) {
+            genModuleBtn.onclick = async () => {
+                const id = document.getElementById('modId').value.trim();
+                const exp = document.getElementById('modExp').value;
+                let limit = parseInt(modLimitSelect.value);
+                if (modLimitSelect.value === 'custom') {
+                    let custom = parseInt(document.getElementById('modCustomLimit').value);
+                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                    limit = custom;
+                }
+                if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
+                const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+                const data = { key, expired: exp, device_limit: limit, status: "active" };
+                try {
+                    await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                    showResult('modResult', `✅ DONE! KEY: ${key}`);
+                    if (panes.members.classList.contains('active')) loadMembers();
+                } catch(e) { alert('Database error!'); }
+            };
+        }
 
         // ========== GENERATE APK ==========
-        document.getElementById('genApkBtn').onclick = async () => {
-            const username = document.getElementById('apkUser').value.trim();
-            let password = document.getElementById('apkPass').value.trim();
-            const exp = document.getElementById('apkExp').value;
-            const tier = document.getElementById('apkTier').value;
-            let limit = parseInt(apkLimitSelect.value);
-            if (apkLimitSelect.value === 'custom') {
-                let custom = parseInt(document.getElementById('apkCustomLimit').value);
-                if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
-                limit = custom;
-            }
-            if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
-            if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
-            const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            const data = { key, password, expired: exp, device_limit: limit, tier, devices: {}, status: "active" };
-            try {
-                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>🏷️ TIER: ${tier}<br>📱 LIMIT: ${limit}`);
-                if (panes.members.classList.contains('active')) loadMembers();
-            } catch(e) { alert('Database error!'); }
-        };
+        const genApkBtn = document.getElementById('genApkBtn');
+        if (genApkBtn) {
+            genApkBtn.onclick = async () => {
+                const username = document.getElementById('apkUser').value.trim();
+                let password = document.getElementById('apkPass').value.trim();
+                const exp = document.getElementById('apkExp').value;
+                const tier = document.getElementById('apkTier').value;
+                let limit = parseInt(apkLimitSelect.value);
+                if (apkLimitSelect.value === 'custom') {
+                    let custom = parseInt(document.getElementById('apkCustomLimit').value);
+                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                    limit = custom;
+                }
+                if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
+                if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+                const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+                const data = { key, password, expired: exp, device_limit: limit, tier, devices: {}, status: "active" };
+                try {
+                    await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                    showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>🏷️ TIER: ${tier}<br>📱 LIMIT: ${limit}`);
+                    if (panes.members.classList.contains('active')) loadMembers();
+                } catch(e) { alert('Database error!'); }
+            };
+        }
 
         // ========== LOAD MEMBERS ==========
         async function loadMembers() {
             const listDiv = document.getElementById('memberList');
+            if (!listDiv) return;
             listDiv.innerHTML = '<div style="color:white;">Loading members...</div>';
             try {
                 const res = await fetch(`${DB_URL}.json`);
@@ -427,31 +481,4 @@
                             <div class="member-info">
                                 <b>📱 ${escapeHtml(id)} (APK)</b> <span class="tier-badge">${escapeHtml(obj.tier || 'Basic')}</span><br>
                                 🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                ${obj.password ? `🔒 PASS: ${escapeHtml(obj.password)}<br>` : ''}
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
-                            </div>
-                            ${devicesHtml}
-                            <div class="member-actions">
-                                <i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i>
-                                <i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i>
-                            </div>
-                        `;
-                        listDiv.appendChild(card);
-                    }
-                }
-                if (!hasAny) listDiv.innerHTML = '<div style="color:#aaa;">No members found</div>';
-
-                // Delete device event
-                document.querySelectorAll('.del-device').forEach(el => {
-                    el.onclick = async (e) => {
-                        e.stopPropagation();
-                        const key = el.getAttribute('data-key');
-                        const device = el.getAttribute('data-device');
-                        if (confirm(`Hapus device ${device} dari akun ${key}?`)) {
-                            await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
-                            loadMembers();
-                        }
-                    };
-                });
-                // Edit & Delete member events
-                document.q
+                                ${obj.passw
