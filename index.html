@@ -8,49 +8,24 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-image: url('garou.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            background-color: #000;
+            background: #000000; /* Hitam polos dulu biar aman dari bug layout */
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            position: relative;
             overflow-x: hidden;
-        }
-        
-        /* FIX UTAMA: Background dipaksa paling belakang & tidak bisa menerima klik (tidak menghalangi) */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.18), transparent 60%),
-                        radial-gradient(circle at 80% 70%, rgba(106,13,173,0.12), transparent 50%);
-            pointer-events: none !important; /* Jari lewat menembus background */
-            animation: rotateBg 25s infinite linear;
-            z-index: -1 !important; /* Di bawah semua elemen */
-        }
-        @keyframes rotateBg {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         .admin-panel {
             max-width: 560px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(20, 20, 20, 0.9);
             border-radius: 2rem;
             padding: 1.5rem;
             border: 1px solid rgba(188,19,254,0.4);
             box-shadow: 0 0 35px rgba(188,19,254,0.25);
-            position: relative;
-            z-index: 999; /* Dipastikan berada di paling depan agar bisa diklik */
         }
 
         .header {
@@ -71,16 +46,14 @@
         
         .logout-btn {
             background: #ff4d4d; border: none; padding: 6px 16px; border-radius: 40px;
-            color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; transition: 0.2s;
-            position: relative; z-index: 1000;
+            color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem;
         }
-        .logout-btn:hover { background: #cc0000; transform: scale(0.96); }
 
-        .tabs { display: flex; gap: 12px; margin-bottom: 1.8rem; position: relative; z-index: 1000; }
+        .tabs { display: flex; gap: 12px; margin-bottom: 1.8rem; }
         .tab-btn {
             flex: 1; background: rgba(0,0,0,0.6); border: 1px solid rgba(188,19,254,0.5);
             padding: 11px 0; border-radius: 40px; color: #ddd; font-weight: bold;
-            text-align: center; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.2s;
+            text-align: center; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem;
         }
         .tab-btn.active {
             background: #bc13fe; color: white; box-shadow: 0 0 12px #bc13fe; border-color: #bc13fe;
@@ -95,18 +68,14 @@
             border: 1px solid rgba(188,19,254,0.5); border-radius: 30px; color: white;
             margin-top: 5px; outline: none; font-size: 0.85rem;
         }
-        input:focus, select:focus { border-color: #bc13fe; box-shadow: 0 0 8px rgba(188,19,254,0.5); }
         .custom-limit-container { display: none; margin-top: 5px; }
 
         .gen-btn {
             width: 100%; margin-top: 25px; background: linear-gradient(95deg, #6a0dad, #bc13fe);
             border: none; padding: 12px; border-radius: 40px; color: white;
-            font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem;
-            box-shadow: 0 4px 15px rgba(188,19,254,0.3);
+            font-weight: bold; cursor: pointer; font-size: 0.9rem;
         }
-        .gen-btn:hover { background: linear-gradient(95deg, #7c0dbf, #d43dff); transform: scale(0.98); }
 
-        /* List Member CSS Murni */
         .member-card {
             background: rgba(0,0,0,0.65); border: 1px solid rgba(188,19,254,0.3);
             border-radius: 16px; padding: 14px; margin-bottom: 12px;
@@ -119,27 +88,19 @@
         .type-mod { color: #38bdf8; }
         .type-apk { color: #f43f5e; }
 
-        /* Warna Neon Eksklusif Tiap Tier APK */
         .tier-badge {
             padding: 2px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold;
             margin-left: 6px; text-transform: uppercase; border: 1px solid currentColor;
             background: rgba(0,0,0,0.4); display: inline-block;
         }
-        .tier-basic { color: #a1a1aa; text-shadow: 0 0 4px #a1a1aa; }
-        .tier-ultra { color: #06b6d4; text-shadow: 0 0 4px #06b6d4; }
-        .tier-vixo { color: #10b981; text-shadow: 0 0 4px #10b981; }
-        .tier-delta { color: #f97316; text-shadow: 0 0 4px #f97316; }
-        .tier-sonic { color: #eab308; text-shadow: 0 0 4px #eab308; }
-        .tier-lunar { color: #e2e8f0; text-shadow: 0 0 4px #e2e8f0; }
-        .tier-athena { color: #ef4444; text-shadow: 0 0 4px #ef4444; }
-        .tier-privet { color: #f59e0b; text-shadow: 0 0 4px #f59e0b; }
+        .tier-basic { color: #a1a1aa; } .tier-ultra { color: #06b6d4; }
+        .tier-vixo { color: #10b981; } .tier-delta { color: #f97316; }
+        .tier-sonic { color: #eab308; } .tier-lunar { color: #e2e8f0; }
+        .tier-athena { color: #ef4444; } .tier-privet { color: #f59e0b; }
 
-        /* Tombol Aksi Teks CSS Murni tanpa FontAwesome */
         .member-actions { display: flex; gap: 10px; font-weight: bold; font-size: 0.7rem; font-family: 'Orbitron'; }
         .action-edit { color: #facc15; cursor: pointer; padding: 4px 8px; border-radius: 4px; background: rgba(250,204,21,0.1); }
-        .action-edit:hover { background: #facc15; color: black; }
         .action-delete { color: #ff4d4d; cursor: pointer; padding: 4px 8px; border-radius: 4px; background: rgba(255,77,77,0.1); }
-        .action-delete:hover { background: #ff4d4d; color: white; }
         
         .result-msg { margin-top: 12px; color: #a3e635; font-size: 0.7rem; text-align: center; font-weight: bold; }
         .refresh-btn {
@@ -152,12 +113,13 @@
 <div class="admin-panel">
     <div class="header">
         <h1>XK TEAM ADMIN</h1>
-        <button class="logout-btn" id="logoutBtn">LOGOUT</button>
+        <button class="logout-btn" onclick="prosesLogout()">LOGOUT</button>
     </div>
+    
     <div class="tabs">
-        <button class="tab-btn active" data-tab="module">MODULE</button>
-        <button class="tab-btn" data-tab="apk">APK</button>
-        <button class="tab-btn" data-tab="members">MEMBERS</button>
+        <button class="tab-btn active" id="btn-tab-module" onclick="pindahTab('module')">MODULE</button>
+        <button class="tab-btn" id="btn-tab-apk" onclick="pindahTab('apk')">APK</button>
+        <button class="tab-btn" id="btn-tab-members" onclick="pindahTab('members')">MEMBERS</button>
     </div>
 
     <div id="module-pane" class="content-pane active">
@@ -166,7 +128,7 @@
         <label>EXPIRED DATE</label>
         <input type="date" id="modExp">
         <label>DEVICE LIMIT</label>
-        <select id="modLimitSelect">
+        <select id="modLimitSelect" onchange="cekCustomLimit('mod')">
             <option value="1">1 DEVICE</option>
             <option value="2">2 DEVICE</option>
             <option value="3">3 DEVICE</option>
@@ -178,7 +140,7 @@
             <label>Custom Device Limit</label>
             <input type="number" id="modCustomLimit" min="1" max="999" value="1">
         </div>
-        <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
+        <button class="gen-btn" onclick="aksiGenModule()">GENERATE MODULE</button>
         <div id="modResult" class="result-msg"></div>
     </div>
 
@@ -199,7 +161,7 @@
             <option value="privet">Athena Privet</option>
         </select>
         <label>DEVICE LIMIT</label>
-        <select id="apkLimitSelect">
+        <select id="apkLimitSelect" onchange="cekCustomLimit('apk')">
             <option value="1">1 DEVICE</option>
             <option value="2">2 DEVICE</option>
             <option value="3">3 DEVICE</option>
@@ -213,18 +175,18 @@
         </div>
         <label>EXPIRED DATE</label>
         <input type="date" id="apkExp">
-        <button class="gen-btn" id="genApkBtn">ADD APK ACCESS</button>
+        <button class="gen-btn" onclick="aksiGenApk()">ADD APK ACCESS</button>
         <div id="apkResult" class="result-msg"></div>
     </div>
 
     <div id="members-pane" class="content-pane">
-        <button class="refresh-btn" id="refreshMembersBtn">REFRESH MEMBERS</button>
-        <div id="memberList">Loading members...</div>
+        <button class="refresh-btn" onclick="loadMembers()">REFRESH MEMBERS</button>
+        <div id="memberList">Loading Database...</div>
     </div>
 </div>
 
-<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; backdrop-filter: blur(8px);">
-    <div style="background:rgba(15, 26, 47, 0.95); border-radius:24px; padding:25px; width:90%; max-width:400px; border:1px solid #bc13fe;">
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:rgb(20, 25, 35); border-radius:24px; padding:25px; width:90%; max-width:400px; border:1px solid #bc13fe;">
         <h3 style="color:white; font-family:'Orbitron'; font-size:1.1rem; margin-bottom:10px;" id="modalTitle">Edit Member</h3>
         <input type="hidden" id="editType">
         <label>Target ID / Username</label>
@@ -251,152 +213,213 @@
         <label>Device Limit</label>
         <input type="number" id="editLimit" min="1" max="999">
         <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:25px;">
-            <button id="saveEditBtn" style="background:linear-gradient(95deg, #6a0dad, #bc13fe); border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">SAVE</button>
-            <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">CANCEL</button>
+            <button onclick="simpanEditData()" style="background:linear-gradient(95deg, #6a0dad, #bc13fe); border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">SAVE</button>
+            <button onclick="tutupModalEdit()" style="background:#ff4d4d; border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">CANCEL</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Penyelamat darurat: Jika belum login, bypass paksa untuk testing lokal biar tidak lumpuh
-    if (localStorage.getItem('admin_logged_in') !== 'true') {
-        console.warn("Sesi kosong, mengaktifkan bypass testing lokal.");
-        localStorage.setItem('admin_logged_in', 'true'); 
+    // URL DATABASE FIREBASE
+    const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+    // 1. FUNGSI PERALIHAN TAB (LANGSUNG JALAN TANPA ADDEVENTLISTENER)
+    function pindahTab(namaTab) {
+        // Sembunyikan semua pane
+        document.getElementById('module-pane').classList.remove('active');
+        document.getElementById('apk-pane').classList.remove('active');
+        document.getElementById('members-pane').classList.remove('active');
+
+        // Hilangkan status aktif di semua tombol tab
+        document.getElementById('btn-tab-module').classList.remove('active');
+        document.getElementById('btn-tab-apk').classList.remove('active');
+        document.getElementById('btn-tab-members').classList.remove('active');
+
+        // Aktifkan yang dipilih
+        document.getElementById(namaTab + '-pane').classList.add('active');
+        document.getElementById('btn-tab-' + namaTab).classList.add('active');
+
+        if (namaTab === 'members') {
+            loadMembers();
+        }
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+    // 2. LOGOUT
+    function prosesLogout() {
+        localStorage.removeItem('admin_logged_in');
+        window.location.href = 'login.html';
+    }
 
-        // ========== LOGOUT ==========
-        document.getElementById('logoutBtn').onclick = function(e) {
-            e.preventDefault();
-            localStorage.removeItem('admin_logged_in');
-            window.location.href = 'login.html';
-        };
+    // 3. CEK DROPDOWN LIMIT CUSTOM
+    function cekCustomLimit(tipe) {
+        const selectEl = document.getElementById(tipe + 'LimitSelect');
+        const containerEl = document.getElementById(tipe + 'CustomContainer');
+        if (selectEl && containerEl) {
+            containerEl.style.display = (selectEl.value === 'custom') ? 'block' : 'none';
+        }
+    }
 
-        // ========== TAB NAVIGATION ==========
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const panes = {
-            module: document.getElementById('module-pane'),
-            apk: document.getElementById('apk-pane'),
-            members: document.getElementById('members-pane')
-        };
+    function cetakPesan(idEl, teks) {
+        const el = document.getElementById(idEl);
+        if (el) { el.innerHTML = teks; setTimeout(() => { el.innerHTML = ''; }, 4000); }
+    }
 
-        tabBtns.forEach(btn => {
-            btn.onclick = function(e) {
-                e.preventDefault();
-                const target = this.getAttribute('data-tab');
-                
-                tabBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+    function bersihkanTeks(str) {
+        if (!str) return '';
+        return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
 
-                Object.keys(panes).forEach(k => { if(panes[k]) panes[k].classList.remove('active'); });
-                if(panes[target]) panes[target].classList.add('active');
+    // 4. GENERATE MODULE DATA
+    async function aksiGenModule() {
+        const id = document.getElementById('modId').value.trim();
+        const exp = document.getElementById('modExp').value;
+        const selectVal = document.getElementById('modLimitSelect').value;
+        let limit = parseInt(selectVal);
+        
+        if (selectVal === 'custom') {
+            limit = parseInt(document.getElementById('modCustomLimit').value);
+        }
+        
+        if (!id || !exp || isNaN(limit)) { alert('Lengkapi data Device ID dan Expired Date!'); return; }
+        
+        const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+        try {
+            await fetch(`${DB_URL}users/${id}.json`, { 
+                method: 'PUT', 
+                body: JSON.stringify({ key, expired: exp, device_limit: limit, status: "active" }) 
+            });
+            cetakPesan('modResult', `✅ MODULE BERHASIL DIBUAT! KEY: ${key}`);
+            document.getElementById('modId').value = '';
+        } catch(e) { alert('Gagal menyambung ke Database!'); }
+    }
 
-                if (target === 'members') loadMembers();
-            };
-        });
+    // 5. GENERATE APK DATA
+    async function aksiGenApk() {
+        const username = document.getElementById('apkUser').value.trim();
+        let password = document.getElementById('apkPass').value.trim();
+        const exp = document.getElementById('apkExp').value;
+        const tier = document.getElementById('apkTier').value;
+        const selectVal = document.getElementById('apkLimitSelect').value;
+        let limit = parseInt(selectVal);
 
-        // ========== DYNAMIC CUSTOM DROPWDOWN LIMIT ==========
-        const modSelect = document.getElementById('modLimitSelect');
-        const modCustomDiv = document.getElementById('modCustomContainer');
-        modSelect.onchange = () => { modCustomDiv.style.display = modSelect.value === 'custom' ? 'block' : 'none'; };
-
-        const apkSelect = document.getElementById('apkLimitSelect');
-        const apkCustomDiv = document.getElementById('apkCustomContainer');
-        apkSelect.onchange = () => { apkCustomDiv.style.display = apkSelect.value === 'custom' ? 'block' : 'none'; };
-
-        function showResult(elId, msg) {
-            const el = document.getElementById(elId);
-            if (el) { el.innerHTML = msg; setTimeout(() => { el.innerHTML = ''; }, 4000); }
+        if (selectVal === 'custom') {
+            limit = parseInt(document.getElementById('apkCustomLimit').value);
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
+        if (!username || !exp || isNaN(limit)) { alert('Lengkapi data Username dan Expired!'); return; }
+        if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+        
+        const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+        try {
+            await fetch(`${DB_URL}apk_access/${username}.json`, { 
+                method: 'PUT', 
+                body: JSON.stringify({ key, password, expired: exp, device_limit: limit, tier, status: "active" }) 
+            });
+            cetakPesan('apkResult', `✅ APK BERHASIL DITAMBAH!<br>KEY: ${key}<br>PASS: ${password}`);
+            document.getElementById('apkUser').value = '';
+            document.getElementById('apkPass').value = '';
+        } catch(e) { alert('Gagal menyambung ke Database!'); }
+    }
 
-        // ========== SUBMIT: MODULE ==========
-        document.getElementById('genModuleBtn').onclick = async function() {
-            const id = document.getElementById('modId').value.trim();
-            const exp = document.getElementById('modExp').value;
-            let limit = parseInt(modSelect.value);
-            if (modSelect.value === 'custom') {
-                limit = parseInt(document.getElementById('modCustomLimit').value);
-            }
-            if (!id || !exp || isNaN(limit)) { alert('Isi Device ID dan Expired!'); return; }
-            const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            try {
-                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify({ key, expired: exp, device_limit: limit, status: "active" }) });
-                showResult('modResult', `✅ MODULE GENERATED: ${key}`);
-                document.getElementById('modId').value = '';
-            } catch(e) { alert('Database Error'); }
-        };
+    // 6. AMBIL DATA DARI FIREBASE DAN TAMPILKAN
+    async function loadMembers() {
+        const container = document.getElementById('memberList');
+        container.innerHTML = '<div style="color:white; text-align:center;">Memuat Database Firebase...</div>';
+        try {
+            const res = await fetch(`${DB_URL}.json`);
+            const data = await res.json();
+            container.innerHTML = '';
+            let adaData = false;
 
-        // ========== SUBMIT: APK ==========
-        document.getElementById('genApkBtn').onclick = async function() {
-            const username = document.getElementById('apkUser').value.trim();
-            let password = document.getElementById('apkPass').value.trim();
-            const exp = document.getElementById('apkExp').value;
-            const tier = document.getElementById('apkTier').value;
-            let limit = parseInt(apkSelect.value);
-            if (apkSelect.value === 'custom') {
-                limit = parseInt(document.getElementById('apkCustomLimit').value);
-            }
-            if (!username || !exp || isNaN(limit)) { alert('Isi Username dan Expired!'); return; }
-            if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
-            const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-            try {
-                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify({ key, password, expired: exp, device_limit: limit, tier, status: "active" }) });
-                showResult('apkResult', `✅ APK SUCCESS!<br>KEY: ${key}<br>PASS: ${password}`);
-                document.getElementById('apkUser').value = '';
-                document.getElementById('apkPass').value = '';
-            } catch(e) { alert('Database Error'); }
-        };
-
-        document.getElementById('refreshMembersBtn').onclick = loadMembers;
-
-        // ========== DATA: LOAD FETCH MEMBERS ==========
-        async function loadMembers() {
-            const container = document.getElementById('memberList');
-            container.innerHTML = '<div style="color:white; text-align:center;">Loading Database...</div>';
-            try {
-                const res = await fetch(`${DB_URL}.json`);
-                const data = await res.json();
-                container.innerHTML = '';
-                let found = false;
-
-                if (data && data.users) {
-                    for (let id in data.users) {
-                        found = true;
-                        const obj = data.users[id];
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <span class="type-badge type-mod">[MODULE]</span> <b>${escapeHtml(id)}</b><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
-                            </div>
-                            <div class="member-actions">
-                                <span class="action-edit" data-type="users" data-id="${id}">EDIT</span>
-                                <span class="action-delete" data-type="users" data-id="${id}">HAPUS</span>
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    }
+            // Render Group Module
+            if (data && data.users) {
+                for (let id in data.users) {
+                    adaData = true;
+                    const obj = data.users[id];
+                    const card = document.createElement('div');
+                    card.className = 'member-card';
+                    card.innerHTML = `
+                        <div class="member-info">
+                            <span class="type-badge type-mod">[MODULE]</span> <b>${bersihkanTeks(id)}</b><br>
+                            🔑 KEY: ${bersihkanTeks(obj.key || '-')}<br>
+                            📅 EXP: ${bersihkanTeks(obj.expired || '-')} | 📱 LIMIT: ${bersihkanTeks(obj.device_limit || '1')}
+                        </div>
+                        <div class="member-actions">
+                            <span class="action-edit" onclick="bukaModalEdit('users', '${id}')">EDIT</span>
+                            <span class="action-delete" onclick="hapusMember('users', '${id}')">HAPUS</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
                 }
+            }
 
-                if (data && data.apk_access) {
-                    for (let id in data.apk_access) {
-                        found = true;
-                        const obj = data.apk_access[id];
-                        const tName = obj.tier || 'basic';
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <span class="type-badge type-apk">[APK]</span> <b>${escapeHtml(id)}</b>
-                                <span class="tier-badge tier-${tName}">${tName}</span><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')} | 🔒 PASS: ${escapeHtml(obj.password || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit 
+            // Render Group APK
+            if (data && data.apk_access) {
+                for (let id in data.apk_access) {
+                    adaData = true;
+                    const obj = data.apk_access[id];
+                    const tName = obj.tier || 'basic';
+                    const card = document.createElement('div');
+                    card.className = 'member-card';
+                    card.innerHTML = `
+                        <div class="member-info">
+                            <span class="type-badge type-apk">[APK]</span> <b>${bersihkanTeks(id)}</b>
+                            <span class="tier-badge tier-${tName}">${tName}</span><br>
+                            🔑 KEY: ${bersihkanTeks(obj.key || '-')} | 🔒 PASS: ${bersihkanTeks(obj.password || '-')}<br>
+                            📅 EXP: ${bersihkanTeks(obj.expired || '-')} | 📱 LIMIT: ${bersihkanTeks(obj.device_limit || '1')}
+                        </div>
+                        <div class="member-actions">
+                            <span class="action-edit" onclick="bukaModalEdit('apk_access', '${id}')">EDIT</span>
+                            <span class="action-delete" onclick="hapusMember('apk_access', '${id}')">HAPUS</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            }
+
+            if (!adaData) container.innerHTML = '<div style="color:#aaa; text-align:center;">Database kosong atau belum ada member.</div>';
+            
+        } catch(e) { container.innerHTML = '<div style="color:#ff4d4d; text-align:center;">Gagal Terhubung ke Firebase API!</div>'; }
+    }
+
+    // 7. EDIT DATA MEMBER VIA MODAL
+    async function bukaModalEdit(type, id) {
+        try {
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const obj = await res.json();
+            if(!obj) return;
+
+            document.getElementById('editType').value = type;
+            document.getElementById('editUser').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+            
+            const apkFields = document.getElementById('apkEditFields');
+            if(type === 'apk_access') {
+                apkFields.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText = "Edit APK Access";
+            } else {
+                apkFields.style.display = 'none';
+                document.getElementById('modalTitle').innerText = "Edit Module Member";
+            }
+            document.getElementById('editModal').style.display = 'flex';
+        } catch(e) { alert('Gagal memuat detail data member!'); }
+    }
+
+    function tutupModalEdit() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    async function simpanEditData() {
+        const type = document.getElementById('editType').value;
+        const id = document.getElementById('editUser').value;
+        const key = document.getElementById('editKey').value.trim();
+        const expired = document.getElementById('editExp').value;
+        const device_limit = parseInt(document.getElementById('editLimit').value) || 1;
+        
+        let data = { key, expired, device_limit, status: "active" };
+        if (type === 'apk_access') {
+            da
