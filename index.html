@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM ADMIN CLOUD</title>
+    <title>XK TEAM ADMIN</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -30,7 +30,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.2), transparent 70%);
+            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.25), transparent 70%);
             pointer-events: none;
             animation: pulsePurple 5s infinite alternate;
             z-index: 0;
@@ -235,7 +235,7 @@
 <body>
 <div class="admin-panel">
     <div class="header">
-        <h1><i class="fas fa-cloud-upload-alt"></i> XK TEAM ADMIN CLOUD</h1>
+        <h1><i class="fas fa-shield-alt"></i> XK TEAM ADMIN</h1>
         <button class="logout-btn" id="logoutBtn">LOGOUT</button>
     </div>
     <div class="tabs">
@@ -244,7 +244,6 @@
         <div class="tab-btn" data-tab="members">MEMBERS</div>
     </div>
 
-    <!-- MODULE PANEL -->
     <div id="module-pane" class="content-pane active">
         <label>DEVICE ID</label>
         <input type="text" id="modId" placeholder="Android ID Buyer...">
@@ -267,7 +266,6 @@
         <div id="modResult" class="result-msg"></div>
     </div>
 
-    <!-- APK PANEL -->
     <div id="apk-pane" class="content-pane">
         <label>USERNAME APK</label>
         <input type="text" id="apkUser" placeholder="Buat Username...">
@@ -297,14 +295,12 @@
         <div id="apkResult" class="result-msg"></div>
     </div>
 
-    <!-- MEMBERS PANEL -->
     <div id="members-pane" class="content-pane">
         <button class="refresh-btn" id="refreshMembersBtn"><i class="fas fa-sync-alt"></i> Refresh Members</button>
         <div id="memberList">Loading members...</div>
     </div>
 </div>
 
-<!-- MODAL EDIT -->
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1001; align-items:center; justify-content:center;">
     <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #bc13fe;">
         <h3 style="color:white;">Edit Member</h3>
@@ -353,7 +349,7 @@
 
         const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-        // ========== TAB SWITCHING (PASTIKAN EVENT LISTENER TERPASANG) ==========
+        // ========== TAB SWITCHING ==========
         const tabBtns = document.querySelectorAll('.tab-btn');
         const panes = {
             module: document.getElementById('module-pane'),
@@ -394,7 +390,6 @@
             modSelect.addEventListener('change', () => {
                 modCustomDiv.style.display = modSelect.value === 'custom' ? 'block' : 'none';
             });
-            modCustomDiv.style.display = 'none';
         }
         const apkSelect = document.getElementById('apkLimitSelect');
         const apkCustomDiv = document.getElementById('apkCustomContainer');
@@ -402,7 +397,6 @@
             apkSelect.addEventListener('change', () => {
                 apkCustomDiv.style.display = apkSelect.value === 'custom' ? 'block' : 'none';
             });
-            apkCustomDiv.style.display = 'none';
         }
 
         function showResult(elId, msg) {
@@ -411,6 +405,11 @@
                 el.innerHTML = msg;
                 setTimeout(() => { if (el.innerHTML === msg) el.innerHTML = ''; }, 4000);
             }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.toString().replace(/&/g, "&amp;").replace(/</g, "<&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         // ========== GENERATE MODULE ==========
@@ -431,7 +430,7 @@
                 try {
                     await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
                     showResult('modResult', `✅ DONE! KEY: ${key}`);
-                    if (panes.members.classList.contains('active')) loadMembers();
+                    document.getElementById('modId').value = '';
                 } catch(e) { alert('Database error!'); }
             });
         }
@@ -453,13 +452,20 @@
                 if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
                 if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
                 const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-                const data = { key, password, expired: exp, device_limit: limit, tier, devices: {}, status: "active" };
+                const data = { key, password, expired: exp, device_limit: limit, tier, status: "active" };
                 try {
                     await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                    showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>🏷️ TIER: ${tier}<br>📱 LIMIT: ${limit}`);
-                    if (panes.members.classList.contains('active')) loadMembers();
+                    showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}`);
+                    document.getElementById('apkUser').value = '';
+                    document.getElementById('apkPass').value = '';
                 } catch(e) { alert('Database error!'); }
             });
+        }
+
+        // ========== REFRESH BUTTON ==========
+        const refreshBtn = document.getElementById('refreshMembersBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', loadMembers);
         }
 
         // ========== LOAD MEMBERS ==========
@@ -474,8 +480,8 @@
                 container.innerHTML = '';
                 let any = false;
 
-                // MODULE users
-                if (data.users && typeof data.users === 'object') {
+                // Render Data Users Module
+                if (data && data.users) {
                     for (let id in data.users) {
                         any = true;
                         const obj = data.users[id];
@@ -485,20 +491,20 @@
                             <div class="member-info">
                                 <b>🔧 ${escapeHtml(id)} (MODULE)</b><br>
                                 🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
-                            </div>
-                            <div class="member-actions">
-                                <i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i>
-                                <i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i>
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
                             </div>
                         `;
                         container.appendChild(card);
                     }
                 }
-                // APK access
-                if (data.apk_access && typeof data.apk_access === 'object') {
+
+                // Render Data APK Access
+                if (data && data.apk_access) {
                     for (let id in data.apk_access) {
                         any = true;
                         const obj = data.apk_access[id];
-                        let devicesHtml = '<div class="device-list"><strong>📱 Registered devices:</strong>';
- 
+                        const card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML = `
+                            <div class="member-info">
+                                <b>📱 ${escapeHtml(id)} (APK) <s
