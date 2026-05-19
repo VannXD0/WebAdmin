@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - FIXED SYNC</title>
+    <title>XK TEAM CLOUD - ULTIMATE FIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -50,10 +50,11 @@
             text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
         }
         
-        .logout-btn {
+        .logout-link {
             background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
             color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
-            text-decoration: none;
+            text-decoration: none; display: inline-block; text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .tab-menu { 
@@ -151,13 +152,13 @@
 
         <div class="header-area">
             <h2>XK TEAM CLOUD</h2>
-            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+            <a href="javascript:void(0);" class="logout-link" id="click-logout">LOGOUT</a>
         </div>
         
         <div class="tab-menu">
             <label for="tab1" class="tab-label label-mod">MODULE</label>
             <label for="tab2" class="tab-label label-apk">APK</label>
-            <label for="tab3" class="tab-label label-mem" onclick="loadMembers()">MEMBERS</label>
+            <label for="tab3" class="tab-label label-mem">MEMBERS</label>
         </div>
 
         <div id="module" class="form-section">
@@ -213,7 +214,7 @@
 
         <div id="members" class="form-section">
             <button onclick="loadMembers()" style="width: 100%; padding: 8px; background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; border-radius: 6px; font-family: 'Orbitron'; font-size: 9px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
-                <i class="fas fa-sync-alt"></i> REFRESH DATABASE
+                <i class="fas fa-sync-alt"></i> FORCE REFRESH DATA
             </button>
             <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
         </div>
@@ -261,15 +262,34 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
+    // EVENT LISTENER UTAMA (ANTI-GAGAAL)
+    document.addEventListener("DOMContentLoaded", () => {
+        // Otomatis load data ketika radio button 'tab3' (Members) diaktifkan
+        const tabMembersRadio = document.getElementById('tab3');
+        if(tabMembersRadio) {
+            tabMembersRadio.addEventListener('change', () => {
+                if(tabMembersRadio.checked) {
+                    loadMembers();
+                }
+            });
+        }
+
+        // Jalur pintas tombol logout murni lewat Event Listener
+        const btnLogout = document.getElementById('click-logout');
+        if(btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('admin_logged_in');
+                sessionStorage.clear();
+                window.location.replace('login.html');
+            });
+        }
+    });
+
     function toggleCustomLimit(type) {
         const selectVal = document.getElementById(type + 'Limit').value;
         const divBox = document.getElementById(type + 'CustomDiv');
         if(divBox) divBox.style.display = (selectVal === 'custom') ? 'block' : 'none';
-    }
-
-    function logout() {
-        localStorage.removeItem('admin_logged_in');
-        window.location.href = 'login.html';
     }
 
     async function generate(type) {
@@ -319,7 +339,6 @@
         } catch(e) { alert("Database Error!"); }
     }
 
-    // FIX TERBARU: Request data dipecah agar lolos dari aturan Rules bertingkat Firebase
     async function loadMembers() {
         const listDiv = document.getElementById('memberList');
         if(!listDiv) return;
@@ -329,7 +348,7 @@
         try {
             listDiv.innerHTML = '';
 
-            // 1. Ambil data dari path 'users'
+            // Ambil data dari path 'users'
             try {
                 const resUsers = await fetch(`${DB_URL}users.json`);
                 const dataUsers = await resUsers.json();
@@ -339,7 +358,7 @@
                 }
             } catch(e) { console.log("Gagal memuat folder users."); }
 
-            // 2. Ambil data dari path 'apk_access'
+            // Ambil data dari path 'apk_access'
             try {
                 const resApk = await fetch(`${DB_URL}apk_access.json`);
                 const dataApk = await resApk.json();
@@ -401,17 +420,4 @@
 
             document.getElementById('editType').value = type;
             document.getElementById('editTargetId').value = id;
-            document.getElementById('editKey').value = obj.key || '';
-            document.getElementById('editExp').value = obj.expired || '';
-            document.getElementById('editLimit').value = obj.device_limit || '1';
-
-            const apkOnlySection = document.getElementById('apkEditOnly');
-            if (type === 'apk_access') {
-                apkOnlySection.style.display = 'block';
-                document.getElementById('editPass').value = obj.password || '';
-                document.getElementById('editTier').value = obj.tier || 'basic';
-                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
-            } else {
-                apkOnlySection.style.display = 'none';
-                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
-  
+            document.getElementById('ed
