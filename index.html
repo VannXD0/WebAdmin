@@ -3,137 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XK TEAM - CLOUD MANAGEMENT PANEL</title>
+    <title>XK TEAM - PREMIUM CLOUD PANEL</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* ========================================================
+           GAYA DESAIN PREMIUM MEWAH (GODDATA INSPIRED STYLE)
+           ======================================================== */
         body {
-            background-color: #0b0f19;
+            background-color: #060913;
             color: #e2e8f0;
             font-family: 'Courier New', Courier, monospace;
+            background-image: radial-gradient(circle at 50% 50%, #0d1527 0%, #060913 100%);
+            background-attachment: fixed;
         }
+        
         .glass-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(243, 156, 18, 0.2);
+            background: rgba(10, 15, 30, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(243, 156, 18, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
-        /* Custom scrollbar biar makin rapih */
+
+        .glass-card-apk {
+            background: rgba(10, 15, 30, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glow-text-module {
+            text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+
+        .glow-text-apk {
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0b0f19;
+            background: #060913;
         }
         ::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 4px;
+        }
+        .apk-scroll::-webkit-scrollbar-thumb {
             background: #22c55e;
-            border-radius: 3px;
+        }
+
+        /* Input Styling */
+        input {
+            transition: all 0.25s ease-in-out;
+        }
+        input:focus {
+            box-shadow: 0 0 15px rgba(243, 156, 18, 0.2);
+        }
+        .apk-input:focus {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-8 min-h-screen">
 
-    <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-8 border-b border-yellow-600/30 pb-6">
-            <h1 class="text-3xl font-bold text-yellow-500 tracking-wider">XK TEAM MULTI-DEVICE CLOUD</h1>
-            <p class="text-xs text-gray-400 mt-1">DEVELOPER: Xyro Van Komalx | MODULE INTEGRATION</p>
+    <div class="max-w-7xl mx-auto">
+        
+        <div class="text-center mb-10 border-b border-gray-800 pb-6 relative">
+            <div class="absolute top-0 right-4 bg-red-900/30 border border-red-600/40 text-red-400 px-3 py-1 rounded text-xs font-bold animate-pulse">
+                🔴 CLOUD SERVER ACTIVE
+            </div>
+            <h1 class="text-4xl font-black text-yellow-500 tracking-widest glow-text-module">XK TEAM SYSTEM REALTIME CLOUD</h1>
+            <p class="text-sm text-gray-400 mt-2 tracking-wider">PREMIUM CONTROL INTERFACE | DEVELOPER: <span class="text-white font-bold">Xyro Van Komalx</span></p>
         </div>
 
-        <div class="glass-card rounded-xl p-6 mb-8 shadow-xl">
-            <h2 class="text-lg font-semibold text-yellow-500 mb-4 flex items-center gap-2">
-                <span>⚡</span> GENERATE KEY & AUTOMATIC DEVICE LIMIT
-            </h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">DEVICE LIMIT (KUOTA HP)</label>
-                    <input type="number" id="modLimit" placeholder="Contoh: 2" value="1" min="1"
-                        class="w-full bg-gray-900 border border-gray-700 rounded p-2.5 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500">
+            <div class="glass-card rounded-2xl p-6 border-t-4 border-t-yellow-500 transition duration-300 hover:border-t-yellow-400">
+                <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-3">
+                    <h2 class="text-xl font-bold text-yellow-500 flex items-center gap-2 tracking-wide glow-text-module">
+                        <span>⚡</span> PERFORMANCE MODULE CORE
+                    </h2>
+                    <span class="text-[10px] bg-yellow-950 text-yellow-400 border border-yellow-700/30 px-2 py-0.5 rounded font-bold">SERVER SIDE KEY</span>
                 </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">DEVICE LIMIT (KUOTA PERANGKAT MULTI-USER)</label>
+                        <input type="number" id="modLimit" placeholder="Contoh: 2 HP atau lebih" value="1" min="1"
+                            class="w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500 font-mono font-bold">
+                    </div>
 
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">EXPIRED DATE</label>
-                    <input type="date" id="modExp" 
-                        class="w-full bg-gray-900 border border-gray-700 rounded p-2.5 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500">
-                </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">EXPIRED DATE (TANGGAL KEDALUWARSA)</label>
+                        <input type="date" id="modExp" 
+                            class="w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500 font-mono">
+                    </div>
 
-                <div>
-                    <label class="block text-xs text-gray-400 mb-1">PASSWORD ACCOUNT (OPTIONAL)</label>
-                    <input type="text" id="modPass" placeholder="Kosongkan jika ingin acak" 
-                        class="w-full bg-gray-900 border border-gray-700 rounded p-2.5 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">PASSWORD ACCOUNT (OPSIONAL)</label>
+                        <input type="text" id="modPass" placeholder="Biarkan kosong jika ingin di-generate acak" 
+                            class="w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-yellow-400 focus:outline-none focus:border-yellow-500 font-mono">
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="generateKeyCloud('module')" 
+                            class="w-full bg-yellow-600 hover:bg-yellow-500 text-slate-950 font-black p-3.5 rounded-lg text-sm tracking-widest transition duration-200 transform active:scale-[0.99] shadow-lg shadow-yellow-600/10">
+                            🔥 GENERATE MODULE LICENSE KEY
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-6">
-                <button onclick="generateKeyCloud()" 
-                    class="w-full bg-yellow-600 hover:bg-yellow-500 text-gray-900 font-bold p-3 rounded text-sm tracking-widest transition duration-200 shadow-lg shadow-yellow-600/20">
-                    🔥 CREATE KEY & LOCK STATUS
-                </button>
+            <div class="glass-card-apk rounded-2xl p-6 border-t-4 border-t-green-500 transition duration-300 hover:border-t-green-400">
+                <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-3">
+                    <h2 class="text-xl font-bold text-green-500 flex items-center gap-2 tracking-wide glow-text-apk">
+                        <span>📲</span> PREMIUM INJECTOR APK CORE
+                    </h2>
+                    <span class="text-[10px] bg-green-950 text-green-400 border border-green-700/30 px-2 py-0.5 rounded font-bold">SERVER SIDE KEY</span>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">DEVICE LIMIT (KUOTA PERANGKAT MULTI-USER)</label>
+                        <input type="number" id="apkLimit" placeholder="Contoh: 1 HP atau lebih" value="1" min="1"
+                            class="apk-input w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-green-400 focus:outline-none focus:border-green-500 font-mono font-bold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">EXPIRED DATE (TANGGAL KEDALUWARSA)</label>
+                        <input type="date" id="apkExp" 
+                            class="apk-input w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-green-400 focus:outline-none focus:border-green-500 font-mono">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1 tracking-wider">PASSWORD ACCOUNT (OPSIONAL)</label>
+                        <input type="text" id="apkPass" placeholder="Biarkan kosong jika ingin di-generate acak" 
+                            class="apk-input w-full bg-slate-950 border border-gray-800 rounded-lg p-3 text-sm text-green-400 focus:outline-none focus:border-green-500 font-mono">
+                    </div>
+
+                    <div class="pt-2">
+                        <button onclick="generateKeyCloud('apk')" 
+                            class="w-full bg-green-600 hover:bg-green-500 text-slate-950 font-black p-3.5 rounded-lg text-sm tracking-widest transition duration-200 transform active:scale-[0.99] shadow-lg shadow-green-600/10">
+                            🚀 GENERATE INJECTOR APK LICENSE KEY
+                        </button>
+                    </div>
+                </div>
             </div>
+
         </div>
 
-        <div class="glass-card rounded-xl p-6 shadow-xl">
-            <h2 class="text-lg font-semibold text-yellow-500 mb-4 flex items-center gap-2">
-                <span>📁</span> CLOUD KEY DATABASE MONITORING
-            </h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs border-collapse">
-                    <thead>
-                        <tr class="border-b border-gray-800 text-gray-400 bg-gray-900/50">
-                            <th class="p-3">KEY LISENSI</th>
-                            <th class="p-3">LIMIT SLOT HP</th>
-                            <th class="p-3">LIST HP TERDAFTAR (ANDROID ID)</th>
-                            <th class="p-3">PASSWORD</th>
-                            <th class="p-3">EXPIRED DATE</th>
-                            <th class="p-3">STATUS ACCESS</th>
-                        </tr>
-                    </thead>
-                    <tbody id="keyTableBody">
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-gray-500">Memuat database dari Firebase...</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="space-y-8">
+            
+            <div class="glass-card rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
+                    <h3 class="text-lg font-bold text-yellow-500 flex items-center gap-2">
+                        <span>📁</span> PERFORMANCE MODULE CLOUD STORAGE DATABASE
+                    </h3>
+                    <button onclick="loadKeys('module')" class="text-xs text-yellow-400 bg-yellow-950/40 border border-yellow-800 px-3 py-1 rounded hover:bg-yellow-900/40 transition">🔄 Refresh</button>
+                </div>
+                <div class="overflow-x-auto max-h-72 overflow-y-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400 bg-slate-950/80 sticky top-0 z-10">
+                                <th class="p-3.5">KEY LISENSI</th>
+                                <th class="p-3.5">SLOT LIMIT PERANGKAT</th>
+                                <th class="p-3.5">LIST LOG HARDWARE PERANGKAT (ANDROID ID)</th>
+                                <th class="p-3.5">PASSWORD ACC</th>
+                                <th class="p-3.5">EXPIRED DATE</th>
+                                <th class="p-3.5">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moduleTableBody">
+                            <tr><td colspan="6" class="p-4 text-center text-gray-500">Menyambungkan ke database Firebase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <div class="glass-card-apk rounded-2xl p-6 shadow-2xl">
+                <div class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
+                    <h3 class="text-lg font-bold text-green-500 flex items-center gap-2">
+                        <span>📁</span> INJECTOR APK CLOUD STORAGE DATABASE
+                    </h3>
+                    <button onclick="loadKeys('apk')" class="text-xs text-green-400 bg-green-950/40 border border-green-800 px-3 py-1 rounded hover:bg-green-900/40 transition">🔄 Refresh</button>
+                </div>
+                <div class="overflow-x-auto max-h-72 overflow-y-auto apk-scroll">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-gray-400 bg-slate-950/80 sticky top-0 z-10">
+                                <th class="p-3.5">KEY LISENSI</th>
+                                <th class="p-3.5">SLOT LIMIT PERANGKAT</th>
+                                <th class="p-3.5">LIST LOG HARDWARE PERANGKAT (ANDROID ID)</th>
+                                <th class="p-3.5">PASSWORD ACC</th>
+                                <th class="p-3.5">EXPIRED DATE</th>
+                                <th class="p-3.5">STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apkTableBody">
+                            <tr><td colspan="6" class="p-4 text-center text-gray-500">Menyambungkan ke database Firebase...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
+
     </div>
 
     <script>
-        // URL Realtime Database Firebase Milik Tuan Vanx
+        // URL Realtime Database Firebase Utama Milik Tuan Vanx
         const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-        // 1. FUNGSI UTAMA GENERATE KEY OTOMATIS KE FIREBASE
-        async function generateKeyCloud() {
-            const limitInput = document.getElementById('modLimit').value;
-            const expInput = document.getElementById('modExp').value;
-            const passInput = document.getElementById('modPass').value.trim();
+        // 1. FUNGSI GENERATE MULTI-CORE (DAPAT MENCETAK XK- DAN APK-)
+        async function generateKeyCloud(type) {
+            // Deteksi penempatan input berdasarkan tipe form
+            const limitId = type === 'module' ? 'modLimit' : 'apkLimit';
+            const expId = type === 'module' ? 'modExp' : 'apkExp';
+            const passId = type === 'module' ? 'modPass' : 'apkPass';
 
-            // Validasi Input Wajib
+            const limitInput = document.getElementById(limitId).value;
+            const expInput = document.getElementById(expId).value;
+            const passInput = document.getElementById(passId).value.trim();
+
             if (!limitInput || !expInput) {
-                alert("❌ Kuota Limit Device dan Tanggal Expired wajib diisi!");
+                alert("❌ Kuota Slot Perangkat dan Tanggal Expired wajib diatur!");
                 return;
             }
 
-            // Membuat kode KEY otomatis acak berawalan XK (Contoh: XK-JARA3M)
-            const generatedKey = "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+            // Aturan prefix Key otomatis sesuai sistem Tuan Vanx
+            const prefix = type === 'module' ? 'XK-' : 'APK-';
+            const generatedKey = prefix + Math.random().toString(36).substring(2, 8).toUpperCase();
             
-            // Membuat password acak jika dikosongkan oleh Tuan
-            let finalPassword = passInput;
-            if (finalPassword === "") {
-                finalPassword = Math.random().toString(36).substring(2, 7).toUpperCase();
-            }
+            // Aturan password acak aman
+            let finalPassword = passInput || Math.random().toString(36).substring(2, 7).toUpperCase();
 
-            // STRUKTUR PAYLOAD JSON YANG OTOMATIS MENYETEL DATA
+            // Struktur Payload JSON Otomatis Baru untuk Auto Lock Multi Device ID
             const payload = {
-                device_limit: parseInt(limitInput).toString(), // Menyimpan kuota limit (Contoh: "1" atau "2")
-                expired: expInput,                             // Menyimpan tanggal expired
-                key: generatedKey,                             // Menyimpan kode key utama
-                password: finalPassword,                       // Menyimpan password
-                status: "active",                              // Otomatis langsung aktif
-                registered_devices: ""                         // Dikosongkan, untuk diisi otomatis oleh HP pembeli nanti
+                device_limit: parseInt(limitInput).toString(), // Set limit kuota
+                expired: expInput,                             // Tanggal Expired
+                key: generatedKey,                             // Kode Key Utama
+                password: finalPassword,                       // Sandi database
+                status: "active",                              // Status Akses langsung aktif
+                registered_devices: ""                         // Dikunci string kosong agar hardware mendaftar otomatis
             };
 
-            // Menyimpan data langsung di bawah folder KEY-nya (users/KEY_CODE)
-            const targetUrl = `${DB_URL}users/${generatedKey}.json`;
+            // Menentukan letak target penempatan node data di Firebase
+            // Module masuk ke node 'users', APK masuk ke node 'apk_access'
+            const dbNode = type === 'module' ? `users/${generatedKey}` : `apk_access/${generatedKey}`;
+            const targetUrl = `${DB_URL}${dbNode}.json`;
 
             try {
                 const response = await fetch(targetUrl, {
@@ -143,57 +265,65 @@
                 });
 
                 if (response.ok) {
-                    alert(`✨ KEY BERHASIL DICETAK & DISIMPAN! ✨\n\n🔑 KEY : ${generatedKey}\n👥 LIMIT: ${limitInput} Device\n🔒 PASS : ${finalPassword}`);
+                    alert(`✨ LISENSI ${type.toUpperCase()} SUKSES DICETAK! ✨\n\n🔑 KEY : ${generatedKey}\n👥 LIMIT: ${limitInput} Device\n🔒 PASS : ${finalPassword}`);
                     
-                    // Reset Form Input
-                    document.getElementById('modExp').value = '';
-                    document.getElementById('modPass').value = '';
+                    // Bersihkan form setelah cetak sukses
+                    document.getElementById(expId).value = '';
+                    document.getElementById(passId).value = '';
                     
-                    // Refresh data tabel monitoring
-                    loadKeys();
+                    // Muat ulang kedua tabel database
+                    loadKeys('module');
+                    loadKeys('apk');
                 } else {
-                    alert("❌ Gagal menyimpan data! Periksa Aturan (Rules) Firebase Tuan.");
+                    alert("❌ Gagal menyimpan data, silakan periksa Rules Read & Write di Firebase Console.");
                 }
             } catch (error) {
-                alert("❌ Terjadi kesalahan jaringan: " + error.message);
+                alert("❌ Kesalahan Jaringan Server: " + error.message);
             }
         }
 
-        // 2. FUNGSI UNTUK MEMBACA DATABASE & MENAMPILKAN KE TABEL MONITORING
-        async function loadKeys() {
-            const tableBody = document.getElementById('keyTableBody');
-            const fetchUrl = `${DB_URL}users.json`;
+        // 2. FUNGSI LOAD DATABASE SEPARASI DAN REALTIME
+        async function loadKeys(type) {
+            const tableBodyId = type === 'module' ? 'moduleTableBody' : 'apkTableBody';
+            const dbNode = type === 'module' ? 'users' : 'apk_access';
+            const tableBody = document.getElementById(tableBodyId);
+            
+            const fetchUrl = `${DB_URL}${dbNode}.json`;
 
             try {
                 const response = await fetch(fetchUrl);
                 const data = await response.json();
 
                 if (!data || data === 'null') {
-                    tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500">Belum ada key yang terdaftar di cloud.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-500 font-bold">Belum ada key aktif untuk ${type.toUpperCase()} di server.</td></tr>`;
                     return;
                 }
 
-                tableBody.innerHTML = ''; // Hapus pesan memuat data
+                tableBody.innerHTML = ''; // Reset loading state
 
-                // Lakukan looping membaca data per Key
+                // Mengurai data JSON per Key Code
                 Object.keys(data).forEach(keyId => {
                     const item = data[keyId];
                     
-                    // Hitung jumlah perangkat yang sudah terdaftar otomatis di key ini
+                    // Hitung jumlah hardware log terdaftar dinamis di database
                     const registeredList = item.registered_devices ? Object.keys(item.registered_devices).join(', ') : 'Belum ada HP login';
                     const usedCount = item.registered_devices ? Object.keys(item.registered_devices).length : 0;
                     
                     const row = document.createElement('tr');
-                    row.className = "border-b border-gray-800/60 hover:bg-gray-900/30 text-gray-300 transition";
+                    row.className = "border-b border-gray-800/60 hover:bg-slate-900/40 text-gray-300 transition";
                     
+                    // Desain warna teks dinamis untuk pembeda visual Module vs APK
+                    const keyColor = type === 'module' ? 'text-yellow-500' : 'text-green-500';
+                    const limitColor = type === 'module' ? 'text-blue-400' : 'text-cyan-400';
+
                     row.innerHTML = `
-                        <td class="p-3 font-bold text-yellow-500 font-mono">${keyId}</td>
-                        <td class="p-3 text-blue-400 font-bold">${usedCount} / ${item.device_limit || '1'}</td>
-                        <td class="p-3 text-xs text-gray-400 font-mono max-w-xs truncate" title="${registeredList}">${registeredList}</td>
-                        <td class="p-3 font-mono text-gray-400">${item.password || '-'}</td>
-                        <td class="p-3 text-red-400 font-bold">${item.expired || '-'}</td>
-                        <td class="p-3">
-                            <span class="px-2 py-0.5 rounded text-[10px] ${item.status === 'active' ? 'bg-green-900/50 text-green-400 border border-green-600/30' : 'bg-red-900/50 text-red-400 border border-red-600/30'}">
+                        <td class="p-3.5 font-bold ${keyColor} font-mono">${keyId}</td>
+                        <td class="p-3.5 ${limitColor} font-black">${usedCount} / ${item.device_limit || '1'}</td>
+                        <td class="p-3.5 text-xs text-gray-400 font-mono max-w-xs truncate" title="${registeredList}">${registeredList}</td>
+                        <td class="p-3.5 font-mono text-gray-400">${item.password || '-'}</td>
+                        <td class="p-3.5 text-red-400 font-bold font-mono">${item.expired || '-'}</td>
+                        <td class="p-3.5">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black ${item.status === 'active' ? 'bg-green-950 text-green-400 border border-green-700/40' : 'bg-red-950 text-red-400 border border-red-700/40'}">
                                 ${(item.status || 'INACTIVE').toUpperCase()}
                             </span>
                         </td>
@@ -202,12 +332,15 @@
                 });
 
             } catch (error) {
-                tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400">Gagal sinkronisasi data: ${error.message}</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-red-400 font-bold">Gagal sinkron data: ${error.message}</td></tr>`;
             }
         }
 
-        // Jalankan pemuatan data otomatis saat halaman admin diakses
-        window.onload = loadKeys;
+        // Jalankan sinkronisasi database otomatis saat panel dibuka pertama kali
+        window.onload = function() {
+            loadKeys('module');
+            loadKeys('apk');
+        };
     </script>
 </body>
 </html>
