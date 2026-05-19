@@ -21,42 +21,50 @@
             justify-content: center;
             padding: 20px;
             position: relative;
+            overflow-x: hidden;
         }
+        
+        /* Animasi Background Ungu & Efek Partikel */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.25), transparent 70%);
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.2), transparent 60%),
+                        radial-gradient(circle at 80% 70%, rgba(106,13,173,0.15), transparent 50%);
             pointer-events: none;
-            animation: pulsePurple 5s infinite alternate;
+            animation: rotateBg 20s infinite linear;
             z-index: 0;
         }
-        @keyframes pulsePurple {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.8; }
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+
         .admin-panel {
             max-width: 560px;
             width: 100%;
-            background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.4); /* Lebih transparan sesuai request */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 2rem;
             padding: 1.5rem;
-            border: 1px solid rgba(188,19,254,0.6);
-            box-shadow: 0 0 25px rgba(188,19,254,0.4);
+            border: 1px solid rgba(188,19,254,0.4);
+            box-shadow: 0 0 35px rgba(188,19,254,0.25);
             position: relative;
             z-index: 10;
-            transition: 0.3s;
+            animation: panelGlow 4s infinite alternate;
         }
+        @keyframes panelGlow {
+            0% { box-shadow: 0 0 25px rgba(188,19,254,0.2); border-color: rgba(188,19,254,0.3); }
+            100% { box-shadow: 0 0 40px rgba(188,19,254,0.4); border-color: rgba(188,19,254,0.6); }
+        }
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(188,19,254,0.4);
+            border-bottom: 1px solid rgba(188,19,254,0.3);
             padding-bottom: 0.8rem;
         }
         .header h1 {
@@ -66,140 +74,88 @@
             text-shadow: 0 0 6px #bc13fe;
             letter-spacing: 1px;
         }
-        .header h1 i {
-            color: #bc13fe;
-            margin-right: 6px;
-        }
+        .header h1 i { color: #bc13fe; margin-right: 6px; }
+        
         .logout-btn {
-            background: #ff4d4d;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.7rem;
-            transition: 0.2s;
+            background: #ff4d4d; border: none; padding: 6px 16px; border-radius: 40px;
+            color: white; font-weight: bold; cursor: pointer; font-size: 0.7rem; transition: 0.2s;
         }
-        .logout-btn:hover {
-            background: #cc0000;
-            transform: scale(0.96);
-        }
-        .tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 1.8rem;
-        }
+        .logout-btn:hover { background: #cc0000; transform: scale(0.96); }
+
+        .tabs { display: flex; gap: 12px; margin-bottom: 1.8rem; }
         .tab-btn {
-            flex: 1;
-            background: rgba(0,0,0,0.6);
-            border: 1px solid #bc13fe;
-            padding: 10px 0;
-            border-radius: 40px;
-            color: #ddd;
-            font-weight: bold;
-            text-align: center;
-            cursor: pointer;
-            font-family: 'Orbitron';
-            font-size: 0.8rem;
-            transition: 0.2s;
+            flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(188,19,254,0.5);
+            padding: 10px 0; border-radius: 40px; color: #ddd; font-weight: bold;
+            text-align: center; cursor: pointer; font-family: 'Orbitron'; font-size: 0.8rem; transition: 0.2s;
         }
         .tab-btn.active {
-            background: #bc13fe;
-            color: white;
-            box-shadow: 0 0 12px #bc13fe;
-            border-color: #bc13fe;
+            background: #bc13fe; color: white; box-shadow: 0 0 12px #bc13fe; border-color: #bc13fe;
         }
-        .content-pane {
-            display: none;
-        }
-        .content-pane.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
+
+        .content-pane { display: none; }
+        .content-pane.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        label {
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 500;
-            display: block;
-            margin-top: 14px;
-            letter-spacing: 0.5px;
-        }
+
+        label { color: #fff; font-size: 0.7rem; font-weight: 500; display: block; margin-top: 14px; letter-spacing: 0.5px; }
         input, select {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #bc13fe;
-            border-radius: 30px;
-            color: white;
-            margin-top: 5px;
-            outline: none;
-            font-size: 0.85rem;
+            width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(188,19,254,0.5); border-radius: 30px; color: white;
+            margin-top: 5px; outline: none; font-size: 0.85rem; transition: 0.2s;
         }
-        .custom-limit-container {
-            display: none;
-            margin-top: 5px;
-        }
+        input:focus, select:focus { border-color: #bc13fe; box-shadow: 0 0 8px rgba(188,19,254,0.5); }
+        .custom-limit-container { display: none; margin-top: 5px; }
+
         .gen-btn {
-            width: 100%;
-            margin-top: 25px;
-            background: linear-gradient(95deg, #6a0dad, #bc13fe);
-            border: none;
-            padding: 12px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            font-size: 0.9rem;
+            width: 100%; margin-top: 25px; background: linear-gradient(95deg, #6a0dad, #bc13fe);
+            border: none; padding: 12px; border-radius: 40px; color: white;
+            font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(188,19,254,0.3);
         }
-        .gen-btn:hover {
-            background: linear-gradient(95deg, #7c0dbf, #d43dff);
-            transform: scale(0.98);
-        }
+        .gen-btn:hover { background: linear-gradient(95deg, #7c0dbf, #d43dff); transform: scale(0.98); }
+
+        /* Styling List Member */
         .member-card {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #bc13fe;
-            border-radius: 16px;
-            padding: 12px;
-            margin-bottom: 12px;
+            background: rgba(0,0,0,0.6); border: 1px solid rgba(188,19,254,0.3);
+            border-radius: 16px; padding: 14px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: 0.2s;
         }
-        .member-info {
-            color: #ddd;
-            font-size: 0.75rem;
-        }
-        .member-info b {
-            color: white;
-            font-size: 0.8rem;
-        }
-        .result-msg {
-            margin-top: 12px;
-            color: #a3e635;
-            font-size: 0.7rem;
-            text-align: center;
-        }
+        .member-card:hover { border-color: #bc13fe; background: rgba(0,0,0,0.7); }
+        .member-info { color: #ddd; font-size: 0.75rem; line-height: 1.5; }
+        .member-info b { color: white; font-size: 0.85rem; }
+        
+        /* Indikator Kurung Sesuai Request */
+        .type-badge { font-weight: bold; font-family: 'Orbitron'; margin-right: 4px; }
+        .type-mod { color: #38bdf8; }
+        .type-apk { color: #f43f5e; }
+
+        /* Pewarnaan Neon Khusus Tiap Tier APK */
         .tier-badge {
-            background: rgba(188,19,254,0.3);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.65rem;
-            margin-left: 6px;
+            padding: 2px 8px; border-radius: 20px; font-size: 0.65rem; font-weight: bold;
+            margin-left: 6px; text-transform: uppercase; border: 1px solid currentColor;
+            background: rgba(0,0,0,0.4);
         }
+        .tier-basic { color: #a1a1aa; text-shadow: 0 0 4px #a1a1aa; }
+        .tier-ultra { color: #06b6d4; text-shadow: 0 0 4px #06b6d4; }
+        .tier-vixo { color: #10b981; text-shadow: 0 0 4px #10b981; }
+        .tier-delta { color: #f97316; text-shadow: 0 0 4px #f97316; }
+        .tier-sonic { color: #eab308; text-shadow: 0 0 4px #eab308; }
+        .tier-lunar { color: #e2e8f0; text-shadow: 0 0 4px #e2e8f0; }
+        .tier-athena { color: #ef4444; text-shadow: 0 0 4px #ef4444; }
+        .tier-privet { color: #f59e0b; text-shadow: 0 0 4px #f59e0b; }
+
+        .member-actions { display: flex; gap: 14px; padding-left: 10px; }
+        .member-actions i { cursor: pointer; font-size: 1.1rem; transition: 0.2s; }
+        .fa-pen { color: #facc15; } .fa-pen:hover { transform: scale(1.2); text-shadow: 0 0 8px #facc15; }
+        .fa-trash { color: #ff4d4d; } .fa-trash:hover { transform: scale(1.2); text-shadow: 0 0 8px #ff4d4d; }
+        
+        .result-msg { margin-top: 12px; color: #a3e635; font-size: 0.7rem; text-align: center; font-weight: bold; }
         .refresh-btn {
-            background: #bc13fe;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 30px;
-            color: white;
-            margin-bottom: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 0.7rem;
-            font-weight: bold;
+            background: #bc13fe; border: none; padding: 8px 12px; border-radius: 30px;
+            color: white; margin-bottom: 15px; cursor: pointer; width: 100%; font-size: 0.75rem; font-weight: bold;
         }
     </style>
 </head>
@@ -244,8 +200,14 @@
         <input type="text" id="apkPass" placeholder="Password (opsional)">
         <label>TIER AKUN</label>
         <select id="apkTier">
-            <option>Basic</option><option>Ultra</option><option>Vixo</option><option>Delta</option>
-            <option>Sonic</option><option>Lunar</option><option>Athena</option><option>Privet</option>
+            <option value="basic">Basic</option>
+            <option value="ultra">Ultra</option>
+            <option value="vixo">Vixo</option>
+            <option value="delta">Delta</option>
+            <option value="sonic">Sonic</option>
+            <option value="lunar">Lunar</option>
+            <option value="athena">Athena</option>
+            <option value="privet">Athena Privet</option>
         </select>
         <label>DEVICE LIMIT</label>
         <select id="apkLimitSelect">
@@ -272,15 +234,55 @@
     </div>
 </div>
 
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1001; align-items:center; justify-content:center; backdrop-filter: blur(8px);">
+    <div style="background:rgba(15, 26, 47, 0.95); border-radius:24px; padding:25px; width:90%; max-width:400px; border:1px solid #bc13fe; box-shadow: 0 0 30px rgba(188,19,254,0.5);">
+        <h3 style="color:white; font-family:'Orbitron'; font-size:1.1rem; margin-bottom:10px; text-shadow:0 0 5px #bc13fe;" id="modalTitle">Edit Member</h3>
+        
+        <input type="hidden" id="editType">
+        
+        <label>Target ID / Username</label>
+        <input type="text" id="editUser" readonly style="background:rgba(255,255,255,0.05); color:#aaa; border-color:rgba(255,255,255,0.1);">
+        
+        <label>Key Akses</label>
+        <input type="text" id="editKey">
+        
+        <div id="apkEditFields" style="display:none;">
+            <label>Password</label>
+            <input type="text" id="editPass">
+            
+            <label>Tier Akun</label>
+            <select id="editTier">
+                <option value="basic">Basic</option>
+                <option value="ultra">Ultra</option>
+                <option value="vixo">Vixo</option>
+                <option value="delta">Delta</option>
+                <option value="sonic">Sonic</option>
+                <option value="lunar">Lunar</option>
+                <option value="athena">Athena</option>
+                <option value="privet">Athena Privet</option>
+            </select>
+        </div>
+        
+        <label>Expired Date</label>
+        <input type="date" id="editExp">
+        
+        <label>Device Limit</label>
+        <input type="number" id="editLimit" min="1" max="999">
+        
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:25px;">
+            <button id="saveEditBtn" style="background:linear-gradient(95deg, #6a0dad, #bc13fe); border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Save Changes</button>
+            <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+</div>
+
 <script>
     (function() {
-        // ========== LOGIN CHECK ==========
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
             return;
         }
 
-        // LOGOUT
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', function(e) {
@@ -301,30 +303,18 @@
         };
 
         function activateTab(tabId) {
-            Object.values(panes).forEach(pane => {
-                if (pane) pane.classList.remove('active');
-            });
-            const activePane = panes[tabId];
-            if (activePane) activePane.classList.add('active');
-            
+            Object.values(panes).forEach(pane => pane && pane.classList.remove('active'));
+            if (panes[tabId]) panes[tabId].classList.add('active');
             tabBtns.forEach(btn => {
-                if (btn.getAttribute('data-tab') === tabId) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
             });
-            
-            if (tabId === 'members') {
-                loadMembers();
-            }
+            if (tabId === 'members') loadMembers();
         }
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                const tab = this.getAttribute('data-tab');
-                if (tab) activateTab(tab);
+                activateTab(this.getAttribute('data-tab'));
             });
         });
 
@@ -358,73 +348,61 @@
         }
 
         // ========== GENERATE MODULE ==========
-        const genModule = document.getElementById('genModuleBtn');
-        if (genModule) {
-            genModule.addEventListener('click', async () => {
-                const id = document.getElementById('modId').value.trim();
-                const exp = document.getElementById('modExp').value;
-                let limit = parseInt(modSelect.value);
-                if (modSelect.value === 'custom') {
-                    let custom = parseInt(document.getElementById('modCustomLimit').value);
-                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
-                    limit = custom;
-                }
-                if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
-                const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-                const data = { key, expired: exp, device_limit: limit, status: "active" };
-                try {
-                    await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                    showResult('modResult', `✅ DONE! KEY: ${key}`);
-                    document.getElementById('modId').value = '';
-                } catch(e) { alert('Database error!'); }
-            });
-        }
+        document.getElementById('genModuleBtn').addEventListener('click', async () => {
+            const id = document.getElementById('modId').value.trim();
+            const exp = document.getElementById('modExp').value;
+            let limit = parseInt(modSelect.value);
+            if (modSelect.value === 'custom') {
+                limit = parseInt(document.getElementById('modCustomLimit').value);
+                if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
+            }
+            if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
+            const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+            const data = { key, expired: exp, device_limit: limit, status: "active" };
+            try {
+                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('modResult', `✅ MODULE GENERATED! KEY: ${key}`);
+                document.getElementById('modId').value = '';
+            } catch(e) { alert('Database error!'); }
+        });
 
         // ========== GENERATE APK ==========
-        const genApk = document.getElementById('genApkBtn');
-        if (genApk) {
-            genApk.addEventListener('click', async () => {
-                const username = document.getElementById('apkUser').value.trim();
-                let password = document.getElementById('apkPass').value.trim();
-                const exp = document.getElementById('apkExp').value;
-                const tier = document.getElementById('apkTier').value;
-                let limit = parseInt(apkSelect.value);
-                if (apkSelect.value === 'custom') {
-                    let custom = parseInt(document.getElementById('apkCustomLimit').value);
-                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
-                    limit = custom;
-                }
-                if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
-                if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
-                const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
-                const data = { key, password, expired: exp, device_limit: limit, tier, status: "active" };
-                try {
-                    await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
-                    showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}`);
-                    document.getElementById('apkUser').value = '';
-                    document.getElementById('apkPass').value = '';
-                } catch(e) { alert('Database error!'); }
-            });
-        }
+        document.getElementById('genApkBtn').addEventListener('click', async () => {
+            const username = document.getElementById('apkUser').value.trim();
+            let password = document.getElementById('apkPass').value.trim();
+            const exp = document.getElementById('apkExp').value;
+            const tier = document.getElementById('apkTier').value;
+            let limit = parseInt(apkSelect.value);
+            if (apkSelect.value === 'custom') {
+                limit = parseInt(document.getElementById('apkCustomLimit').value);
+                if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
+            }
+            if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
+            if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+            const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+            const data = { key, password, expired: exp, device_limit: limit, tier, status: "active" };
+            try {
+                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('apkResult', `✅ APK ACCESS ADDED!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}`);
+                document.getElementById('apkUser').value = '';
+                document.getElementById('apkPass').value = '';
+            } catch(e) { alert('Database error!'); }
+        });
 
-        // ========== REFRESH BUTTON ==========
-        const refreshBtn = document.getElementById('refreshMembersBtn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', loadMembers);
-        }
+        document.getElementById('refreshMembersBtn').addEventListener('click', loadMembers);
 
-        // ========== LOAD MEMBERS ==========
+        // ========== LOAD & RENDER MEMBERS ==========
         async function loadMembers() {
             const container = document.getElementById('memberList');
             if (!container) return;
-            container.innerHTML = '<div style="color:white;">Loading members...</div>';
+            container.innerHTML = '<div style="color:white; text-align:center;">Loading database...</div>';
             try {
                 const res = await fetch(`${DB_URL}.json`);
-                if (!res.ok) throw new Error();
                 const data = await res.json();
                 container.innerHTML = '';
                 let any = false;
 
+                // 1. Render Users Module
                 if (data && data.users) {
                     for (let id in data.users) {
                         any = true;
@@ -433,40 +411,10 @@
                         card.className = 'member-card';
                         card.innerHTML = `
                             <div class="member-info">
-                                <b>🔧 ${escapeHtml(id)} (MODULE)</b><br>
+                                <span class="type-badge type-mod">[MODULE]</span> <b>${escapeHtml(id)}</b><br>
                                 🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
                                 📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
                             </div>
-                        `;
-                        container.appendChild(card);
-                    }
-                }
-
-                if (data && data.apk_access) {
-                    for (let id in data.apk_access) {
-                        any = true;
-                        const obj = data.apk_access[id];
-                        const card = document.createElement('div');
-                        card.className = 'member-card';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <b>📱 ${escapeHtml(id)} (APK) <span class="tier-badge">${escapeHtml(obj.tier || 'Basic')}</span></b><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')} | 🔒 PASS: ${escapeHtml(obj.password || '-')}<br>
-                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
-                            </div>
-                        `;
-                        container.appendChild(card);
-                    }
-                }
-
-                if (!any) {
-                    container.innerHTML = '<div style="color:#aaa; text-align:center; font-size:0.8rem;">Tidak ada member aktif.</div>';
-                }
-            } catch(e) {
-                container.innerHTML = '<div style="color:#ff4d4d;">Gagal memuat database!</div>';
-            }
-        }
-    })();
-</script>
-</body>
-</html>
+                            <div class="member-actions">
+                                <i class="fas fa-pen btn-edit" data-type="users" data-id="${id}" title="Edit"></i>
+    
