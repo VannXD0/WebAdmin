@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - Admin Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <title>XK TEAM ADMIN CLOUD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-image: url('garou.png');
             background-size: cover;
@@ -22,7 +22,7 @@
             padding: 20px;
             position: relative;
         }
-        /* efek overlay biru animasi (glow) */
+        /* animasi background ungu */
         body::before {
             content: '';
             position: fixed;
@@ -30,86 +30,101 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 40%, rgba(59,130,246,0.15), transparent 70%);
+            background: radial-gradient(circle at 40% 30%, rgba(188,19,254,0.2), transparent 70%);
             pointer-events: none;
-            animation: pulseBlue 6s infinite alternate;
+            animation: pulsePurple 5s infinite alternate;
             z-index: 0;
         }
-        @keyframes pulseBlue {
-            0% { opacity: 0.4; }
-            100% { opacity: 0.9; }
+        @keyframes pulsePurple {
+            0% { opacity: 0.3; }
+            100% { opacity: 0.8; }
         }
         .admin-panel {
-            max-width: 550px;
+            max-width: 560px;
             width: 100%;
             background: rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(10px);
-            border-radius: 28px;
-            padding: 20px;
-            border: 1px solid rgba(59,130,246,0.6);
-            box-shadow: 0 0 25px rgba(59,130,246,0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(188,19,254,0.6);
+            box-shadow: 0 0 25px rgba(188,19,254,0.4);
             position: relative;
             z-index: 10;
             transition: 0.3s;
         }
         .header {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(188,19,254,0.4);
+            padding-bottom: 0.8rem;
+        }
+        .header h1 {
+            font-family: 'Orbitron';
+            font-size: 1.3rem;
+            color: white;
+            text-shadow: 0 0 6px #bc13fe;
+            letter-spacing: 1px;
+        }
+        .header h1 i {
+            color: #bc13fe;
+            margin-right: 6px;
         }
         .logout-btn {
             background: #ff4d4d;
             border: none;
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 40px;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            font-size: 0.75rem;
-            font-family: 'Poppins';
+            font-size: 0.7rem;
             transition: 0.2s;
-            z-index: 20;
         }
         .logout-btn:hover {
-            background: #ff1a1a;
-            transform: scale(0.97);
+            background: #cc0000;
+            transform: scale(0.96);
         }
         .tabs {
             display: flex;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 1.8rem;
         }
         .tab-btn {
             flex: 1;
             background: rgba(0,0,0,0.6);
-            border: 1px solid #3b82f6;
-            padding: 10px;
+            border: 1px solid #bc13fe;
+            padding: 10px 0;
             border-radius: 40px;
-            color: #ccc;
+            color: #ddd;
             font-weight: bold;
             text-align: center;
             cursor: pointer;
             font-family: 'Orbitron';
             font-size: 0.8rem;
             transition: 0.2s;
-            backdrop-filter: blur(4px);
         }
         .tab-btn.active {
-            background: #3b82f6;
+            background: #bc13fe;
             color: white;
-            box-shadow: 0 0 12px #3b82f6;
-            border-color: #3b82f6;
+            box-shadow: 0 0 12px #bc13fe;
+            border-color: #bc13fe;
         }
         .content-pane {
             display: none;
         }
         .content-pane.active {
             display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         label {
             color: #fff;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 500;
             display: block;
             margin-top: 14px;
@@ -119,7 +134,7 @@
             width: 100%;
             padding: 10px 14px;
             background: rgba(0,0,0,0.7);
-            border: 1px solid #3b82f6;
+            border: 1px solid #bc13fe;
             border-radius: 30px;
             color: white;
             margin-top: 5px;
@@ -133,7 +148,7 @@
         .gen-btn {
             width: 100%;
             margin-top: 25px;
-            background: linear-gradient(95deg, #1e3a8a, #3b82f6);
+            background: linear-gradient(95deg, #6a0dad, #bc13fe);
             border: none;
             padding: 12px;
             border-radius: 40px;
@@ -144,16 +159,15 @@
             font-size: 0.9rem;
         }
         .gen-btn:hover {
-            background: linear-gradient(95deg, #2563eb, #60a5fa);
+            background: linear-gradient(95deg, #7c0dbf, #d43dff);
             transform: scale(0.98);
         }
         .member-card {
             background: rgba(0,0,0,0.7);
-            border: 1px solid #3b82f6;
+            border: 1px solid #bc13fe;
             border-radius: 16px;
             padding: 12px;
             margin-bottom: 12px;
-            transition: 0.1s;
         }
         .member-info {
             color: #ddd;
@@ -193,19 +207,19 @@
         .fa-trash { color: #ff4d4d; }
         .result-msg {
             margin-top: 12px;
-            color: #4ade80;
+            color: #a3e635;
             font-size: 0.7rem;
             text-align: center;
         }
         .tier-badge {
-            background: rgba(59,130,246,0.3);
+            background: rgba(188,19,254,0.3);
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 0.65rem;
             margin-left: 6px;
         }
         .refresh-btn {
-            background: #3b82f6;
+            background: #bc13fe;
             border: none;
             padding: 6px 12px;
             border-radius: 30px;
@@ -214,20 +228,14 @@
             cursor: pointer;
             width: 100%;
             font-size: 0.7rem;
-        }
-        /* Animasi tambahan */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .content-pane.active {
-            animation: fadeIn 0.3s ease;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <div class="admin-panel">
     <div class="header">
+        <h1><i class="fas fa-cloud-upload-alt"></i> XK TEAM ADMIN CLOUD</h1>
         <button class="logout-btn" id="logoutBtn">LOGOUT</button>
     </div>
     <div class="tabs">
@@ -252,7 +260,7 @@
             <option value="custom">Custom (angka)</option>
         </select>
         <div id="modCustomContainer" class="custom-limit-container">
-            <label>Custom Limit</label>
+            <label>Custom Device Limit</label>
             <input type="number" id="modCustomLimit" min="1" max="999" value="1">
         </div>
         <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
@@ -280,7 +288,7 @@
             <option value="custom">Custom (angka)</option>
         </select>
         <div id="apkCustomContainer" class="custom-limit-container">
-            <label>Custom Limit</label>
+            <label>Custom Device Limit</label>
             <input type="number" id="apkCustomLimit" min="1" max="999" value="1">
         </div>
         <label>EXPIRED DATE</label>
@@ -298,7 +306,7 @@
 
 <!-- MODAL EDIT -->
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1001; align-items:center; justify-content:center;">
-    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #3b82f6;">
+    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #bc13fe;">
         <h3 style="color:white;">Edit Member</h3>
         <label>Username</label>
         <input type="text" id="editUser" readonly style="background:#1e2a3a;">
@@ -319,44 +327,59 @@
             <option value="4">4</option><option value="5">5</option><option value="999">UNLIMITED</option>
         </select>
         <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
-            <button id="saveEditBtn" style="background:#3b82f6; border:none; padding:8px 20px; border-radius:30px; color:white;">Save</button>
+            <button id="saveEditBtn" style="background:#bc13fe; border:none; padding:8px 20px; border-radius:30px; color:white;">Save</button>
             <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:8px 20px; border-radius:30px; color:white;">Cancel</button>
         </div>
     </div>
 </div>
 
 <script>
-    (function(){
-        // LOGIN CHECK
+    (function() {
+        // ========== LOGIN CHECK ==========
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
             return;
         }
-        const logout = document.getElementById('logoutBtn');
-        if(logout) logout.addEventListener('click', () => {
-            localStorage.removeItem('admin_logged_in');
-            window.location.href = 'login.html';
-        });
+
+        // LOGOUT
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('admin_logged_in');
+                window.location.href = 'login.html';
+            });
+        }
 
         const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-        // ========== TAB ==========
-        const tabs = document.querySelectorAll('.tab-btn');
+        // ========== TAB SWITCHING (PASTIKAN EVENT LISTENER TERPASANG) ==========
+        const tabBtns = document.querySelectorAll('.tab-btn');
         const panes = {
             module: document.getElementById('module-pane'),
             apk: document.getElementById('apk-pane'),
             members: document.getElementById('members-pane')
         };
+
         function activateTab(tabId) {
-            Object.values(panes).forEach(p => p.classList.remove('active'));
-            panes[tabId].classList.add('active');
-            tabs.forEach(btn => {
-                if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
-                else btn.classList.remove('active');
+            Object.values(panes).forEach(pane => {
+                if (pane) pane.classList.remove('active');
             });
-            if (tabId === 'members') loadMembers();
+            const activePane = panes[tabId];
+            if (activePane) activePane.classList.add('active');
+            tabBtns.forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            if (tabId === 'members') {
+                loadMembers();
+            }
         }
-        tabs.forEach(btn => {
+
+        tabBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 const tab = this.getAttribute('data-tab');
@@ -364,10 +387,10 @@
             });
         });
 
-        // Custom limit handlers
+        // ========== CUSTOM LIMIT HANDLERS ==========
         const modSelect = document.getElementById('modLimitSelect');
         const modCustomDiv = document.getElementById('modCustomContainer');
-        if(modSelect) {
+        if (modSelect) {
             modSelect.addEventListener('change', () => {
                 modCustomDiv.style.display = modSelect.value === 'custom' ? 'block' : 'none';
             });
@@ -375,7 +398,7 @@
         }
         const apkSelect = document.getElementById('apkLimitSelect');
         const apkCustomDiv = document.getElementById('apkCustomContainer');
-        if(apkSelect) {
+        if (apkSelect) {
             apkSelect.addEventListener('change', () => {
                 apkCustomDiv.style.display = apkSelect.value === 'custom' ? 'block' : 'none';
             });
@@ -384,71 +407,76 @@
 
         function showResult(elId, msg) {
             const el = document.getElementById(elId);
-            if(el) { el.innerHTML = msg; setTimeout(() => el.innerHTML = '', 4000); }
+            if (el) {
+                el.innerHTML = msg;
+                setTimeout(() => { if (el.innerHTML === msg) el.innerHTML = ''; }, 4000);
+            }
         }
 
-        // GENERATE MODULE
+        // ========== GENERATE MODULE ==========
         const genModule = document.getElementById('genModuleBtn');
-        if(genModule) {
+        if (genModule) {
             genModule.addEventListener('click', async () => {
                 const id = document.getElementById('modId').value.trim();
                 const exp = document.getElementById('modExp').value;
                 let limit = parseInt(modSelect.value);
-                if(modSelect.value === 'custom') {
+                if (modSelect.value === 'custom') {
                     let custom = parseInt(document.getElementById('modCustomLimit').value);
-                    if(isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
                     limit = custom;
                 }
-                if(!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
+                if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
                 const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
                 const data = { key, expired: exp, device_limit: limit, status: "active" };
                 try {
                     await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
                     showResult('modResult', `✅ DONE! KEY: ${key}`);
-                    if(panes.members.classList.contains('active')) loadMembers();
-                } catch(e) { alert('DB error'); }
+                    if (panes.members.classList.contains('active')) loadMembers();
+                } catch(e) { alert('Database error!'); }
             });
         }
 
-        // GENERATE APK
+        // ========== GENERATE APK ==========
         const genApk = document.getElementById('genApkBtn');
-        if(genApk) {
+        if (genApk) {
             genApk.addEventListener('click', async () => {
                 const username = document.getElementById('apkUser').value.trim();
                 let password = document.getElementById('apkPass').value.trim();
                 const exp = document.getElementById('apkExp').value;
                 const tier = document.getElementById('apkTier').value;
                 let limit = parseInt(apkSelect.value);
-                if(apkSelect.value === 'custom') {
+                if (apkSelect.value === 'custom') {
                     let custom = parseInt(document.getElementById('apkCustomLimit').value);
-                    if(isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                    if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
                     limit = custom;
                 }
-                if(!username || !exp) { alert('Isi Username dan Expired!'); return; }
-                if(password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+                if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
+                if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
                 const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
                 const data = { key, password, expired: exp, device_limit: limit, tier, devices: {}, status: "active" };
                 try {
                     await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
                     showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>🏷️ TIER: ${tier}<br>📱 LIMIT: ${limit}`);
-                    if(panes.members.classList.contains('active')) loadMembers();
-                } catch(e) { alert('DB error'); }
+                    if (panes.members.classList.contains('active')) loadMembers();
+                } catch(e) { alert('Database error!'); }
             });
         }
 
-        // LOAD MEMBERS (users + apk_access)
+        // ========== LOAD MEMBERS ==========
         async function loadMembers() {
             const container = document.getElementById('memberList');
-            if(!container) return;
+            if (!container) return;
             container.innerHTML = '<div style="color:white;">Loading members...</div>';
             try {
                 const res = await fetch(`${DB_URL}.json`);
+                if (!res.ok) throw new Error();
                 const data = await res.json();
                 container.innerHTML = '';
                 let any = false;
-                // users
-                if(data.users && typeof data.users === 'object') {
-                    for(let id in data.users) {
+
+                // MODULE users
+                if (data.users && typeof data.users === 'object') {
+                    for (let id in data.users) {
                         any = true;
                         const obj = data.users[id];
                         const card = document.createElement('div');
@@ -467,21 +495,10 @@
                         container.appendChild(card);
                     }
                 }
-                // apk_access
-                if(data.apk_access && typeof data.apk_access === 'object') {
-                    for(let id in data.apk_access) {
+                // APK access
+                if (data.apk_access && typeof data.apk_access === 'object') {
+                    for (let id in data.apk_access) {
                         any = true;
                         const obj = data.apk_access[id];
                         let devicesHtml = '<div class="device-list"><strong>📱 Registered devices:</strong>';
-                        if(obj.devices && Object.keys(obj.devices).length) {
-                            for(let dev in obj.devices) {
-                                devicesHtml += `<div class="device-item"><span>${escapeHtml(dev)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(dev)}">🗑️</span></div>`;
-                            }
-                        } else { devicesHtml += '<div><em>No devices</em></div>'; }
-                        devicesHtml += '</div>';
-                        card.innerHTML = `
-                            <div class="member-info">
-                                <b>📱 ${escapeHtml(id)} (APK)</b> <span class="tier-badge">${escapeHtml(obj.tier || 'Basic')}</span><br>
-                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
-                                ${obj.password ? `🔒 PASS: ${escapeHtml(obj.password)}<br>` : ''}
-                   
+ 
