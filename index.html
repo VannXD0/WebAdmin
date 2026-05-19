@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - FINAL REWRITE</title>
+    <title>XK TEAM CLOUD - FINAL STABLE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -54,7 +54,7 @@
             background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
             color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
             text-decoration: none; display: inline-block; text-align: center;
-            -webkit-tap-highlight-color: transparent;
+            border: 1px solid #ff4d4d; outline: none;
         }
 
         .tab-menu { 
@@ -111,6 +111,7 @@
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px; padding: 12px; margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
@@ -140,7 +141,6 @@
 
         #memberList::-webkit-scrollbar { width: 4px; }
         #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
-        #result { display:none; margin-top:15px; color:#00ff00; font-family:'Orbitron'; font-size:11px; font-weight:bold; text-align: center; }
     </style>
 </head>
 <body>
@@ -152,7 +152,7 @@
 
         <div class="header-area">
             <h2>XK TEAM CLOUD</h2>
-            <a href="javascript:void(0);" class="logout-link" id="btn-logout-force">LOGOUT</a>
+            <button class="logout-link" id="btn-logout-panel">LOGOUT</button>
         </div>
         
         <div class="tab-menu">
@@ -218,8 +218,6 @@
             </button>
             <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
         </div>
-
-        <div id="result"></div>
     </div>
 
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
@@ -262,24 +260,23 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    // SISTEM DETEKSI HARDWARE DISENTUH (ANTI CACHE BROWSER)
     document.addEventListener("DOMContentLoaded", () => {
-        // Deteksi Perpindahan Tab 3
-        const targetTab = document.getElementById('tab3');
-        if(targetTab) {
-            targetTab.addEventListener('change', () => {
-                if(targetTab.checked) { loadMembers(); }
+        // Otomatis refresh list data saat tab Members diaktifkan
+        const tabMembers = document.getElementById('tab3');
+        if(tabMembers) {
+            tabMembers.addEventListener('change', () => {
+                if(tabMembers.checked) { loadMembers(); }
             });
         }
 
-        // Paksa Logout Ganti Halaman
-        const logoutTrigger = document.getElementById('btn-logout-force');
-        if(logoutTrigger) {
-            logoutTrigger.addEventListener('click', (e) => {
+        // Penanganan Logout Stabil (Menggunakan Tag Button agar kompatibel dengan sub-domain GitHub Pages)
+        const btnLogout = document.getElementById('btn-logout-panel');
+        if(btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
                 e.preventDefault();
-                localStorage.removeItem('admin_logged_in');
+                localStorage.clear();
                 sessionStorage.clear();
-                window.location.href = 'login.html'; 
+                window.location.replace('login.html');
             });
         }
     });
@@ -327,14 +324,27 @@
         
         try {
             await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
-            const resDiv = document.getElementById('result');
-            if(resDiv) {
-                resDiv.style.display = 'block';
-                resDiv.innerHTML = type === 'module' ? "DONE! KEY: " + key : `DONE!<br>KEY: ${key}<br>PASS: ${data.password}`;
+            
+            // --- SINKRONISASI DIALOG POP-UP BANNER SUKSES ---
+            let dialogPesan = "";
+            if(type === 'module') {
+                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE\n\nLisensi berhasil disinkronisasi ke Cloud!`;
+            } else {
+                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id}\n🔑 KEY/TOKEN: ${key}\n🔐 PASSWORD: ${data.password}\n🎖️ TIER: ${data.tier.toUpperCase()}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limit} DEVICE\n\nData akses APK berhasil ditambahkan!`;
             }
+            
+            alert(dialogPesan);
+
+            // Bersihkan input setelah data terkirim
             document.getElementById(idInput).value = '';
             if(type === 'apk') document.getElementById('apkPass').value = '';
-        } catch(e) { alert("Database Error!"); }
+            
+            // Otomatis update antrean data di tab sebelah tanpa klik refresh manual
+            loadMembers();
+            
+        } catch(e) { 
+            alert("❌ DATABASE ERROR: Gagal mengirim lisensi ke Cloud!"); 
+        }
     }
 
     async function loadMembers() {
@@ -346,17 +356,21 @@
         try {
             listDiv.innerHTML = '';
 
-            // Ambil dari users
+            // Tarik data node users (Module)
             try {
                 const resUsers = await fetch(`${DB_URL}users.json`);
+                if (resUsers.status === 401 || resUsers.status === 403) {
+                    listDiv.innerHTML = '<p style="color:#ff4d4d; text-align:center; font-size:10px;">Firebase Rules Menolak Akses Read!</p>';
+                    return;
+                }
                 const dataUsers = await resUsers.json();
                 if(dataUsers) {
                     hasData = true;
                     for (let id in dataUsers) { createCard(id, dataUsers[id], 'users', listDiv); }
                 }
-            } catch(e) {}
+            } catch(e) { console.error("Gagal sinkronisasi node users"); }
 
-            // Ambil dari apk_access
+            // Tarik data node apk_access (APK)
             try {
                 const resApk = await fetch(`${DB_URL}apk_access.json`);
                 const dataApk = await resApk.json();
@@ -364,20 +378,24 @@
                     hasData = true;
                     for (let id in dataApk) { createCard(id, dataApk[id], 'apk_access', listDiv); }
                 }
-            } catch(e) {}
+            } catch(e) { console.error("Gagal sinkronisasi node apk_access"); }
 
             if(!hasData) {
-                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong atau Tidak Terhubung.</p>';
+                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
             }
         } catch (e) { 
-            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; 
+            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed network sync.</p>'; 
         }
     }
 
     function createCard(id, obj, type, parent) {
         const card = document.createElement('div');
         card.className = 'member-card';
-        card.setAttribute('onclick', "document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected')); this.classList.add('selected');");
+        
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        });
 
         const isMod = type === 'users';
         const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
@@ -393,31 +411,8 @@
                 <p>EXP: ${obj.expired || '-'} | LIMIT: ${obj.device_limit || '1'}</p>
             </div>
             <div class="action-controls">
-                <div class="icon-btn icon-edit" onclick="event.stopPropagation(); openEditModal(event, '${type}', '${id}')">
+                <div class="icon-btn icon-edit" id="edit-${type}-${id}">
                     <i class="fas fa-edit"></i>
                 </div>
-                <div class="icon-btn icon-trash" onclick="event.stopPropagation(); deleteMember(event, '${type}', '${id}')">
-                    <i class="fas fa-trash-alt"></i>
-                </div>
-            </div>`;
-        parent.appendChild(card);
-    }
-
-    async function deleteMember(event, type, id) {
-        if(confirm(`Hapus akses ${id}?`)) {
-            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
-            loadMembers();
-        }
-    }
-
-    async function openEditModal(event, type, id) {
-        try {
-            const res = await fetch(`${DB_URL}${type}/${id}.json`);
-            const obj = await res.json();
-            if(!obj) return;
-
-            document.getElementById('editType').value = type;
-            document.getElementById('editTargetId').value = id;
-            document.getElementById('editKey').value = obj.key || '';
-            document.getElementById('editExp').value = obj.expired || '';
-            document.getElementById('editLimit').value = obj.device_limit || '1'
+                <div class="icon-btn icon-trash" id="del-${type}-${id}">
+                    <i class="fas fa-trash-a
