@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - NO-JS TAB</title>
+    <title>XK TEAM CLOUD - FIXED SYNC</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -31,7 +31,6 @@
             background-attachment: fixed;
         }
 
-        /* Sembunyikan Radio Input asli */
         .tab-switcher { display: none; }
 
         .main-box {
@@ -57,7 +56,6 @@
             text-decoration: none;
         }
 
-        /* MENU TAB PAKAI LABEL (KLIK LANGSUNG DIRESPON HARDWARE HP) */
         .tab-menu { 
             display: flex; gap: 8px; margin-bottom: 20px; 
             background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 10px;
@@ -71,7 +69,6 @@
             display: block; user-select: none;
         }
 
-        /* KONTROL LOGIKA CSS MURNI UNTUK MENYALAKAN TAB ACTIVATED */
         #tab1:checked ~ .tab-menu .label-mod,
         #tab2:checked ~ .tab-menu .label-apk,
         #tab3:checked ~ .tab-menu .label-mem {
@@ -81,7 +78,6 @@
             box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
         }
 
-        /* KONTROL TAMPILAN FORM (TANPA JAVASCRIPT) */
         .form-section { display: none; text-align: left; }
         
         #tab1:checked ~ #module,
@@ -216,6 +212,9 @@
         </div>
 
         <div id="members" class="form-section">
+            <button onclick="loadMembers()" style="width: 100%; padding: 8px; background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff; border-radius: 6px; font-family: 'Orbitron'; font-size: 9px; font-weight: 600; cursor: pointer; margin-bottom: 12px;">
+                <i class="fas fa-sync-alt"></i> REFRESH DATABASE
+            </button>
             <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
         </div>
 
@@ -320,26 +319,42 @@
         } catch(e) { alert("Database Error!"); }
     }
 
+    // FIX TERBARU: Request data dipecah agar lolos dari aturan Rules bertingkat Firebase
     async function loadMembers() {
         const listDiv = document.getElementById('memberList');
         if(!listDiv) return;
         listDiv.innerHTML = '<p style="text-align:center; color:#fff; font-size:10px;">Loading data...</p>';
         
+        let hasData = false;
         try {
-            const res = await fetch(`${DB_URL}.json`);
-            const data = await res.json();
             listDiv.innerHTML = '';
 
-            if(data && data.users) {
-                for (let id in data.users) { createCard(id, data.users[id], 'users', listDiv); }
-            }
-            if(data && data.apk_access) {
-                for (let id in data.apk_access) { createCard(id, data.apk_access[id], 'apk_access', listDiv); }
-            }
-            if(!data || (!data.users && !data.apk_access)) {
+            // 1. Ambil data dari path 'users'
+            try {
+                const resUsers = await fetch(`${DB_URL}users.json`);
+                const dataUsers = await resUsers.json();
+                if(dataUsers) {
+                    hasData = true;
+                    for (let id in dataUsers) { createCard(id, dataUsers[id], 'users', listDiv); }
+                }
+            } catch(e) { console.log("Gagal memuat folder users."); }
+
+            // 2. Ambil data dari path 'apk_access'
+            try {
+                const resApk = await fetch(`${DB_URL}apk_access.json`);
+                const dataApk = await resApk.json();
+                if(dataApk) {
+                    hasData = true;
+                    for (let id in dataApk) { createCard(id, dataApk[id], 'apk_access', listDiv); }
+                }
+            } catch(e) { console.log("Gagal memuat folder apk_access."); }
+
+            if(!hasData) {
                 listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
             }
-        } catch (e) { listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; }
+        } catch (e) { 
+            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; 
+        }
     }
 
     function createCard(id, obj, type, parent) {
@@ -399,25 +414,4 @@
             } else {
                 apkOnlySection.style.display = 'none';
                 document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
-            }
-
-            document.getElementById('editModal').style.display = 'flex';
-        } catch(e) { alert("Gagal mengambil data detail!"); }
-    }
-
-    function closeModal() {
-        document.getElementById('editModal').style.display = 'none';
-    }
-
-    async function saveEdit() {
-        const type = document.getElementById('editType').value;
-        const id = document.getElementById('editTargetId').value;
-        
-        const data = {
-            key: document.getElementById('editKey').value.trim(),
-            expired: document.getElementById('editExp').value,
-            device_limit: document.getElementById('editLimit').value,
-            status: "active"
-        };
-
-        if (type === 'apk_
+  
