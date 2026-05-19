@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XK TEAM - ULTIMATE CLOUD CONTROL PANEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #05070f;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(243, 156, 18, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+        }
+        
+        .glass-card {
+            background: rgba(11, 15, 30, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(243, 156, 18, 0.25);
+            box-shadow: 0 12px 40px 0 rgba(243, 156, 18, 0.05);
+        }
+
+        .glass-card-apk:hover {
+            border-color: rgba(34, 197, 94, 0.25);
+            box-shadow: 0 12px 40px 0 rgba(34, 197, 94, 0.05);
+        }
+
+        .glow-btn-mod {
+            box-shadow: 0 4px 14px 0 rgba(243, 156, 18, 0.2);
+        }
+        .glow-btn-mod:hover {
+            box-shadow: 0 6px 20px 0 rgba(243, 156, 18, 0.4);
+            background-color: #fbbf24;
+        }
+
+        .glow-btn-apk {
+            box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.2);
+        }
+        .glow-btn-apk:hover {
+            box-shadow: 0 6px 20px 0 rgba(34, 197, 94, 0.4);
+            background-color: #4ade80;
+        }
+
+        /* Custom Modern Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #05070f; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 20px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        input, select {
+            background-color: #090d16 !important;
+            border: 1px solid #1e293b !important;
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f59e0b !important;
+            box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.15);
+        }
+        .apk-field:focus {
+            border-color: #22c55e !important;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
+        }
+    </style>
+</head>
+<body class="p-3 md:p-8 min-h-screen">
+
+    <div id="dashboardSection" class="w-full max-w-7xl mx-auto">
+        
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-slate-900/20 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-sm gap-4">
+            <div>
+                <h1 class="text-3xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-500 to-orange-500">
+                    <i class="fa-solid block md:inline fa-terminal mr-2 text-yellow-500"></i>XK TEAM CLOUD SERVER
+                </h1>
+                <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Ultimate Central Control Panel // Dev: <span class="text-white font-bold">Xyro Van Komalx</span></p>
+            </div>
+            
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <div class="bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 shadow-lg shadow-emerald-950/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> REALTIME NODE CONNECTED
+                </div>
+                <button onclick="handleLogoutGate()" class="bg-rose-950/40 hover:bg-rose-900/40 border border-rose-500/30 text-rose-400 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                    <i class="fa-solid fa-right-from-bracket"></i> LOGOUT PANEL
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-500 relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 text-slate-900/10 text-9xl font-black pointer-events-none select-none"><i class="fa-solid fa-gauge-high"></i></div>
+                <div class="flex items-center justify-between mb-6 border-b border-slate-800/60 pb-3">
+                    <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2 tracking-wide uppercase"><i class="fa-solid fa-bolt"></i> Performance Module Engine</h2>
+                    <span class="text-[10px] bg-amber-950/60 text-amber-400 border border-amber-700/30 px-2 py-0.5 rounded-md font-mono font-bold">PREFIX: XK-</span>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">DEVICE LIMIT (SLOT HP)</label>
+                            <input type="number" id="modLimit" value="1" min="1" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">EXPIRED DATE</label>
+                            <input type="date" id="modExp" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">PASSWORD ACCOUNT (OPTIONAL)</label>
+                        <input type="text" id="modPass" placeholder="Kosongkan untuk acak otomatis" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono">
+                    </div>
+                    <button onclick="generateKeyCloud('module')" class="glow-btn-mod w-full bg-amber-500 text-slate-950 font-black p-3.5 rounded-xl text-xs tracking-widest uppercase transition duration-200 transform active:scale-[0.99] mt-2">
+                        <i class="fa-solid fa-plus-circle mr-1"></i> Minting Module License Key
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card glass-card-apk rounded-2xl p-6 border-l-4 border-l-emerald-500 relative overflow-hidden">
+                <div class="absolute -right-8 -top-8 text-slate-900/10 text-9xl font-black pointer-events-none select-none"><i class="fa-brands fa-android"></i></div>
+                <div class="flex items-center justify-between mb-6 border-b border-slate-800/60 pb-3">
+                    <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2 tracking-wide uppercase"><i class="fa-solid fa-mobile-screen-button"></i> Injector APK Engine</h2>
+                    <span class="text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-700/30 px-2 py-0.5 rounded-md font-mono font-bold">PREFIX: APK-</span>
+                </div>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">USERNAME SYSTEM</label>
+                            <input type="text" id="apkUser" placeholder="e.g. kyooxit_buyer" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">APK TIER LAYER</label>
+                            <select id="apkTier" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono font-bold">
+                                <option value="Basic" class="text-slate-400" selected>BASIC</option>
+                                <option value="Ultra" class="text-blue-400">ULTRA</option>
+                                <option value="Vixo" class="text-cyan-400">VIXO</option>
+                                <option value="Delta" class="text-yellow-500">DELTA</option>
+                                <option value="Sonic" class="text-orange-500">SONIC</option>
+                                <option value="Lunar" class="text-purple-400">LUNAR</option>
+                                <option value="Athena" class="text-red-500">ATHENA</option>
+                                <option value="Private" class="text-green-400">PRIVATE</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">DEVICE LIMIT</label>
+                            <input type="number" id="apkLimit" value="1" min="1" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">EXPIRED DATE</label>
+                            <input type="date" id="apkExp" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1 tracking-wider">PASSWORD ACCOUNT (OPTIONAL)</label>
+                        <input type="text" id="apkPass" placeholder="Kosongkan untuk acak otomatis" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                    </div>
+                    <button onclick="generateKeyCloud('apk')" class="glow-btn-apk w-full bg-emerald-500 text-slate-950 font-black p-3.5 rounded-xl text-xs tracking-widest uppercase transition duration-200 transform active:scale-[0.99] mt-2">
+                        <i class="fa-solid fa-circle-check mr-1"></i> Minting Injector APK Key
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-10">
+            <div class="glass-card rounded-2xl p-6 border border-slate-800/80">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 border-b border-slate-800/60 pb-3">
+                    <h3 class="text-md font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-database text-xs"></i> Module Cloud Inventory</h3>
+                    <button onclick="loadKeys('module')" class="text-xs font-bold text-amber-400 bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-lg hover:bg-amber-900/40 transition flex items-center gap-1"><i class="fa-solid fa-rotate"></i> Sync Live</button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-800/50">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="text-slate-400 bg-slate-950/90 font-mono border-b border-slate-800">
+                                <th class="p-4">NODE IDENTITY</th>
+                                <th class="p-4">LICENSE KEY</th>
+                                <th class="p-4">HARDWARE LIMIT</th>
+                                <th class="p-4">REGISTERED HARDWARE ID</th>
+                                <th class="p-4">PASSWORD</th>
+                                <th class="p-4">EXPIRED DATE</th>
+                                <th class="p-4">STATUS</th>
+                                <th class="p-4 text-center">CORE MANAGER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moduleTableBody" class="divide-y divide-slate-900 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 border border-slate-800/80">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 border-b border-slate-800/60 pb-3">
+                    <h3 class="text-md font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-database text-xs"></i> Injector APK Cloud Inventory</h3>
+                    <button onclick="loadKeys('apk')" class="text-xs font-bold text-emerald-400 bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-lg hover:bg-emerald-900/40 transition flex items-center gap-1"><i class="fa-solid fa-rotate"></i> Sync Live</button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-800/50">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="text-slate-400 bg-slate-950/90 font-mono border-b border-slate-800">
+                                <th class="p-4">NODE IDENTITY</th>
+                                <th class="p-4">LICENSE KEY</th>
+                                <th class="p-4">USERNAME</th>
+                                <th class="p-4">TIER</th>
+                                <th class="p-4">HARDWARE LIMIT</th>
+                                <th class="p-4">REGISTERED HARDWARE ID</th>
+                                <th class="p-4">PASSWORD</th>
+                                <th class="p-4">EXPIRED DATE</th>
+                                <th class="p-4">STATUS</th>
+                                <th class="p-4 text-center">CORE MANAGER</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apkTableBody" class="divide-y divide-slate-900 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Database Utama Khusus Inventory Module & APK (module-database-d76ed)
+        const DB_DATA_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/"; 
+
+        // 🔥 AMAN: Gate checker kaku dibuang biar gak mantal-mentallogout terus!
+        function initDashboard() {
+            loadKeys('module');
+            loadKeys('apk');
+        }
+
+        function handleLogoutGate() {
+            if (confirm("Apakah Tuan yakin ingin keluar menuju halaman login?")) {
+                window.location.href = "login.html";
+            }
+        }
+
+        // GENERATE NEW LICENSE 
+        async function generateKeyCloud(type) {
+            const limitId = type === 'module' ? 'modLimit' : 'apkLimit';
+            const expId = type === 'module' ? 'modExp' : 'apkExp';
+            const passId = type === 'module' ? 'modPass' : 'apkPass';
+
+            const limitInput = document.getElementById(limitId).value;
+            const expInput = document.getElementById(expId).value;
+            const passInput = document.getElementById(passId).value.trim();
+
+            if (!limitInput || !expInput) {
+                alert("⚠️ Harap isi konfigurasi kuota limit dan tanggal expired!");
+                return;
+            }
+
+            // Generate Node Acak sesuai struktur bawaan database Tuan (Hexadecimal String)
+            const nodeRandomId = Math.floor(Math.random() * 16777215).toString(16) + Math.floor(Math.random() * 16777215).toString(16);
+            const prefix = type === 'module' ? 'XK-' : 'APK-';
+            const generatedLicenseKey = prefix + Math.random().toString(36).substring(2, 8).toUpperCase();
+            let finalPassword = passInput || Math.random().toString(36).substring(2, 7).toUpperCase();
+
+            let payload = {
+                device_limit: parseInt(limitInput).toString(),
+                expired: expInput,
+                key: generatedLicenseKey,
+                password: finalPassword,
+                status: "active",
+                registered_devices: ""
+            };
+
+            if(type === 'apk') {
+                payload.username = document.getElementById('apkUser').value.trim() || 'user_client';
+                payload.tier = document.getElementById('apkTier').value;
+            }
+
+            const dbNode = type === 'module' ? `users/${nodeRandomId}` : `apk_access/${nodeRandomId}`;
+
+            try {
+                const response = await fetch(`${DB_DATA_URL}${dbNode}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert(`🚀 LISENSI BERHASIL DICETAK!\n\n🔑 KEY : ${generatedLicenseKey}\n🔐 PASS: ${finalPassword}`);
+                    document.getElementById(expId).value = '';
+                    document.getElementById(passId).value = '';
+                    if(type === 'apk') document.getElementById('apkUser').value = '';
+                    loadKeys(type);
+                }
+            } catch (e) { alert("❌ Database Error: " + e.message); }
+        }
+
+        // FETCH INVENTORY LIVE
+        async function loadKeys(type) {
+            const tableBodyId = type === 'module' ? 'moduleTableBody' : 'apkTableBody';
+            const dbNode = type === 'module' ? 'users' : 'apk_access';
+            const tableBody = document.getElementById(tableBodyId);
+            if(!tableBody) return;
+
+            try {
+                const response = await fetch(`${DB_DATA_URL}${dbNode}.json`);
+                const data = await response.json();
+
+                if (!data || data === 'null') {
+                    const colCount = type === 'module' ? 8 : 10;
+                    tableBody.innerHTML = `<tr><td colspan="${colCount}" class="p-6 text-center text-slate-500 font-mono">Belum ada data lisensi aktif.</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = '';
+
+                Object.keys(data).forEach(nodeId => {
+                    const item = data[nodeId];
+                    if (!item || !item.key) return; // skip data testing kosong
+
+                    const devices = item.registered_devices ? Object.keys(item.registered_devices).join(', ') : 'Empty Slot HWID';
+                    const usedCount = item.registered_devices ? Object.keys(item.registered_devices).length : 0;
+                    
+                    const row = document.createElement('tr');
+                    row.className = "bg-slate-900/20 hover:bg-slate-900/60 transition duration-150 border-b border-slate-900";
+                    
+                    const statusBadge = item.status === 'active' 
+                        ? `<span class="px-2 py-0.5 text-[10px] rounded bg-emerald-950 text-emerald-400 font-bold border border-emerald-500/20">ACTIVE</span>`
+                        : `<span class="px-2 py-0.5 text-[10px] rounded bg-rose-950 text-rose-400 font-bold border border-rose-500/20">BANNED</span>`;
+
+                    if(type === 'module') {
+                        row.innerHTML = `
+                            <td class="p-4 font-mono text-slate-500 select-all text-[11px]">${nodeId}</td>
+                            <td class="p-4 font-mono font-bold text-amber-400 select-all">${item.key}</td>
+                            <td class="p-4 font-bold text-blue-400">${usedCount} / ${item.device_limit}</td>
+                            <td class="p-4 text-slate-400 font-mono max-w-xs truncate" title="${devices}">${devices}</td>
+                            <td class="p-4 text-slate-300 font-mono">${item.password}</td>
+                            <td class="p-4 text-slate-400 font-mono">${item.expired}</td>
+                            <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 text-center flex items-center justify-center gap-1.5">
+                                <button onclick="toggleStatus('${type}', '${nodeId}', '${item.status}')" class="bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-indigo-400 px-2 py-1 rounded text-[11px] font-bold transition" title="Banned/Active Status"><i class="fa-solid fa-ban"></i></button>
+                                <button onclick="resetHardware('${type}', '${nodeId}')" class="bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/30 text-cyan-400 px-2 py-1 rounded text-[11px] font-bold transition" title="Reset HWID"><i class="fa-solid fa-arrows-rotate"></i></button>
+                                <button onclick="deleteKey('${type}', '${nodeId}')" class="bg-rose-950/60 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 px-2 py-1 rounded text-[11px] font-bold transition" title="Delete Key Permanently"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        `;
+                    } 
+                    else {
+                        let tierBadge = "";
+                        switch(item.tier) {
+                            case "Basic": tierBadge = `<span class="text-slate-400 font-bold uppercase text-[11px]"><i class="fa-solid fa-shield-halved mr-1"></i>Basic</span>`; break;
+                            case "Ultra": tierBadge = `<span class="text-blue-400 font-bold uppercase text-[11px]"><i class="fa-solid fa-bolt mr-1"></i>Ultra</span>`; break;
+                            case "Vixo": tierBadge = `<span class="text-cyan-400 font-bold uppercase text-[11px] tracking-wide"><i class="fa-solid fa-atom mr-1"></i>Vixo</span>`; break;
+                            case "Delta": tierBadge = `<span class="text-yellow-500 font-bold uppercase text-[11px] tracking-wide"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Delta</span>`; break;
+                            case "Sonic": tierBadge = `<span class="text-orange-500 font-black uppercase text-[11px] tracking-widest"><i class="fa-solid fa-gauge-high mr-1"></i>Sonic</span>`; break;
+                            case "Lunar": tierBadge = `<span class="text-purple-400 font-bold uppercase text-[11px] tracking-wider"><i class="fa-solid fa-moon mr-1"></i>Lunar</span>`; break;
+                            case "Athena": tierBadge = `<span class="text-red-500 font-black uppercase text-[11px] tracking-widest"><i class="fa-solid fa-shield-cat mr-1"></i>Athena</span>`; break;
+                            case "Private": tierBadge = `<span class="text-green-400 font-black uppercase text-[11px] tracking-widest animate-pulse"><i class="fa-solid fa-user-secret mr-1"></i>Private</span>`; break;
+                            default: tierBadge = `<span class="text-slate-500 uppercase text-[11px]">Basic</span>`;
+                        }
+
+                        row.innerHTML = `
+                            <td class="p-4 font-mono text-slate-500 select-all text-[11px]">${nodeId}</td>
+                            <td class="p-4 font-mono font-bold text-emerald-400 select-all">${item.key}</td>
+                            <td class="p-4 font-mono text-white font-bold"><i class="fa-solid fa-user-circle text-slate-500 mr-1"></i>${item.username || 'user_client'}</td>
+                            <td class="p-4">${tierBadge}</td>
+                            <td class="p-4 font-bold text-cyan-400">${usedCount} / ${item.device_limit}</td>
+                            <td class="p-4 text-slate-400 font-mono max-w-xs truncate" title="${devices}">${devices}</td>
+                            <td class="p-4 text-slate-300 font-mono">${item.password}</td>
+                            <td class="p-4 text-slate-400 font-mono">${item.expired}</td>
+                            <td class="p-4">${statusBadge}</td>
+                            <td class="p-4 text-center flex items-center justify-center gap-1.5">
+                                <button onclick="toggleStatus('${type}', '${nodeId}', '${item.status}')" class="bg-indigo-950/60 hover:bg-indigo-900/60 border border-indigo-500/30 text-indigo-400 px-2 py-1 rounded text-[11px] font-bold transition"><i class="fa-solid fa-ban"></i></button>
+                                <button onclick="resetHardware('${type}', '${nodeId}')" class="bg-cyan-950/60 hover:bg-cyan-900/60 border border-cyan-500/30 text-cyan-400 px-2 py-1 rounded text-[11px] font-bold transition"><i class="fa-solid fa-arrows-rotate"></i></button>
+                                <button onclick="deleteKey('${type}', '${nodeId}')" class="bg-rose-950/60 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 px-2 py-1 rounded text-[11px] font-bold transition"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                        `;
+                    }
+                    tableBody.appendChild(row);
+                });
+            } catch (e) { console.error("Sync error: " + e.message); }
+        }
+
+        // LIVE CRUD CORE MODIFICATIONS
+        async function toggleStatus(type, nodeId, currentStatus) {
+            const dbNode = type === 'module' ? 'users' : 'apk_access';
+            const newStatus = currentStatus === 'active' ? 'banned' : 'active';
+            if(!confirm(`Ubah status node ${nodeId} menjadi [${newStatus.toUpperCase()}]?`)) return;
+            try {
+                const response = await fetch(`${DB_DATA_URL}${dbNode}/${nodeId}.json`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if(response.ok) { loadKeys(type); }
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
+        async function resetHardware(type, nodeId) {
+            const dbNode = type === 'module' ? 'users' : 'apk_access';
+            if(!confirm(`Reset data hardware HP untuk Node ${nodeId}?`)) return;
+            try {
+                const response = await fetch(`${DB_DATA_URL}${dbNode}/${nodeId}/registered_devices.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify("")
+                });
+                if(response.ok) { alert("✅ Slot HWID berhasil dikosongkan!"); loadKeys(type); }
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
+        async function deleteKey(type, nodeId) {
+            const dbNode = type === 'module' ? 'users' : 'apk_access';
+            if(!confirm(`⚠️ Hapus permanen Node ${nodeId} dari cloud?`)) return;
+            try {
+                const response = await fetch(`${DB_DATA_URL}${dbNode}/${nodeId}.json`, { method: 'DELETE' });
+                if(response.ok) { alert("🗑️ Data berhasil dihapus!"); loadKeys(type); }
+            } catch (e) { alert("Error: " + e.message); }
+        }
+
+        // Otomatis langsung load data tanpa proteksi lokal yang bikin mental
+        window.onload = function() {
+            initDashboard();
+        };
+    </script>
+</body>
+</html>
