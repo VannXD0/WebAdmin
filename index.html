@@ -3,11 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XK TEAM CLOUD - FIXED STABLE</title>
+    <title>XK TEAM CLOUD - COMPLETE FIXED</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --accent-purple: #bc13fe; --lightning: #e0aaff; }
+        :root { 
+            --accent-purple: #bc13fe; 
+            --lightning: #e0aaff; 
+            --t-basic: #a1a1aa;
+            --t-ultra: #00e5ff;
+            --t-vixo: #00e676;
+            --t-delta: #ff6d00;
+            --t-sonic: #ffd600;
+            --t-lunar: #ffffff;
+            --t-athena: #ff1744;
+            --t-private: #ffab00;
+        }
         
         body, html {
             margin: 0; padding: 0; width: 100%; min-height: 100%;
@@ -50,8 +61,15 @@
             z-index: 20;
         }
 
-        h2 { font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 18px; margin-bottom: 20px; pointer-events: none; }
+        .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h2 { font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; pointer-events: none; }
         
+        .logout-link {
+            background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
+            color: #ff4d4d; font-weight: bold; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
+            text-decoration: none; outline: none;
+        }
+
         .tab-menu { display: flex; gap: 5px; margin-bottom: 15px; position: relative; z-index: 30; }
         .tab-btn {
             flex: 1; padding: 12px; border: 1px solid var(--accent-purple);
@@ -65,19 +83,20 @@
         .form-section { display: none; text-align: left; }
         .form-section.active { display: block; }
 
-        label { color: #fff; font-size: 10px; font-weight: bold; }
+        label { color: #fff; font-size: 10px; font-weight: bold; display: block; margin-top: 10px; }
         input, select { 
             width: 100%; padding: 12px; margin: 5px 0 15px 0; border-radius: 8px; 
             border: 1px solid rgba(188, 19, 254, 0.5); 
             background: rgba(0, 0, 0, 0.7); color: #fff; box-sizing: border-box; outline: none;
             font-size: 12px;
         }
+        .custom-limit-box { display: none; }
 
         .gen-btn { 
             width: 100%; padding: 15px; background: var(--accent-purple);
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: bold; cursor: pointer;
-            z-index: 30; position: relative;
+            z-index: 30; position: relative; margin-top: 5px;
         }
 
         .member-card {
@@ -86,11 +105,28 @@
             display: flex; justify-content: space-between; align-items: center;
             position: relative; z-index: 30;
         }
-        .member-card.selected { border-color: #ff4d4d; background: rgba(255, 0, 0, 0.2); }
+        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.15); }
         .member-info b { color: #fff; font-size: 12px; }
         .member-info p { margin: 0; font-size: 9px; color: #ddd; }
-        .trash-icon { color: #ff4d4d; font-size: 18px; display: none; padding: 5px; cursor: pointer; }
-        .member-card.selected .trash-icon { display: block; }
+        
+        .badge-tier { 
+            font-size: 7.5px; padding: 1px 6px; border-radius: 10px; border: 1px solid currentColor; 
+            font-weight: 700; font-family: 'Orbitron'; margin-left: 5px; text-transform: uppercase; 
+            display: inline-block; background: rgba(0,0,0,0.6);
+        }
+        .t-basic { color: var(--t-basic) !important; text-shadow: 0 0 5px var(--t-basic); } 
+        .t-ultra { color: var(--t-ultra) !important; text-shadow: 0 0 5px var(--t-ultra); } 
+        .t-vixo { color: var(--t-vixo) !important; text-shadow: 0 0 5px var(--t-vixo); } 
+        .t-delta { color: var(--t-delta) !important; text-shadow: 0 0 5px var(--t-delta); } 
+        .t-sonic { color: var(--t-sonic) !important; text-shadow: 0 0 5px var(--t-sonic); } 
+        .t-lunar { color: var(--t-lunar) !important; text-shadow: 0 0 5px var(--t-lunar); } 
+        .t-athena { color: var(--t-athena) !important; text-shadow: 0 0 5px var(--t-athena); } 
+        .t-private { color: var(--t-private) !important; text-shadow: 0 0 5px var(--t-private); }
+
+        .action-controls { display: none; gap: 10px; }
+        .member-card.selected .action-controls { display: flex; }
+        .icon-btn { cursor: pointer; font-size: 14px; padding: 5px; }
+        .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
 
         #memberList::-webkit-scrollbar { width: 4px; }
         #memberList::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 10px; }
@@ -100,7 +136,11 @@
 
     <div class="lightning-border">
         <div class="glass-container">
-            <h2>XK TEAM CLOUD</h2>
+            <div class="header-area">
+                <h2>XK TEAM CLOUD</h2>
+                <button class="logout-link" id="btn-logout-panel">LOGOUT</button>
+            </div>
+            
             <div class="tab-menu">
                 <button class="tab-btn active" id="btn-module" onclick="openTab('module')">MODULE</button>
                 <button class="tab-btn" id="btn-apk" onclick="openTab('apk')">APK</button>
@@ -113,17 +153,46 @@
                 <label>EXPIRED DATE</label>
                 <input type="date" id="modExp">
                 <label>DEVICE LIMIT</label>
-                <select id="modLimit">
+                <select id="modLimit" onchange="toggleCustomLimit('mod')">
                     <option value="1">1 DEVICE</option>
+                    <option value="2">2 DEVICE</option>
                     <option value="5">5 DEVICE</option>
-                    <option value="999">UNLIMITED</option>
+                    <option value="custom">CUSTOM LIMIT</option>
                 </select>
+                <div id="modCustomDiv" class="custom-limit-box">
+                    <label>INPUT CUSTOM LIMIT</label>
+                    <input type="number" id="modCustomLimit" value="1" min="1">
+                </div>
                 <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
             </div>
 
             <div id="apk" class="form-section">
                 <label>USERNAME APK</label>
                 <input type="text" id="apkId" placeholder="Buat Username...">
+                <label>PASSWORD (Kosong = Auto)</label>
+                <input type="text" id="apkPass" placeholder="Password akun...">
+                <label>TIER AKUN</label>
+                <select id="apkTier">
+                    <option value="basic">Basic</option>
+                    <option value="ultra">Ultra</option>
+                    <option value="vixo">Vixo</option>
+                    <option value="delta">Delta</option>
+                    <option value="sonic">Sonic</option>
+                    <option value="lunar">Lunar</option>
+                    <option value="athena">Athena</option>
+                    <option value="private">Private</option>
+                </select>
+                <label>DEVICE LIMIT</label>
+                <select id="apkLimit" onchange="toggleCustomLimit('apk')">
+                    <option value="1">1 DEVICE</option>
+                    <option value="2">2 DEVICE</option>
+                    <option value="5">5 DEVICE</option>
+                    <option value="custom">CUSTOM LIMIT</option>
+                </select>
+                <div id="apkCustomDiv" class="custom-limit-box">
+                    <label>INPUT CUSTOM LIMIT</label>
+                    <input type="number" id="apkCustomLimit" value="1" min="1">
+                </div>
                 <label>EXPIRED DATE</label>
                 <input type="date" id="apkExp">
                 <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
@@ -137,32 +206,95 @@
         </div>
     </div>
 
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
+        <div style="background:#12071f; border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
+            <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin:0 0 15px 0; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
+            <input type="hidden" id="editType">
+            <input type="hidden" id="editTargetId">
+            
+            <label>ACCESS KEY</label>
+            <input type="text" id="editKey">
+            
+            <div id="apkEditOnly" style="display:none;">
+                <label>PASSWORD</label>
+                <input type="text" id="editPass">
+                <label>TIER AKUN</label>
+                <select id="editTier">
+                    <option value="basic">Basic</option>
+                    <option value="ultra">Ultra</option>
+                    <option value="vixo">Vixo</option>
+                    <option value="delta">Delta</option>
+                    <option value="sonic">Sonic</option>
+                    <option value="lunar">Lunar</option>
+                    <option value="athena">Athena</option>
+                    <option value="private">Private</option>
+                </select>
+            </div>
+            
+            <label>EXPIRED DATE</label>
+            <input type="date" id="editExp">
+            <label>DEVICE LIMIT</label>
+            <input type="number" id="editLimit" min="1">
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
+                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const btnLogout = document.getElementById('btn-logout-panel');
+        if(btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.replace('login.html');
+            });
+        }
+    });
 
     function openTab(name) {
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         
         document.getElementById(name).style.display = 'block';
-        event.currentTarget.classList.add('active');
+        if(event && event.currentTarget) {
+            event.currentTarget.classList.add('active');
+        }
         document.getElementById('result').style.display = 'none';
+    }
+
+    function toggleCustomLimit(type) {
+        const selectVal = document.getElementById(type + 'Limit').value;
+        const divBox = document.getElementById(type + 'CustomDiv');
+        if(divBox) divBox.style.display = (selectVal === 'custom') ? 'block' : 'none';
     }
 
     async function generate(type) {
         const idInput = type === 'module' ? 'modId' : 'apkId';
         const expInput = type === 'module' ? 'modExp' : 'apkExp';
         
-        const id = document.getElementById(idInput).value;
+        const id = document.getElementById(idInput).value.trim();
         const exp = document.getElementById(expInput).value;
         
         if(!id || !exp) { alert("Harap isi semua kolom!"); return; }
 
-        const key = "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-        const path = type === 'module' ? `users/${id.trim()}` : `apk_access/${id.trim()}`;
-        
-        // Atur Limit Device secara dinamis
-        const limitVal = type === 'module' ? document.getElementById('modLimit').value : "1";
+        let limitVal = "1";
+        if (type === 'module') {
+            const choose = document.getElementById('modLimit').value;
+            limitVal = choose === 'custom' ? document.getElementById('modCustomLimit').value : choose;
+        } else {
+            const choose = document.getElementById('apkLimit').value;
+            limitVal = choose === 'custom' ? document.getElementById('apkCustomLimit').value : choose;
+        }
+
+        const key = type === 'module' ? "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase() : "APK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        const path = type === 'module' ? `users/${id}` : `apk_access/${id}`;
         
         const data = { 
             key: key, 
@@ -170,29 +302,33 @@
             status: "active",
             device_limit: limitVal
         };
+
+        if (type === 'apk') {
+            let pass = document.getElementById('apkPass').value.trim();
+            if (pass === "") pass = Math.random().toString(36).substring(2, 7).toUpperCase();
+            data.password = pass;
+            data.tier = document.getElementById('apkTier').value;
+        }
         
         try {
             await fetch(`${DB_URL}${path}.json`, { method: 'PUT', body: JSON.stringify(data) });
             
-            // Teks Status kecil di bawah tombol tetap aktif sebagai backup
             const resDiv = document.getElementById('result');
             resDiv.style.display = 'block';
             resDiv.innerText = "DONE! KEY: " + key;
 
-            // --- STRUKTUR DIALOG BANNER POP-UP SUKSES ---
             let dialogPesan = "";
             if(type === 'module') {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id.trim()}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limitVal} DEVICE\n\nLisensi berhasil disinkronisasi ke Cloud!`;
+                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: MODULE SYSTEM\n👤 ID BUYER: ${id}\n🔑 KEY: ${key}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limitVal} DEVICE\n\nLisensi berhasil disinkronisasi ke Cloud!`;
             } else {
-                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id.trim()}\n🔑 KEY/TOKEN: ${key}\n📅 EXPIRED: ${exp}\n\nData akses APK berhasil ditambahkan!`;
+                dialogPesan = `✨ SUCCESS GENERATE LICENSE ✨\n\n📌 TYPE: APK ACCESS\n👤 USERNAME: ${id}\n🔑 KEY/TOKEN: ${key}\n🔐 PASSWORD: ${data.password}\n🎖️ TIER: ${data.tier.toUpperCase()}\n📅 EXPIRED: ${exp}\n🔒 LIMIT: ${limitVal} DEVICE\n\nData akses APK berhasil ditambahkan!`;
             }
             
-            // Jalankan Pop-up Dialog
             alert(dialogPesan);
 
-            // Bersihkan kolom input form otomatis
             document.getElementById(idInput).value = '';
             document.getElementById(expInput).value = '';
+            if(type === 'apk') document.getElementById('apkPass').value = '';
             
         } catch(e) { 
             alert("Database Error! Gagal menembak lisensi."); 
@@ -217,42 +353,9 @@
                         card.classList.add('selected');
                     };
                     
-                    // Ambil badge tipe data [MOD] atau [APK]
-                    const labelBadge = type === 'users' ? '<b style="color:#38bdf8;">[MOD]</b>' : '<b style="color:#f43f5e;">[APK]</b>';
+                    const isMod = type === 'users';
+                    const labelBadge = isMod ? '<b style="color:#38bdf8;">[MOD]</b>' : '<b style="color:#f43f5e;">[APK]</b>';
                     const devLimit = obj[id].device_limit || '1';
-
-                    card.innerHTML = `
-                        <div class="member-info">
-                            <b>${labelBadge} ${id}</b>
-                            <p>KEY: ${obj[id].key || '-'} | EXP: ${obj[id].expired || '-'}</p>
-                            <p style="font-size:8px; color:#aaa;">LIMIT: ${devLimit} DEVICE | STATUS: ${obj[id].status || 'active'}</p>
-                        </div>
-                        <div class="trash-icon" onclick="deleteMember(event, '${type}', '${id}')">
-                            <i class="fas fa-trash-alt"></i>
-                        </div>`;
-                    listDiv.appendChild(card);
-                }
-            };
-
-            // Jalankan rendering jika ada data di root
-            if (data && data.users) render(data.users, 'users');
-            if (data && data.apk_access) render(data.apk_access, 'apk_access');
-            
-            if ((!data || !data.users) && (!data || !data.apk_access)) {
-                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
-            }
-        } catch (e) { 
-            listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync. Cek Firebase Rules Tuan!</p>'; 
-        }
-    }
-
-    async function deleteMember(event, type, id) {
-        event.stopPropagation();
-        if(confirm(`Hapus akses ${id}?`)) {
-            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
-            loadMembers(); // Refresh data setelah dihapus
-        }
-    }
-</script>
-</body>
-</html>
+                    
+                    const currentTier = obj[id].tier || 'basic';
+    
