@@ -22,7 +22,6 @@
             padding: 20px;
             position: relative;
         }
-        /* animasi background ungu */
         body::before {
             content: '';
             position: fixed;
@@ -177,34 +176,6 @@
             color: white;
             font-size: 0.8rem;
         }
-        .device-list {
-            background: rgba(0,0,0,0.5);
-            padding: 8px;
-            border-radius: 12px;
-            margin: 8px 0;
-        }
-        .device-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            padding: 4px 0;
-        }
-        .del-device {
-            color: #ff8888;
-            cursor: pointer;
-        }
-        .member-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-            margin-top: 8px;
-        }
-        .member-actions i {
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .fa-pen { color: #facc15; }
-        .fa-trash { color: #ff4d4d; }
         .result-msg {
             margin-top: 12px;
             color: #a3e635;
@@ -301,34 +272,6 @@
     </div>
 </div>
 
-<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1001; align-items:center; justify-content:center;">
-    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:380px; border:1px solid #bc13fe;">
-        <h3 style="color:white;">Edit Member</h3>
-        <label>Username</label>
-        <input type="text" id="editUser" readonly style="background:#1e2a3a;">
-        <label>Key</label>
-        <input type="text" id="editKey">
-        <label id="editPassLabel" style="display:none;">Password (APK)</label>
-        <input type="text" id="editPass" style="display:none;">
-        <label id="editTierLabel" style="display:none;">Tier (APK)</label>
-        <select id="editTier" style="display:none;">
-            <option>Basic</option><option>Ultra</option><option>Vixo</option><option>Delta</option>
-            <option>Sonic</option><option>Lunar</option><option>Athena</option><option>Privet</option>
-        </select>
-        <label>Expired Date</label>
-        <input type="date" id="editExp">
-        <label>Device Limit</label>
-        <select id="editLimit">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-            <option value="4">4</option><option value="5">5</option><option value="999">UNLIMITED</option>
-        </select>
-        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
-            <button id="saveEditBtn" style="background:#bc13fe; border:none; padding:8px 20px; border-radius:30px; color:white;">Save</button>
-            <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:8px 20px; border-radius:30px; color:white;">Cancel</button>
-        </div>
-    </div>
-</div>
-
 <script>
     (function() {
         // ========== LOGIN CHECK ==========
@@ -363,6 +306,7 @@
             });
             const activePane = panes[tabId];
             if (activePane) activePane.classList.add('active');
+            
             tabBtns.forEach(btn => {
                 if (btn.getAttribute('data-tab') === tabId) {
                     btn.classList.add('active');
@@ -370,6 +314,7 @@
                     btn.classList.remove('active');
                 }
             });
+            
             if (tabId === 'members') {
                 loadMembers();
             }
@@ -409,7 +354,7 @@
 
         function escapeHtml(str) {
             if (!str) return '';
-            return str.toString().replace(/&/g, "&amp;").replace(/</g, "<&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
         // ========== GENERATE MODULE ==========
@@ -480,7 +425,6 @@
                 container.innerHTML = '';
                 let any = false;
 
-                // Render Data Users Module
                 if (data && data.users) {
                     for (let id in data.users) {
                         any = true;
@@ -498,7 +442,6 @@
                     }
                 }
 
-                // Render Data APK Access
                 if (data && data.apk_access) {
                     for (let id in data.apk_access) {
                         any = true;
@@ -507,4 +450,23 @@
                         card.className = 'member-card';
                         card.innerHTML = `
                             <div class="member-info">
-                                <b>📱 ${escapeHtml(id)} (APK) <s
+                                <b>📱 ${escapeHtml(id)} (APK) <span class="tier-badge">${escapeHtml(obj.tier || 'Basic')}</span></b><br>
+                                🔑 KEY: ${escapeHtml(obj.key || '-')} | 🔒 PASS: ${escapeHtml(obj.password || '-')}<br>
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '1')}
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    }
+                }
+
+                if (!any) {
+                    container.innerHTML = '<div style="color:#aaa; text-align:center; font-size:0.8rem;">Tidak ada member aktif.</div>';
+                }
+            } catch(e) {
+                container.innerHTML = '<div style="color:#ff4d4d;">Gagal memuat database!</div>';
+            }
+        }
+    })();
+</script>
+</body>
+</html>
