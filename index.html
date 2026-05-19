@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - FIX TOTAL SCREEN BLOCK</title>
+    <title>XK TEAM CLOUD - CLEAN VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
             --accent-purple: #bc13fe; 
-            --lightning: #e0aaff; 
             --t-basic: #a1a1aa;
             --t-ultra: #06b6d4;
             --t-vixo: #10b981;
@@ -24,67 +23,37 @@
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            background-image: url('garou.png'); 
-            background-size: cover; background-position: center;
-            background-attachment: fixed; background-color: #000;
+            background-color: #0c0416;
         }
 
-        /* FIX 1: Lapisan hitam background dimatikan respon kliknya agar tidak menutupi tombol */
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.25); z-index: 1; pointer-events: none;
-        }
-
-        .lightning-border {
-            position: relative; padding: 2px; border-radius: 22px;
-            background: transparent; overflow: hidden;
+        .main-box {
             width: 92%; max-width: 420px;
-            z-index: 5;
-        }
-
-        /* FIX 2: Animasi petir dipaksa mengabaikan sentuhan jari (anti-blocking) */
-        .lightning-border::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(transparent, var(--accent-purple), var(--lightning), transparent 40%);
-            animation: rotate 3s linear infinite;
-            z-index: -1; pointer-events: none;
-        }
-
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-
-        /* FIX 3: Naikkan z-index wadah utama agar berada di paling depan */
-        .glass-container { 
-            position: relative;
-            background: rgba(12, 4, 22, 0.7); 
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            padding: 25px; border-radius: 20px; 
-            border: 1px solid rgba(188, 19, 254, 0.4);
-            text-align: center;
-            z-index: 100;
+            background: rgba(20, 10, 35, 0.9);
+            border: 2px solid var(--accent-purple);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
+            box-sizing: border-box;
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h2 { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; pointer-events: none; }
+        h2 { font-family: 'Orbitron'; font-weight: 700; color: #fff; text-shadow: 0 0 10px var(--accent-purple); font-size: 16px; margin: 0; }
         
         .logout-btn {
             background: #ff4d4d; border: none; padding: 6px 14px; border-radius: 20px;
             color: white; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
-            position: relative; z-index: 200;
         }
 
-        /* FIX 4: Menu tab ditinggikan layapannya dan dipastikan merespon ketukan layar HP */
-        .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; position: relative; z-index: 500; }
+        .tab-menu { display: flex; gap: 6px; margin-bottom: 18px; }
         .tab-btn {
             flex: 1; padding: 12px 0; border: 1px solid var(--accent-purple);
-            background: rgba(0, 0, 0, 0.8); color: #fff; border-radius: 8px;
+            background: rgba(0, 0, 0, 0.6); color: #fff; border-radius: 8px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9.5px;
-            transition: 0.2s; position: relative; z-index: 600;
-            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+            transition: 0.2s;
         }
         .tab-btn.active { background: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple); }
 
-        .form-section { display: none; text-align: left; position: relative; z-index: 150; }
+        .form-section { display: none; text-align: left; }
         .form-section.active { display: block; }
 
         label { color: #fff; font-size: 9.5px; font-weight: 600; display: block; margin-top: 12px; font-family: 'Poppins'; }
@@ -92,24 +61,20 @@
             width: 100%; padding: 10px 12px; margin: 5px 0 10px 0; border-radius: 8px; 
             border: 1px solid rgba(188, 19, 254, 0.5); 
             background: rgba(0, 0, 0, 0.85); color: #fff; box-sizing: border-box; outline: none;
-            font-size: 11.5px; font-family: 'Poppins'; position: relative; z-index: 200;
+            font-size: 11.5px; font-family: 'Poppins';
         }
         .custom-limit-box { display: none; }
 
-        /* FIX 5: Naikkan prioritas tombol generator */
         .gen-btn { 
             width: 100%; padding: 13px; background: var(--accent-purple);
             color: white; border: none; border-radius: 8px; 
-            font-family: 'Orbitron'; font-weight: 700; font-size: 11px; cursor: pointer;
-            position: relative; z-index: 300; margin-top: 12px;
-            touch-action: manipulation;
+            font-family: 'Orbitron'; font-weight: 700; font-size: 11px; cursor: pointer; margin-top: 12px;
         }
 
         .member-card {
             background: rgba(0, 0, 0, 0.75); border: 1px solid rgba(188, 19, 254, 0.3);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
-            position: relative; z-index: 250;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.15); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
@@ -133,7 +98,7 @@
         .t-athena { color: var(--t-athena); text-shadow: 0 0 4px var(--t-athena); } 
         .t-private { color: var(--t-private); text-shadow: 0 0 4px var(--t-private); }
 
-        .action-controls { display: none; gap: 12px; position: relative; z-index: 400; }
+        .action-controls { display: none; gap: 12px; }
         .member-card.selected .action-controls { display: flex; }
         .icon-btn { cursor: pointer; font-size: 13px; padding: 5px; }
         .icon-edit { color: #facc15; } .icon-trash { color: #ff4d4d; }
@@ -145,80 +110,78 @@
 </head>
 <body>
 
-    <div class="lightning-border">
-        <div class="glass-container">
-            <div class="header-area">
-                <h2>XK TEAM CLOUD</h2>
-                <button class="logout-btn" onclick="logout()">LOGOUT</button>
-            </div>
-            
-            <div class="tab-menu">
-                <button class="tab-btn active" id="btn-module" onclick="openTab('module')">MODULE</button>
-                <button class="tab-btn" id="btn-apk" onclick="openTab('apk')">APK</button>
-                <button class="tab-btn" id="btn-members" onclick="openTab('members'); loadMembers();">MEMBERS</button>
-            </div>
-
-            <div id="module" class="form-section active">
-                <label>DEVICE ID</label>
-                <input type="text" id="modId" placeholder="Android ID Buyer...">
-                <label>EXPIRED DATE</label>
-                <input type="date" id="modExp">
-                <label>DEVICE LIMIT</label>
-                <select id="modLimit" onchange="toggleCustomLimit('mod')">
-                    <option value="1">1 DEVICE</option>
-                    <option value="2">2 DEVICE</option>
-                    <option value="5">5 DEVICE</option>
-                    <option value="custom">CUSTOM LIMIT</option>
-                </select>
-                <div id="modCustomDiv" class="custom-limit-box">
-                    <label>INPUT CUSTOM LIMIT</label>
-                    <input type="number" id="modCustomLimit" value="1" min="1">
-                </div>
-                <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
-            </div>
-
-            <div id="apk" class="form-section">
-                <label>USERNAME APK</label>
-                <input type="text" id="apkId" placeholder="Buat Username...">
-                <label>PASSWORD (Kosong = Auto)</label>
-                <input type="text" id="apkPass" placeholder="Password akun...">
-                <label>TIER AKUN</label>
-                <select id="apkTier">
-                    <option value="basic">Basic</option>
-                    <option value="ultra">Ultra</option>
-                    <option value="vixo">Vixo</option>
-                    <option value="delta">Delta</option>
-                    <option value="sonic">Sonic</option>
-                    <option value="lunar">Lunar</option>
-                    <option value="athena">Athena</option>
-                    <option value="private">Private</option>
-                </select>
-                <label>DEVICE LIMIT</label>
-                <select id="apkLimit" onchange="toggleCustomLimit('apk')">
-                    <option value="1">1 DEVICE</option>
-                    <option value="2">2 DEVICE</option>
-                    <option value="5">5 DEVICE</option>
-                    <option value="custom">CUSTOM LIMIT</option>
-                </select>
-                <div id="apkCustomDiv" class="custom-limit-box">
-                    <label>INPUT CUSTOM LIMIT</label>
-                    <input type="number" id="apkCustomLimit" value="1" min="1">
-                </div>
-                <label>EXPIRED DATE</label>
-                <input type="date" id="apkExp">
-                <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
-            </div>
-
-            <div id="members" class="form-section">
-                <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
-            </div>
-
-            <div id="result"></div>
+    <div class="main-box">
+        <div class="header-area">
+            <h2>XK TEAM CLOUD</h2>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
         </div>
+        
+        <div class="tab-menu">
+            <button class="tab-btn active" id="btn-module" onclick="openTab('module')">MODULE</button>
+            <button class="tab-btn" id="btn-apk" onclick="openTab('apk')">APK</button>
+            <button class="tab-btn" id="btn-members" onclick="openTab('members'); loadMembers();">MEMBERS</button>
+        </div>
+
+        <div id="module" class="form-section active">
+            <label>DEVICE ID</label>
+            <input type="text" id="modId" placeholder="Android ID Buyer...">
+            <label>EXPIRED DATE</label>
+            <input type="date" id="modExp">
+            <label>DEVICE LIMIT</label>
+            <select id="modLimit" onchange="toggleCustomLimit('mod')">
+                <option value="1">1 DEVICE</option>
+                <option value="2">2 DEVICE</option>
+                <option value="5">5 DEVICE</option>
+                <option value="custom">CUSTOM LIMIT</option>
+            </select>
+            <div id="modCustomDiv" class="custom-limit-box">
+                <label>INPUT CUSTOM LIMIT</label>
+                <input type="number" id="modCustomLimit" value="1" min="1">
+            </div>
+            <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
+        </div>
+
+        <div id="apk" class="form-section">
+            <label>USERNAME APK</label>
+            <input type="text" id="apkId" placeholder="Buat Username...">
+            <label>PASSWORD (Kosong = Auto)</label>
+            <input type="text" id="apkPass" placeholder="Password akun...">
+            <label>TIER AKUN</label>
+            <select id="apkTier">
+                <option value="basic">Basic</option>
+                <option value="ultra">Ultra</option>
+                <option value="vixo">Vixo</option>
+                <option value="delta">Delta</option>
+                <option value="sonic">Sonic</option>
+                <option value="lunar">Lunar</option>
+                <option value="athena">Athena</option>
+                <option value="private">Private</option>
+            </select>
+            <label>DEVICE LIMIT</label>
+            <select id="apkLimit" onchange="toggleCustomLimit('apk')">
+                <option value="1">1 DEVICE</option>
+                <option value="2">2 DEVICE</option>
+                <option value="5">5 DEVICE</option>
+                <option value="custom">CUSTOM LIMIT</option>
+            </select>
+            <div id="apkCustomDiv" class="custom-limit-box">
+                <label>INPUT CUSTOM LIMIT</label>
+                <input type="number" id="apkCustomLimit" value="1" min="1">
+            </div>
+            <label>EXPIRED DATE</label>
+            <input type="date" id="apkExp">
+            <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
+        </div>
+
+        <div id="members" class="form-section">
+            <div id="memberList" style="max-height: 280px; overflow-y: auto; padding-right: 5px;"></div>
+        </div>
+
+        <div id="result"></div>
     </div>
 
     <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left; box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);">
+        <div style="background:rgba(14, 6, 24, 0.96); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
             <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
             <input type="hidden" id="editTargetId">
@@ -257,7 +220,6 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    // SINKRONISASI TOTAL: Mengatasi masalah parameter event hilang di engine browser HP tertentu
     function openTab(name) {
         document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -265,7 +227,6 @@
         const targetForm = document.getElementById(name);
         if(targetForm) targetForm.style.display = 'block';
         
-        // Cari tombol aktif secara manual lewat ID (Solusi paling anti-macet)
         const targetBtn = document.getElementById('btn-' + name);
         if(targetBtn) {
             targetBtn.classList.add('active');
@@ -405,4 +366,52 @@
             if(!obj) return;
 
             document.getElementById('editType').value = type;
-  
+            document.getElementById('editTargetId').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+
+            const apkOnlySection = document.getElementById('apkEditOnly');
+            if (type === 'apk_access') {
+                apkOnlySection.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
+            } else {
+                apkOnlySection.style.display = 'none';
+                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
+            }
+
+            document.getElementById('editModal').style.display = 'flex';
+        } catch(e) { alert("Gagal mengambil data detail!"); }
+    }
+
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    async function saveEdit() {
+        const type = document.getElementById('editType').value;
+        const id = document.getElementById('editTargetId').value;
+        
+        const data = {
+            key: document.getElementById('editKey').value.trim(),
+            expired: document.getElementById('editExp').value,
+            device_limit: document.getElementById('editLimit').value,
+            status: "active"
+        };
+
+        if (type === 'apk_access') {
+            data.password = document.getElementById('editPass').value.trim();
+            data.tier = document.getElementById('editTier').value;
+        }
+
+        try {
+            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+            closeModal();
+            loadMembers();
+        } catch(e) { alert("Gagal menyimpan perubahan!"); }
+    }
+</script>
+</body>
+</html>
