@@ -237,19 +237,14 @@
 <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:1001; align-items:center; justify-content:center; backdrop-filter: blur(8px);">
     <div style="background:rgba(15, 26, 47, 0.95); border-radius:24px; padding:25px; width:90%; max-width:400px; border:1px solid #bc13fe; box-shadow: 0 0 30px rgba(188,19,254,0.5);">
         <h3 style="color:white; font-family:'Orbitron'; font-size:1.1rem; margin-bottom:10px; text-shadow:0 0 5px #bc13fe;" id="modalTitle">Edit Member</h3>
-        
         <input type="hidden" id="editType">
-        
         <label>Target ID / Username</label>
         <input type="text" id="editUser" readonly style="background:rgba(255,255,255,0.05); color:#aaa; border-color:rgba(255,255,255,0.1);">
-        
         <label>Key Akses</label>
         <input type="text" id="editKey">
-        
         <div id="apkEditFields" style="display:none;">
             <label>Password</label>
             <input type="text" id="editPass">
-            
             <label>Tier Akun</label>
             <select id="editTier">
                 <option value="basic">Basic</option>
@@ -262,13 +257,10 @@
                 <option value="privet">Athena Privet</option>
             </select>
         </div>
-        
         <label>Expired Date</label>
         <input type="date" id="editExp">
-        
         <label>Device Limit</label>
         <input type="number" id="editLimit" min="1" max="999">
-        
         <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:25px;">
             <button id="saveEditBtn" style="background:linear-gradient(95deg, #6a0dad, #bc13fe); border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Save Changes</button>
             <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:10px 24px; border-radius:30px; color:white; font-weight:bold; cursor:pointer;">Cancel</button>
@@ -277,12 +269,16 @@
 </div>
 
 <script>
-    (function() {
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            window.location.href = 'login.html';
-            return;
-        }
+    // Amankan pengecekan login tanpa merusak eksekusi script utama
+    if (localStorage.getItem('admin_logged_in') !== 'true') {
+        alert("Sesi dikeluarkan! Harap masuk melalui login.html");
+        window.location.href = 'login.html';
+    }
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+        // ========== LOGOUT BUTTON ==========
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', function(e) {
@@ -292,9 +288,7 @@
             });
         }
 
-        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
-
-        // ========== TAB SWITCHING ==========
+        // ========== TAB SWITCHING MANAGEMENT ==========
         const tabBtns = document.querySelectorAll('.tab-btn');
         const panes = {
             module: document.getElementById('module-pane'),
@@ -303,8 +297,11 @@
         };
 
         function activateTab(tabId) {
-            Object.values(panes).forEach(pane => { if(pane) pane.classList.remove('active'); });
+            Object.keys(panes).forEach(key => {
+                if (panes[key]) panes[key].classList.remove('active');
+            });
             if (panes[tabId]) panes[tabId].classList.add('active');
+            
             tabBtns.forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
             });
@@ -314,21 +311,23 @@
         tabBtns.forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                activateTab(this.getAttribute('data-tab'));
+                const targetTab = this.getAttribute('data-tab');
+                activateTab(targetTab);
             });
         });
 
-        // ========== CUSTOM LIMIT HANDLERS ==========
+        // ========== LIMIT DROPDOWN SYSTEM ==========
         const modSelect = document.getElementById('modLimitSelect');
         const modCustomDiv = document.getElementById('modCustomContainer');
-        if (modSelect) {
+        if (modSelect && modCustomDiv) {
             modSelect.addEventListener('change', () => {
                 modCustomDiv.style.display = modSelect.value === 'custom' ? 'block' : 'none';
             });
         }
+        
         const apkSelect = document.getElementById('apkLimitSelect');
         const apkCustomDiv = document.getElementById('apkCustomContainer');
-        if (apkSelect) {
+        if (apkSelect && apkCustomDiv) {
             apkSelect.addEventListener('change', () => {
                 apkCustomDiv.style.display = apkSelect.value === 'custom' ? 'block' : 'none';
             });
@@ -347,15 +346,74 @@
             return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // ========== GENERATE MODULE ==========
-        document.getElementById('genModuleBtn').addEventListener('click', async () => {
-            const id = document.getElementById('modId').value.trim();
-            const exp = document.getElementById('modExp').value;
-            let limit = parseInt(modSelect.value);
-            if (modSelect.value === 'custom') {
-                limit = parseInt(document.getElementById('modCustomLimit').value);
-                if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
-            }
-            if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
-            const key = "XK-" + Math.random().toString
-    
+        // ========== ACTION: GENERATE MODULE ==========
+        const btnGenModule = document.getElementById('genModuleBtn');
+        if (btnGenModule) {
+            btnGenModule.addEventListener('click', async () => {
+                const id = document.getElementById('modId').value.trim();
+                const exp = document.getElementById('modExp').value;
+                let limit = parseInt(modSelect.value);
+                if (modSelect.value === 'custom') {
+                    limit = parseInt(document.getElementById('modCustomLimit').value);
+                    if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
+                }
+                if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
+                const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+                const data = { key, expired: exp, device_limit: limit, status: "active" };
+                try {
+                    await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                    showResult('modResult', `✅ MODULE GENERATED! KEY: ${key}`);
+                    document.getElementById('modId').value = '';
+                } catch(e) { alert('Database error!'); }
+            });
+        }
+
+        // ========== ACTION: GENERATE APK ==========
+        const btnGenApk = document.getElementById('genApkBtn');
+        if (btnGenApk) {
+            btnGenApk.addEventListener('click', async () => {
+                const username = document.getElementById('apkUser').value.trim();
+                let password = document.getElementById('apkPass').value.trim();
+                const exp = document.getElementById('apkExp').value;
+                const tier = document.getElementById('apkTier').value;
+                let limit = parseInt(apkSelect.value);
+                if (apkSelect.value === 'custom') {
+                    limit = parseInt(document.getElementById('apkCustomLimit').value);
+                    if (isNaN(limit) || limit < 1) { alert('Limit harus angka positif'); return; }
+                }
+                if (!username || !exp) { alert('Isi Username dan Expired!'); return; }
+                if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+                const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+                const data = { key, password, expired: exp, device_limit: limit, tier, status: "active" };
+                try {
+                    await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                    showResult('apkResult', `✅ APK ACCESS ADDED!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}`);
+                    document.getElementById('apkUser').value = '';
+                    document.getElementById('apkPass').value = '';
+                } catch(e) { alert('Database error!'); }
+            });
+        }
+
+        // ========== REFRESH BUTTON ==========
+        const refreshBtn = document.getElementById('refreshMembersBtn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', loadMembers);
+        }
+
+        // ========== OPERATION: LOAD MEMBERS ==========
+        async function loadMembers() {
+            const container = document.getElementById('memberList');
+            if (!container) return;
+            container.innerHTML = '<div style="color:white; text-align:center;">Loading database...</div>';
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                container.innerHTML = '';
+                let any = false;
+
+                if (data && data.users) {
+                    for (let id in data.users) {
+                        any = true;
+                        const obj = data.users[id];
+                        const card = document.createElement('div');
+                        card.cla
