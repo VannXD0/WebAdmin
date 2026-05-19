@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - ULTIMATE FIX</title>
+    <title>XK TEAM CLOUD - FINAL REWRITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -152,7 +152,7 @@
 
         <div class="header-area">
             <h2>XK TEAM CLOUD</h2>
-            <a href="javascript:void(0);" class="logout-link" id="click-logout">LOGOUT</a>
+            <a href="javascript:void(0);" class="logout-link" id="btn-logout-force">LOGOUT</a>
         </div>
         
         <div class="tab-menu">
@@ -262,26 +262,24 @@
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
 
-    // EVENT LISTENER UTAMA (ANTI-GAGAAL)
+    // SISTEM DETEKSI HARDWARE DISENTUH (ANTI CACHE BROWSER)
     document.addEventListener("DOMContentLoaded", () => {
-        // Otomatis load data ketika radio button 'tab3' (Members) diaktifkan
-        const tabMembersRadio = document.getElementById('tab3');
-        if(tabMembersRadio) {
-            tabMembersRadio.addEventListener('change', () => {
-                if(tabMembersRadio.checked) {
-                    loadMembers();
-                }
+        // Deteksi Perpindahan Tab 3
+        const targetTab = document.getElementById('tab3');
+        if(targetTab) {
+            targetTab.addEventListener('change', () => {
+                if(targetTab.checked) { loadMembers(); }
             });
         }
 
-        // Jalur pintas tombol logout murni lewat Event Listener
-        const btnLogout = document.getElementById('click-logout');
-        if(btnLogout) {
-            btnLogout.addEventListener('click', (e) => {
+        // Paksa Logout Ganti Halaman
+        const logoutTrigger = document.getElementById('btn-logout-force');
+        if(logoutTrigger) {
+            logoutTrigger.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('admin_logged_in');
                 sessionStorage.clear();
-                window.location.replace('login.html');
+                window.location.href = 'login.html'; 
             });
         }
     });
@@ -348,7 +346,7 @@
         try {
             listDiv.innerHTML = '';
 
-            // Ambil data dari path 'users'
+            // Ambil dari users
             try {
                 const resUsers = await fetch(`${DB_URL}users.json`);
                 const dataUsers = await resUsers.json();
@@ -356,9 +354,9 @@
                     hasData = true;
                     for (let id in dataUsers) { createCard(id, dataUsers[id], 'users', listDiv); }
                 }
-            } catch(e) { console.log("Gagal memuat folder users."); }
+            } catch(e) {}
 
-            // Ambil data dari path 'apk_access'
+            // Ambil dari apk_access
             try {
                 const resApk = await fetch(`${DB_URL}apk_access.json`);
                 const dataApk = await resApk.json();
@@ -366,10 +364,10 @@
                     hasData = true;
                     for (let id in dataApk) { createCard(id, dataApk[id], 'apk_access', listDiv); }
                 }
-            } catch(e) { console.log("Gagal memuat folder apk_access."); }
+            } catch(e) {}
 
             if(!hasData) {
-                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong.</p>';
+                listDiv.innerHTML = '<p style="text-align:center; color:#aaa; font-size:10px;">Database Kosong atau Tidak Terhubung.</p>';
             }
         } catch (e) { 
             listDiv.innerHTML = '<p style="color:red; text-align:center; font-size:10px;">Failed sync.</p>'; 
@@ -420,4 +418,6 @@
 
             document.getElementById('editType').value = type;
             document.getElementById('editTargetId').value = id;
-            document.getElementById('ed
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1'
