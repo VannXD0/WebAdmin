@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>XK TEAM CLOUD - Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-image: url('garou.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .glass-panel {
+            max-width: 550px;
+            width: 100%;
+            background: rgba(12,20,35,0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(188,19,254,0.5);
+            box-shadow: 0 0 30px rgba(188,19,254,0.2);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .header h2 {
+            font-family: 'Orbitron';
+            color: #fff;
+            text-shadow: 0 0 8px #bc13fe;
+            font-size: 1.3rem;
+        }
+        .logout-btn {
+            background: #ff4d4d;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0 15px;
+        }
+        .tab-btn {
+            flex: 1;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #bc13fe;
+            padding: 10px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: #bc13fe;
+            box-shadow: 0 0 12px #bc13fe;
+        }
+        .content-pane {
+            display: none;
+            margin-top: 10px;
+        }
+        .content-pane.active {
+            display: block;
+        }
+        label {
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #bc13fe;
+            border-radius: 30px;
+            color: white;
+            margin-top: 5px;
+            outline: none;
+        }
+        button.gen-btn {
+            width: 100%;
+            margin-top: 20px;
+            background: linear-gradient(95deg, #9a0cd3, #bc13fe);
+            border: none;
+            padding: 12px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .member-card {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #bc13fe;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .member-info {
+            color: #ddd;
+            font-size: 0.75rem;
+        }
+        .member-info b {
+            color: white;
+            font-size: 0.8rem;
+        }
+        .device-list {
+            background: #0a0f1a;
+            padding: 8px;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            padding: 4px 0;
+        }
+        .del-device {
+            color: #ff8888;
+            cursor: pointer;
+        }
+        .member-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .member-actions i {
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .fa-pen { color: #facc15; }
+        .fa-trash { color: #ff4d4d; }
+        .result-msg {
+            margin-top: 12px;
+            color: #0f0;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+        .custom-limit-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="glass-panel">
+    <div class="header">
+        <h2><i class="fas fa-cloud-upload-alt"></i> XK TEAM CLOUD</h2>
+        <button class="logout-btn" id="logoutBtn">LOGOUT</button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab-btn" data-tab="module">MODULE</div>
+        <div class="tab-btn" data-tab="apk">APK</div>
+        <div class="tab-btn" data-tab="members">MEMBERS</div>
+    </div>
+
+    <!-- MODULE PANEL -->
+    <div id="module-pane" class="content-pane">
+        <label>DEVICE ID</label>
+        <input type="text" id="modId" placeholder="Android ID">
+        <label>EXPIRED DATE</label>
+        <input type="date" id="modExp">
+        <label>DEVICE LIMIT</label>
+        <select id="modLimit">
+            <option value="1">1 DEVICE</option>
+            <option value="5">5 DEVICE</option>
+            <option value="999">UNLIMITED</option>
+        </select>
+        <button class="gen-btn" id="genModuleBtn">GENERATE MODULE</button>
+        <div id="modResult" class="result-msg"></div>
+    </div>
+
+    <!-- APK PANEL -->
+    <div id="apk-pane" class="content-pane">
+        <label>USERNAME</label>
+        <input type="text" id="apkUser" placeholder="Username APK">
+        <label>PASSWORD (kosong = auto)</label>
+        <input type="text" id="apkPass" placeholder="Password (optional)">
+        <label>DEVICE LIMIT</label>
+        <select id="apkLimitSelect">
+            <option value="1">1 DEVICE</option>
+            <option value="2">2 DEVICE</option>
+            <option value="3">3 DEVICE</option>
+            <option value="4">4 DEVICE</option>
+            <option value="5">5 DEVICE</option>
+            <option value="custom">Custom (angka)</option>
+        </select>
+        <div id="customLimitContainer" class="custom-limit-container">
+            <label>Custom Limit</label>
+            <input type="number" id="customLimit" min="1" max="999" value="1">
+        </div>
+        <label>EXPIRED DATE</label>
+        <input type="date" id="apkExp">
+        <button class="gen-btn" id="genApkBtn">ADD APK ACCESS</button>
+        <div id="apkResult" class="result-msg"></div>
+    </div>
+
+    <!-- MEMBERS PANEL -->
+    <div id="members-pane" class="content-pane">
+        <button id="refreshMembersBtn" style="background:#bc13fe; border:none; padding:6px 12px; border-radius:30px; color:white; margin-bottom:12px; cursor:pointer;"><i class="fas fa-sync-alt"></i> Refresh</button>
+        <div id="memberList">Loading members...</div>
+    </div>
+</div>
+
+<!-- MODAL EDIT -->
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#0f1a2f; border-radius:24px; padding:20px; width:90%; max-width:360px; border:1px solid #bc13fe;">
+        <h3 style="color:white; margin-bottom:12px;">Edit Member</h3>
+        <label>Username</label>
+        <input type="text" id="editUser" readonly style="background:#1e2a3a;">
+        <label>Key</label>
+        <input type="text" id="editKey">
+        <label id="editPassLabel" style="display:none;">Password</label>
+        <input type="text" id="editPass" style="display:none;">
+        <label>Expired</label>
+        <input type="date" id="editExp">
+        <label>Device Limit</label>
+        <select id="editLimit">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="999">UNLIMITED</option>
+        </select>
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
+            <button id="saveEditBtn" style="background:#bc13fe; border:none; padding:8px 20px; border-radius:30px; color:white;">Save</button>
+            <button id="closeModalBtn" style="background:#ff4d4d; border:none; padding:8px 20px; border-radius:30px; color:white;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ========== CEK LOGIN, JIKA BELUM REDIRECT KE login.html ==========
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // LOGOUT
+        document.getElementById('logoutBtn').onclick = () => {
+            localStorage.removeItem('admin_logged_in');
+            window.location.href = 'login.html';
+        };
+
+        const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
+
+        // ---------- TAB SWITCHING ----------
+        const tabs = document.querySelectorAll('.tab-btn');
+        const panes = {
+            module: document.getElementById('module-pane'),
+            apk: document.getElementById('apk-pane'),
+            members: document.getElementById('members-pane')
+        };
+        function setActiveTab(tabId) {
+            for (let [id, pane] of Object.entries(panes)) {
+                pane.classList.remove('active');
+            }
+            panes[tabId].classList.add('active');
+            for (let btn of tabs) {
+                if (btn.getAttribute('data-tab') === tabId) btn.classList.add('active');
+                else btn.classList.remove('active');
+            }
+            if (tabId === 'members') loadMembers();
+        }
+        for (let btn of tabs) {
+            btn.onclick = () => {
+                let tab = btn.getAttribute('data-tab');
+                setActiveTab(tab);
+            };
+        }
+        setActiveTab('module');
+
+        // Custom limit logic
+        const limitSelect = document.getElementById('apkLimitSelect');
+        const customContainer = document.getElementById('customLimitContainer');
+        limitSelect.onchange = () => {
+            customContainer.style.display = limitSelect.value === 'custom' ? 'block' : 'none';
+        };
+        customContainer.style.display = 'none';
+
+        // Helper show result
+        function showResult(divId, msg) {
+            let div = document.getElementById(divId);
+            div.innerHTML = msg;
+            div.style.display = 'block';
+            setTimeout(() => { div.innerHTML = ''; }, 4000);
+        }
+
+        // ---------- GENERATE MODULE ----------
+        document.getElementById('genModuleBtn').onclick = async () => {
+            const id = document.getElementById('modId').value.trim();
+            const exp = document.getElementById('modExp').value;
+            const limit = document.getElementById('modLimit').value;
+            if (!id || !exp) { alert('Isi Device ID dan Expired!'); return; }
+            const key = "XK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+            const data = { key, expired: exp, device_limit: parseInt(limit), status: "active" };
+            try {
+                await fetch(`${DB_URL}users/${id}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('modResult', `✅ DONE! KEY: ${key}`);
+                if (panes.members.classList.contains('active')) loadMembers();
+            } catch(e) { alert('Database error!'); }
+        };
+
+        // ---------- GENERATE APK ----------
+        document.getElementById('genApkBtn').onclick = async () => {
+            const username = document.getElementById('apkUser').value.trim();
+            let password = document.getElementById('apkPass').value.trim();
+            const exp = document.getElementById('apkExp').value;
+            let limit = parseInt(limitSelect.value);
+            if (limitSelect.value === 'custom') {
+                let custom = parseInt(document.getElementById('customLimit').value);
+                if (isNaN(custom) || custom < 1) { alert('Custom limit harus angka positif'); return; }
+                limit = custom;
+            }
+            if (!username || !exp) { alert('Isi Username dan Expired'); return; }
+            if (password === "") password = Math.random().toString(36).substring(2,8).toUpperCase();
+            const key = "APK-" + Math.random().toString(36).substring(2,8).toUpperCase();
+            const data = { key, password, expired: exp, device_limit: limit, devices: {}, status: "active" };
+            try {
+                await fetch(`${DB_URL}apk_access/${username}.json`, { method: 'PUT', body: JSON.stringify(data) });
+                showResult('apkResult', `✅ DONE!<br>🔑 KEY: ${key}<br>🔒 PASS: ${password}<br>📱 LIMIT: ${limit}`);
+                if (panes.members.classList.contains('active')) loadMembers();
+            } catch(e) { alert('Database error!'); }
+        };
+
+        // ---------- LOAD MEMBERS ----------
+        async function loadMembers() {
+            const listDiv = document.getElementById('memberList');
+            listDiv.innerHTML = '<div style="color:white;">Loading...</div>';
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                listDiv.innerHTML = '';
+                let hasData = false;
+                // MODULE (users)
+                if (data.users && typeof data.users === 'object') {
+                    for (let id in data.users) {
+                        hasData = true;
+                        const obj = data.users[id];
+                        const card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML = `
+                            <div class="member-info">
+                                <b>${escapeHtml(id)} (MODULE)</b><br>
+                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
+                            </div>
+                            <div class="member-actions">
+                                <i class="fas fa-pen" data-type="users" data-id="${escapeHtml(id)}" data-edit></i>
+                                <i class="fas fa-trash" data-type="users" data-id="${escapeHtml(id)}" data-del></i>
+                            </div>
+                        `;
+                        listDiv.appendChild(card);
+                    }
+                }
+                // APK access
+                if (data.apk_access && typeof data.apk_access === 'object') {
+                    for (let id in data.apk_access) {
+                        hasData = true;
+                        const obj = data.apk_access[id];
+                        let devicesHtml = '<div class="device-list"><strong>📱 Registered devices:</strong>';
+                        if (obj.devices && Object.keys(obj.devices).length) {
+                            for (let dev in obj.devices) {
+                                devicesHtml += `<div class="device-item"><span>${escapeHtml(dev)}</span><span class="del-device" data-key="${escapeHtml(id)}" data-device="${escapeHtml(dev)}">🗑️</span></div>`;
+                            }
+                        } else {
+                            devicesHtml += '<div><em>No devices</em></div>';
+                        }
+                        devicesHtml += '</div>';
+                        const card = document.createElement('div');
+                        card.className = 'member-card';
+                        card.innerHTML = `
+                            <div class="member-info">
+                                <b>${escapeHtml(id)} (APK)</b><br>
+                                🔑 KEY: ${escapeHtml(obj.key || '-')}<br>
+                                ${obj.password ? `🔒 PASS: ${escapeHtml(obj.password)}<br>` : ''}
+                                📅 EXP: ${escapeHtml(obj.expired || '-')} | 📱 LIMIT: ${escapeHtml(obj.device_limit || '-')}
+                            </div>
+                            ${devicesHtml}
+                            <div class="member-actions">
+                                <i class="fas fa-pen" data-type="apk_access" data-id="${escapeHtml(id)}" data-edit></i>
+                                <i class="fas fa-trash" data-type="apk_access" data-id="${escapeHtml(id)}" data-del></i>
+                            </div>
+                        `;
+                        listDiv.appendChild(card);
+                    }
+                }
+                if (!hasData) listDiv.innerHTML = '<div style="color:#aaa;">No members found</div>';
+
+                // Attach delete device events
+                document.querySelectorAll('.del-device').forEach(el => {
+                    el.onclick = async (e) => {
+                        e.stopPropagation();
+                        const key = el.getAttribute('data-key');
+                        const device = el.getAttribute('data-device');
+                        if (confirm(`Hapus device ${device} dari ${key}?`)) {
+                            await fetch(`${DB_URL}apk_access/${key}/devices/${device}.json`, { method: 'DELETE' });
+                            loadMembers();
+                        }
+                    };
+                });
+                // Edit & Delete member events
+                document.querySelectorAll('[data-edit]').forEach(el => {
+                    el.onclick = () => {
+                        const type = el.getAttribute('data-type');
+                        const id = el.getAttribute('data-id');
+                        openEditModal(type, id);
+                    };
+                });
+                document.querySelectorAll('[data-del]').forEach(el => {
+                    el.onclick = async () => {
+                        const type = el.getAttribute('data-type');
+                        const id = el.getAttribute('data-id');
+                        if (confirm(`Hapus ${id} ?`)) {
+                            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
+                            loadMembers();
+                        }
+                    };
+                });
+            } catch(e) {
+                listDiv.innerHTML = '<div style="color:red;">Error loading members</div>';
+            }
+        }
+
+        let currentEditType = null, currentEditId = null;
+        async function openEditModal(type, id) {
+            currentEditType = type;
+            currentEditId = id;
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const data = await res.json();
+            if (!data) return;
+            document.getElementById('editUser').value = id;
+            document.getElementById('editKey').value = data.key || '';
+            document.getElementById('editExp').value = data.expired || '';
+            document.getElementById('editLimit').value = data.device_limit || 1;
+            const isApk = (type === 'apk_access');
+            const passLabel = document.getElementById('editPassLabel');
+            const passInput = document.getElementById('editPass');
+            if (isApk) {
+                passLabel.style.display = 'block';
+                passInput.style.display = 'block';
+                passInput.value = data.password || '';
+            } else {
+                passLabel.style.display = 'none';
+                passInput.style.display = 'none';
+            }
+            docu
