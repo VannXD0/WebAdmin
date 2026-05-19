@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - ULTRA RESPONSIVE</title>
+    <title>XK TEAM CLOUD - NO-JS TAB</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -31,6 +31,9 @@
             background-attachment: fixed;
         }
 
+        /* Sembunyikan Radio Input asli */
+        .tab-switcher { display: none; }
+
         .main-box {
             width: 92%; max-width: 420px;
             background: #12071f;
@@ -51,32 +54,41 @@
         .logout-btn {
             background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
             color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
-            text-decoration: none; display: inline-block; text-align: center;
+            text-decoration: none;
         }
 
-        /* STRUKTUR TAB BARU: Menggunakan Tag Anchor (Link) agar Lolos Sensor Browser Mobile */
+        /* MENU TAB PAKAI LABEL (KLIK LANGSUNG DIRESPON HARDWARE HP) */
         .tab-menu { 
             display: flex; gap: 8px; margin-bottom: 20px; 
             background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .tab-btn {
+        .tab-label {
             flex: 1; padding: 11px 0; text-align: center;
-            background: transparent; color: #777; border-radius: 7px;
+            color: #777; border-radius: 7px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9px;
-            text-decoration: none; display: block;
             transition: 0.2s; -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            display: block; user-select: none;
         }
-        .tab-btn.active { 
+
+        /* KONTROL LOGIKA CSS MURNI UNTUK MENYALAKAN TAB ACTIVATED */
+        #tab1:checked ~ .tab-menu .label-mod,
+        #tab2:checked ~ .tab-menu .label-apk,
+        #tab3:checked ~ .tab-menu .label-mem {
             background: rgba(188, 19, 254, 0.25); 
             color: #fff; 
             border: 1px solid rgba(188, 19, 254, 0.7);
             box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
         }
 
+        /* KONTROL TAMPILAN FORM (TANPA JAVASCRIPT) */
         .form-section { display: none; text-align: left; }
-        .form-section.active { display: block; }
+        
+        #tab1:checked ~ #module,
+        #tab2:checked ~ #apk,
+        #tab3:checked ~ #members { 
+            display: block !important; 
+        }
 
         label { color: rgba(255, 255, 255, 0.85); font-size: 9.5px; font-weight: 600; display: block; margin-top: 14px; font-family: 'Poppins'; }
         input, select { 
@@ -94,14 +106,14 @@
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: 700; font-size: 10.5px; cursor: pointer; margin-top: 15px;
             box-shadow: 0 4px 12px rgba(188, 19, 254, 0.4);
-            touch-action: manipulation; display: block; text-align: center; text-decoration: none;
+            display: block; text-align: center; text-decoration: none;
+            box-sizing: border-box;
         }
 
         .member-card {
             background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
+            border-radius: 10px; padding: 12px; margin-bottom: 8px;
             display: flex; justify-content: space-between; align-items: center;
-            -webkit-tap-highlight-color: transparent;
         }
         .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
@@ -137,18 +149,22 @@
 <body>
 
     <div class="main-box">
+        <input type="radio" name="cloud-tabs" id="tab1" class="tab-switcher" checked>
+        <input type="radio" name="cloud-tabs" id="tab2" class="tab-switcher">
+        <input type="radio" name="cloud-tabs" id="tab3" class="tab-switcher">
+
         <div class="header-area">
             <h2>XK TEAM CLOUD</h2>
-            <a href="#" class="logout-btn" role="button" id="btn-logout">LOGOUT</a>
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
         </div>
         
         <div class="tab-menu">
-            <a href="#" class="tab-btn active" id="btn-module">MODULE</a>
-            <a href="#" class="tab-btn" id="btn-apk">APK</a>
-            <a href="#" class="tab-btn" id="btn-members">MEMBERS</a>
+            <label for="tab1" class="tab-label label-mod">MODULE</label>
+            <label for="tab2" class="tab-label label-apk">APK</label>
+            <label for="tab3" class="tab-label label-mem" onclick="loadMembers()">MEMBERS</label>
         </div>
 
-        <div id="module" class="form-section active">
+        <div id="module" class="form-section">
             <label>DEVICE ID</label>
             <input type="text" id="modId" placeholder="Android ID Buyer...">
             <label>EXPIRED DATE</label>
@@ -164,7 +180,7 @@
                 <label>INPUT CUSTOM LIMIT</label>
                 <input type="number" id="modCustomLimit" value="1" min="1">
             </div>
-            <a href="#" class="gen-btn" id="submit-module">GENERATE MODULE</a>
+            <button class="gen-btn" onclick="generate('module')">GENERATE MODULE</button>
         </div>
 
         <div id="apk" class="form-section">
@@ -196,7 +212,7 @@
             </div>
             <label>EXPIRED DATE</label>
             <input type="date" id="apkExp">
-            <a href="#" class="gen-btn" id="submit-apk">ADD APK ACCESS</a>
+            <button class="gen-btn" onclick="generate('apk')">ADD APK ACCESS</button>
         </div>
 
         <div id="members" class="form-section">
@@ -237,58 +253,14 @@
             <input type="number" id="editLimit" min="1">
             
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <a href="#" id="modal-save" style="flex:1; background:#bc13fe; color:white; padding:11px; border-radius:6px; font-weight:700; font-family:'Orbitron'; font-size:10.5px; text-align:center; text-decoration:none;">SAVE</a>
-                <a href="#" id="modal-cancel" style="flex:1; background:#ff4d4d; color:white; padding:11px; border-radius:6px; font-weight:700; font-family:'Orbitron'; font-size:10.5px; text-align:center; text-decoration:none;">CANCEL</a>
+                <button onclick="saveEdit()" style="flex:1; background:#bc13fe; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">SAVE</button>
+                <button onclick="closeModal()" style="flex:1; background:#ff4d4d; color:white; border:none; padding:11px; border-radius:6px; font-weight:700; cursor:pointer; font-family:'Orbitron'; font-size:10.5px;">CANCEL</button>
             </div>
         </div>
     </div>
 
 <script>
     const DB_URL = "https://module-database-d76ed-default-rtdb.firebaseio.com/";
-
-    // SISTEM DETEKSI SENTUHAN ULTRA RESPONSIF MOBILE (TOUCH + CLICK MOCK)
-    function bindFastClick(elementId, callback) {
-        const el = document.getElementById(elementId);
-        if(!el) return;
-        
-        let moved = false;
-        el.addEventListener('touchmove', () => { moved = true; });
-        el.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            if(!moved) callback(e);
-            moved = false;
-        });
-        el.addEventListener('click', (e) => {
-            e.preventDefault();
-            callback(e);
-        });
-    }
-
-    // Bind Aksi Utama Cloud Admin
-    document.addEventListener("DOMContentLoaded", () => {
-        bindFastClick('btn-module', () => openTab('module'));
-        bindFastClick('btn-apk', () => openTab('apk'));
-        bindFastClick('btn-members', () => { openTab('members'); loadMembers(); });
-        bindFastClick('btn-logout', () => logout());
-        bindFastClick('submit-module', () => generate('module'));
-        bindFastClick('submit-apk', () => generate('apk'));
-        bindFastClick('modal-save', () => saveEdit());
-        bindFastClick('modal-cancel', () => closeModal());
-    });
-
-    function openTab(name) {
-        document.querySelectorAll('.form-section').forEach(s => s.style.display = 'none');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        
-        const targetForm = document.getElementById(name);
-        if(targetForm) targetForm.style.display = 'block';
-        
-        const targetBtn = document.getElementById('btn-' + name);
-        if(targetBtn) targetBtn.classList.add('active');
-        
-        const resDiv = document.getElementById('result');
-        if(resDiv) resDiv.style.display = 'none';
-    }
 
     function toggleCustomLimit(type) {
         const selectVal = document.getElementById(type + 'Limit').value;
@@ -373,15 +345,7 @@
     function createCard(id, obj, type, parent) {
         const card = document.createElement('div');
         card.className = 'member-card';
-        
-        // Proteksi klik kartu member list
-        const handleSelect = (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        };
-        card.addEventListener('touchend', handleSelect);
-        card.addEventListener('click', handleSelect);
+        card.setAttribute('onclick', "document.querySelectorAll('.member-card').forEach(c => c.classList.remove('selected')); this.classList.add('selected');");
 
         const isMod = type === 'users';
         const badgeHTML = isMod ? '<span class="badge-type b-mod">[MOD]</span>' : '<span class="badge-type b-apk">[APK]</span>';
@@ -397,24 +361,63 @@
                 <p>EXP: ${obj.expired || '-'} | LIMIT: ${obj.device_limit || '1'}</p>
             </div>
             <div class="action-controls">
-                <div class="icon-btn icon-edit" id="edit-${type}-${id}">
+                <div class="icon-btn icon-edit" onclick="event.stopPropagation(); openEditModal(event, '${type}', '${id}')">
                     <i class="fas fa-edit"></i>
                 </div>
-                <div class="icon-btn icon-trash" id="del-${type}-${id}">
+                <div class="icon-btn icon-trash" onclick="event.stopPropagation(); deleteMember(event, '${type}', '${id}')">
                     <i class="fas fa-trash-alt"></i>
                 </div>
             </div>`;
         parent.appendChild(card);
+    }
 
-        // Bind tombol edit dan hapus internal card secara instan
-        setTimeout(() => {
-            const btnEdit = document.getElementById(`edit-${type}-${id}`);
-            const btnDel = document.getElementById(`del-${type}-${id}`);
-            
-            if(btnEdit) {
-                btnEdit.addEventListener('click', (e) => { e.stopPropagation(); openEditModal(e, type, id); });
-                btnEdit.addEventListener('touchend', (e) => { e.stopPropagation(); openEditModal(e, type, id); });
+    async function deleteMember(event, type, id) {
+        if(confirm(`Hapus akses ${id}?`)) {
+            await fetch(`${DB_URL}${type}/${id}.json`, { method: 'DELETE' });
+            loadMembers();
+        }
+    }
+
+    async function openEditModal(event, type, id) {
+        try {
+            const res = await fetch(`${DB_URL}${type}/${id}.json`);
+            const obj = await res.json();
+            if(!obj) return;
+
+            document.getElementById('editType').value = type;
+            document.getElementById('editTargetId').value = id;
+            document.getElementById('editKey').value = obj.key || '';
+            document.getElementById('editExp').value = obj.expired || '';
+            document.getElementById('editLimit').value = obj.device_limit || '1';
+
+            const apkOnlySection = document.getElementById('apkEditOnly');
+            if (type === 'apk_access') {
+                apkOnlySection.style.display = 'block';
+                document.getElementById('editPass').value = obj.password || '';
+                document.getElementById('editTier').value = obj.tier || 'basic';
+                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
+            } else {
+                apkOnlySection.style.display = 'none';
+                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
             }
-            if(btnDel) {
-                btnDel.addEventListener('click', (e) => { e.stopPropagation(); deleteMember(e, type, id); });
-                btnDel.addEventLi
+
+            document.getElementById('editModal').style.display = 'flex';
+        } catch(e) { alert("Gagal mengambil data detail!"); }
+    }
+
+    function closeModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    async function saveEdit() {
+        const type = document.getElementById('editType').value;
+        const id = document.getElementById('editTargetId').value;
+        
+        const data = {
+            key: document.getElementById('editKey').value.trim(),
+            expired: document.getElementById('editExp').value,
+            device_limit: document.getElementById('editLimit').value,
+            status: "active"
+        };
+
+        if (type === 'apk_
