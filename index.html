@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>XK TEAM CLOUD - AURORA EDITION</title>
+    <title>XK TEAM CLOUD - AURORA FINAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -24,31 +24,25 @@
             margin: 0; padding: 0; width: 100%; min-height: 100%;
             font-family: 'Poppins', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            /* EFEK AURORA NEBULA: Kombinasi gradient lembut di pojok kiri bawah & kanan atas */
+            /* Latar belakang Aurora menyatu di body, anti-blocking klik */
             background: 
-                radial-gradient(circle at 10% 90%, rgba(188, 19, 254, 0.15), transparent 45%),
-                radial-gradient(circle at 90% 10%, rgba(0, 229, 255, 0.12), transparent 45%),
-                #07030d;
+                radial-gradient(circle at 15% 85%, rgba(188, 19, 254, 0.22), transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(0, 229, 255, 0.18), transparent 50%),
+                #07020d;
             background-attachment: fixed;
         }
 
-        /* Wadah Utama Elegan Tanpa Blocking Lapisan */
+        /* Kotak Utama - Dipaksa berada di lapisan paling depan */
         .main-box {
             width: 92%; max-width: 420px;
-            background: rgba(14, 8, 24, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            /* Border gradasi ganda tipis mewah */
-            border: 1px solid rgba(188, 19, 254, 0.35);
+            background: #12071f; /* Warna solid gelap elegan, tanpa blur agar enteng */
+            border: 1px solid rgba(188, 19, 254, 0.4);
             border-radius: 16px;
             padding: 25px;
-            /* Efek pendaran neon tipis di luar kotak form */
-            box-shadow: 
-                -5px 10px 30px rgba(188, 19, 254, 0.1), 
-                5px -10px 30px rgba(0, 229, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.15);
             box-sizing: border-box;
             position: relative;
-            z-index: 10;
+            z-index: 9999; /* Lapisan tertinggi */
         }
 
         .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
@@ -59,44 +53,43 @@
         }
         
         .logout-btn {
-            background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
+            background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; padding: 6px 14px; border-radius: 20px;
             color: #ff4d4d; font-weight: 600; cursor: pointer; font-size: 8px; font-family: 'Orbitron';
-            transition: 0.2s;
+            transition: 0.2s; -webkit-tap-highlight-color: transparent;
         }
         .logout-btn:active { background: #ff4d4d; color: white; }
 
-        /* Desain Menu Tab Presisi Mirip Gambar Preview */
         .tab-menu { 
             display: flex; gap: 8px; margin-bottom: 20px; 
-            background: rgba(0, 0, 0, 0.4); padding: 4px; border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5); padding: 4px; border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .tab-btn {
-            flex: 1; padding: 10px 0; border: none;
-            background: transparent; color: #888; border-radius: 7px;
+            flex: 1; padding: 11px 0; border: none;
+            background: transparent; color: #777; border-radius: 7px;
             cursor: pointer; font-family: 'Orbitron'; font-weight: 600; font-size: 9px;
             transition: 0.2s; -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            touch-action: manipulation; /* Mempercepat respon ketukan di HP */
         }
         .tab-btn.active { 
-            background: rgba(188, 19, 254, 0.2); 
+            background: rgba(188, 19, 254, 0.25); 
             color: #fff; 
-            border: 1px solid rgba(188, 19, 254, 0.6);
-            box-shadow: 0 0 10px rgba(188, 19, 254, 0.3);
+            border: 1px solid rgba(188, 19, 254, 0.7);
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.4);
         }
 
         .form-section { display: none; text-align: left; }
         .form-section.active { display: block; }
 
-        label { color: rgba(255, 255, 255, 0.8); font-size: 9px; font-weight: 600; display: block; margin-top: 14px; font-family: 'Poppins'; letter-spacing: 0.3px; }
+        label { color: rgba(255, 255, 255, 0.85); font-size: 9.5px; font-weight: 600; display: block; margin-top: 14px; font-family: 'Poppins'; }
         input, select { 
             width: 100%; padding: 11px 14px; margin: 6px 0 10px 0; border-radius: 8px; 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            background: rgba(5, 2, 10, 0.7); color: #fff; box-sizing: border-box; outline: none;
+            background: #000000; color: #fff; box-sizing: border-box; outline: none;
             font-size: 11.5px; font-family: 'Poppins';
-            transition: 0.2s;
+            position: relative; z-index: 10000;
         }
-        input:focus, select:focus { border-color: var(--accent-purple); box-shadow: 0 0 8px rgba(188, 19, 254, 0.2); }
+        input:focus, select:focus { border-color: var(--accent-purple); }
         .custom-limit-box { display: none; }
 
         .gen-btn { 
@@ -104,17 +97,18 @@
             background: linear-gradient(135deg, var(--accent-purple), #7902d4);
             color: white; border: none; border-radius: 8px; 
             font-family: 'Orbitron'; font-weight: 700; font-size: 10.5px; cursor: pointer; margin-top: 15px;
-            box-shadow: 0 4px 12px rgba(188, 19, 254, 0.3);
+            box-shadow: 0 4px 12px rgba(188, 19, 254, 0.4);
             touch-action: manipulation; transition: 0.1s;
+            position: relative; z-index: 10000;
         }
-        .gen-btn:active { transform: scale(0.98); box-shadow: 0 2px 6px rgba(188, 19, 254, 0.3); }
+        .gen-btn:active { transform: scale(0.98); }
 
         .member-card {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 10px; padding: 12px; margin-bottom: 8px; cursor: pointer;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.08); }
+        .member-card.selected { border-color: var(--accent-purple); background: rgba(188, 19, 254, 0.12); }
         .member-info b { color: #fff; font-size: 12.5px; font-weight: 600; }
         .member-info p { margin: 3px 0 0 0; font-size: 9.5px; color: #aaa; line-height: 1.4; }
         
@@ -124,7 +118,7 @@
         .badge-tier { 
             font-size: 7.5px; padding: 2px 7px; border-radius: 10px; border: 1px solid currentColor; 
             font-weight: 700; font-family: 'Orbitron'; margin-left: 6px; text-transform: uppercase; 
-            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.5);
+            display: inline-block; vertical-align: middle; background: rgba(0,0,0,0.6);
         }
         .t-basic { color: var(--t-basic) !important; text-shadow: 0 0 5px var(--t-basic); } 
         .t-ultra { color: var(--t-ultra) !important; text-shadow: 0 0 5px var(--t-ultra); } 
@@ -217,8 +211,8 @@
         <div id="result"></div>
     </div>
 
-    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center;">
-        <div style="background:rgba(14, 6, 24, 0.98); border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
+    <div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
+        <div style="background:#14071f; border-radius:15px; padding:22px; width:85%; max-width:360px; border:1px solid #bc13fe; text-align: left;">
             <h3 style="color:white; font-family:'Orbitron'; font-weight:700; font-size:13px; margin-bottom:15px; text-align:center;" id="modalTitle">EDIT ACCESS</h3>
             <input type="hidden" id="editType">
             <input type="hidden" id="editTargetId">
@@ -413,4 +407,10 @@
                 apkOnlySection.style.display = 'block';
                 document.getElementById('editPass').value = obj.password || '';
                 document.getElementById('editTier').value = obj.tier || 'basic';
-                document.getElementB
+                document.getElementById('modalTitle').innerText = "EDIT APK ACCESS";
+            } else {
+                apkOnlySection.style.display = 'none';
+                document.getElementById('modalTitle').innerText = "EDIT MODULE MEMBER";
+            }
+
+            document.getElementById('editMod
