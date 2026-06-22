@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XK TEAM - ULTIMATE CLOUD CONTROL PANEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="p-3 md:p-8 min-h-screen">
+
+<div id="dashboardSection" class="w-full max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 bg-slate-900/20 p-6 rounded-2xl border border-slate-800/60 backdrop-blur-sm gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-500">
+                <i class="fa-solid fa-terminal mr-2 text-yellow-500"></i>XK TEAM CLOUD SERVER
+            </h1>
+            <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Ultimate Central Control Panel // Dev: <span class="text-white font-bold">Xyro Van Komalx</span></p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+            <div id="userInfoPanel" class="flex items-center gap-2 bg-slate-800/60 px-4 py-2 rounded-xl text-xs font-bold">
+                <i class="fa-solid fa-user-circle text-purple-400"></i>
+                <span id="displayUsername"></span>
+                <span id="displayRole" class="px-2 py-0.5 rounded text-[10px]"></span>
+                <span id="creditBadge" class="credit-badge hidden"></span>
+            </div>
+            <button onclick="initDashboard()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg font-mono">
+                <i class="fa-solid fa-sync-alt"></i> GLOBAL REFRESH
+            </button>
+            <div class="bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2 shadow-lg shadow-emerald-950/20">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> REALTIME NODE CONNECTED
+            </div>
+            <button onclick="handleLogout()" class="bg-rose-950/40 hover:bg-rose-900/40 border border-rose-500/30 text-rose-400 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+            </button>
+        </div>
+    </div>
+    <div class="grid gap-4 mb-8 md:grid-cols-3">
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400 mb-3">Total Module Licenses</p>
+            <p id="moduleCount" class="text-4xl font-black text-amber-400">0</p>
+            <p class="text-xs text-slate-500 mt-2">Sync sekali untuk melihat data terbaru.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400 mb-3">Total APK Licenses</p>
+            <p id="apkCount" class="text-4xl font-black text-emerald-400">0</p>
+            <p class="text-xs text-slate-500 mt-2">Gunakan tombol Sync untuk refresh cepat.</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-400 mb-3">Terakhir disinkronisasi</p>
+            <p id="lastSync" class="text-4xl font-black text-slate-100">-</p>
+            <p class="text-xs text-slate-500 mt-2">Dashboard ini smooth dan mobile-friendly.</p>
+        </div>
+    </div>
+
+    <div class="rule-warning mb-6" style="background:rgba(243,156,18,0.2); border-left:3px solid #f59e0b; padding:8px; font-size:11px;">
+        <i class="fa-solid fa-shield-halved mr-2"></i> Pastikan node <strong class="text-amber-400">license_free, license_aquarius, ...</strong> dan <strong class="text-emerald-400">apk_access</strong> memiliki aturan read/write = true di Firebase Console.
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <!-- Module Generator -->
+        <div class="glass-card rounded-2xl p-6 border-l-4 border-l-amber-500 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 text-slate-900/10 text-9xl font-black pointer-events-none"><i class="fa-solid fa-gauge-high"></i></div>
+            <div class="flex items-center justify-between mb-6 border-b border-slate-800/60 pb-3">
+                <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2 uppercase"><i class="fa-solid fa-bolt"></i> Performance Module Engine</h2>
+                <span class="text-[10px] bg-amber-950/60 text-amber-400 border border-amber-700/30 px-2 py-0.5 rounded-md font-mono font-bold">LICENSE KEY</span>
+            </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">KEY PREFIX</label>
+                        <input type="text" id="modKeyPrefix" value="XK" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono font-bold" placeholder="Contoh: XK atau PIPE">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">DEVICE LIMIT (SLOT HP)</label>
+                        <input type="number" id="modLimit" value="1" min="1" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono font-bold">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">DEVICE ID (Optional)</label>
+                    <input type="text" id="modDeviceId" placeholder="Masukkan ID perangkat (android_id)" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">PASSWORD (Optional)</label>
+                    <input type="text" id="modPass" placeholder="Kosongkan untuk random" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">MODULE TIER</label>
+                    <select id="modTier" class="w-full rounded-lg p-3 text-sm text-amber-400 font-mono">
+                        <option value="free">Free (Lisensi access)</option>
+                        <option value="aquarius">Aquarius</option>
+                        <option value="sagitarius">Sagitarius</option>
+                        <option value="pisces">Pisces</option>
+                        <option value="capricorn">Capricorn</option>
+                        <option value="goddata">GODDATA</option>
+                        <option value="aries">Aries</option>
+                    </select>
+                </div>
+                <button id="generateModuleBtn" onclick="generateModule()" class="glow-btn-mod w-full bg-amber-500 text-slate-950 font-black p-3.5 rounded-xl text-xs uppercase transition active:scale-[0.99] mt-2">
+                    <i class="fa-solid fa-plus-circle mr-1"></i> Minting Module License
+                </button>
+            </div>
+        </div>
+
+        <!-- APK Generator -->
+        <div class="glass-card glass-card-apk rounded-2xl p-6 border-l-4 border-l-emerald-500 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 text-slate-900/10 text-9xl font-black pointer-events-none"><i class="fa-brands fa-android"></i></div>
+            <div class="flex items-center justify-between mb-6 border-b border-slate-800/60 pb-3">
+                <h2 class="text-lg font-bold text-emerald-400 flex items-center gap-2 uppercase"><i class="fa-solid fa-mobile-screen-button"></i> Injector APK Engine</h2>
+                <span class="text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-700/30 px-2 py-0.5 rounded-md font-mono font-bold">APK ACCESS</span>
+            </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">DEVICE ID</label>
+                        <input type="text" id="apkDeviceId" placeholder="Masukkan Device ID" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">USERNAME SYSTEM</label>
+                        <input type="text" id="apkUser" placeholder="e.g. kyooxit_buyer" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">DEVICE LIMIT</label>
+                        <input type="number" id="apkLimit" value="1" min="1" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 mb-1">EXPIRED DATE</label>
+                        <input type="date" id="apkExp" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1">PASSWORD (Optional)</label>
+                    <input type="text" id="apkPass" placeholder="Kosongkan untuk random" class="apk-field w-full rounded-lg p-3 text-sm text-emerald-400 font-mono">
+                </div>
+                <button id="generateApkBtn" onclick="generateApk()" class="glow-btn-apk w-full bg-emerald-500 text-slate-950 font-black p-3.5 rounded-xl text-xs uppercase active:scale-[0.99] mt-2">
+                    <i class="fa-solid fa-circle-check mr-1"></i> Minting Injector APK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module Inventory -->
+    <div class="glass-card rounded-2xl p-6 border border-slate-800/80 mb-12">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 border-b border-slate-800/60 pb-3">
+            <h3 class="text-md font-bold text-amber-400 uppercase flex items-center gap-2"><i class="fa-solid fa-database text-xs"></i> Module License Inventory</h3>
+            <button onclick="loadModuleKeys(currentModuleTier)" class="text-xs font-bold text-amber-400 bg-amber-950/30 border border-amber-800/50 px-3 py-1.5 rounded-lg hover:bg-amber-900/40 transition"><i class="fa-solid fa-rotate"></i> Sync</button>
+        </div>
+        <div id="moduleTierTabs" class="flex flex-wrap gap-2 mb-4">
+            <button onclick="setModuleTier('all')" class="tier-tab active px-3 py-1 rounded-lg text-xs font-bold" data-tier="all">All</button>
+            <button onclick="setModuleTier('free')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="free">Free</button>
+            <button onclick="setModuleTier('aquarius')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="aquarius">Aquarius</button>
+            <button onclick="setModuleTier('sagitarius')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="sagitarius">Sagitarius</button>
+            <button onclick="setModuleTier('pisces')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="pisces">Pisces</button>
+            <button onclick="setModuleTier('capricorn')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="capricorn">Capricorn</button>
+            <button onclick="setModuleTier('goddata')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="goddata">GODDATA</button>
+            <button onclick="setModuleTier('aries')" class="tier-tab px-3 py-1 rounded-lg text-xs font-bold" data-tier="aries">Aries</button>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-slate-800/50">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead class="text-slate-400 bg-slate-950/90 font-mono border-b border-slate-800">
+                    <tr>
+                        <th class="p-4">LICENSE KEY</th>
+                        <th class="p-4">TIER</th>
+                        <th class="p-4">DEVICE LIMIT</th>
+                        <th class="p-4">REGISTERED DEVICES</th>
+                        <th class="p-4">PASSWORD</th>
+                        <th class="p-4">EXPIRED</th>
+                        <th class="p-4">STATUS</th>
+                        <th class="p-4 text-center">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="moduleTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- APK Inventory -->
+    <div class="glass-card rounded-2xl p-6 border border-slate-800/80">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-2 border-b border-slate-800/60 pb-3">
+            <h3 class="text-md font-bold text-emerald-400 uppercase flex items-center gap-2"><i class="fa-solid fa-database text-xs"></i> Injector APK Inventory</h3>
+            <button onclick="loadApkKeys()" class="text-xs font-bold text-emerald-400 bg-emerald-950/30 border border-emerald-800/50 px-3 py-1.5 rounded-lg hover:bg-emerald-900/40 transition"><i class="fa-solid fa-rotate"></i> Sync</button>
+        </div>
+        <div class="overflow-x-auto rounded-xl border border-slate-800/50">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead class="text-slate-400 bg-slate-950/90 font-mono border-b border-slate-800">
+                    <tr>
+                        <th class="p-4">NODE ID</th>
+                        <th class="p-4">LICENSE KEY</th>
+                        <th class="p-4">USERNAME</th>
+                        <th class="p-4">TIER</th>
+                        <th class="p-4">DEVICE LIMIT</th>
+                        <th class="p-4">REGISTERED DEVICES</th>
+                        <th class="p-4">PASSWORD</th>
+                        <th class="p-4">EXPIRED</th>
+                        <th class="p-4">STATUS</th>
+                        <th class="p-4 text-center">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="apkTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>    const USER_ROLE = localStorage.getItem('xk_role');
+    let userCredit = parseInt(localStorage.getItem('xk_credit') || -1);
+    const DEVICE_ID = localStorage.getItem('xk_device_id') || '';
+
+    if (!CURRENT_USER || !USER_ROLE) {
+        window.location.href = 'login.html';
+    }
+
+    // Tampilkan info user
+    document.getElementById('displayUsername').textContent = CURRENT_USER;
+    const roleSpan = document.getElementById('displayRole');
+    roleSpan.textContent = USER_ROLE.toUpperCase();
+    roleSpan.className = USER_ROLE === 'admin' ? 'px-2 py-0.5 rounded text-[10px] bg-purple-900/60 text-purple-300 border border-purple-500/30' : 'px-2 py-0.5 rounded text-[10px] bg-cyan-900/60 text-cyan-300 border border-cyan-500/30';
+
+    function updateCreditUI() {
+        const badge = document.getElementById('creditBadge');
+        if (USER_ROLE === 'reseller') {
+            badge.textContent = `💰 Credit: ${userCredit}`;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+        // Disable generate buttons jika credit habis
+        if (USER_ROLE === 'reseller' && userCredit <= 0) {
+            document.getElementById('generateModuleBtn').disabled = true;
+            document.getElementById('generateApkBtn').disabled = true;
+        } else {
+            document.getElementById('generateModuleBtn').disabled = false;
+            document.getElementById('generateApkBtn').disabled = false;
+        }
+    }
+
+    async function deductCredit() {
+        if (USER_ROLE !== 'reseller') return true;
+        if (userCredit <= 0) {
+            alert('❌ Credit habis. Anda tidak dapat membuat lisensi baru.');
+            return false;
+        }
+        const newCredit = userCredit - 1;
+        try {
+            const res = await fetch(`${USER_DB}${CURRENT_USER}.json`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ credit: newCredit })
+            });
+            if (res.ok) {
+                userCredit = newCredit;
+                localStorage.setItem('xk_credit', newCredit);
+                updateCreditUI();
+                if (newCredit <= 0) {
+                    alert('⚠️ Credit sekarang habis. Anda akan logout.');
+                    handleLogout();
+                }
+                return true;
+            } else {
+                throw new Error('Gagal update credit');
+            }
+        } catch (e) {
+            alert('❌ Gagal mengurangi credit. Coba lagi.');
+            return false;
+        }
+    }
+
+    function handleLogout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+
+    function initDashboard() {
+        loadModuleKeys(currentModuleTier);
+        loadApkKeys();
+        updateCreditUI();
+        if (USER_ROLE === 'reseller' && userCredit <= 0) {
+            alert('Credit habis, Anda akan logout.');
+            handleLogout();
+            return;
+        }
+    }
+
+    // ===================== GENERATE MODULE =====================
+    async function generateModule() {
+        if (USER_ROLE === 'reseller' && userCredit <= 0) {
+            alert('❌ Credit habis. Tidak bisa generate.');
+            return;
+        }
+        const limit = document.getElementById('modLimit').value.trim();
+        const exp = document.getElementById('modExp').value;
+        let password = document.getElementById('modPass').value.trim();
+        let deviceId = document.getElementById('modDeviceId').value.trim();
+        const tier = document.getElementById('modTier').value;
+        const nodeName = TIER_NODE_MAP[tier];
+        if (!limit || !exp || !nodeName) { alert("Isi limit, tanggal expired, dan pilih tier yang valid!"); return; }
+        if (!password) password = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const key = "XK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        const devices = {};
+        if (deviceId) devices[deviceId] = true;
+        const payload = {
+            key: key,
+            expired: exp,
+            device_limit: parseInt(limit),
+            password: password,
+            status: "active",
+            devices: devices,
+            tier: tier
+        };
+        try {
+            const response = await fetch(`${DB_URL}${nodeName}/${key}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error('Gagal menyimpan');
+            const success = await deductCredit();
+            if (!success) {
+                await fetch(`${DB_URL}${nodeName}/${key}.json`, { method: 'DELETE' });
+                return;
+            }
+            alert(`✅ LICENSE CREATED\n🔑 KEY: ${key}\n🔒 PASS: ${password}\n🏷️ TIER: ${tier}\n📅 EXP: ${exp}\n📱 LIMIT: ${limit}`);
+            document.getElementById('modExp').value = '';
+            document.getElementById('modPass').value = '';
+            document.getElementById('modDeviceId').value = '';
+            loadModuleKeys(currentModuleTier);
+        } catch (err) {
+            alert("❌ Gagal: " + err.message);
+        }
+    }
+
+    // ===================== GENERATE APK =====================
+    async function generateApk() {
+        if (USER_ROLE === 'reseller' && userCredit <= 0) {
+            alert('❌ Credit habis. Tidak bisa generate.');
+            return;
+        }
+        const username = document.getElementById('apkUser').value.trim();
+        let password = document.getElementById('apkPass').value.trim();
+        const exp = document.getElementById('apkExp').value;
+        const limit = document.getElementById('apkLimit').value;
+        const tier = document.getElementById('apkTier').value;
+        if (!username || !exp) { alert("Isi username dan expired!"); return; }
+        if (!password) password = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const key = "APK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+        const payload = {
+            key: key, username: username, password: password, expired: exp,
+            device_limit: parseInt(limit), tier: tier, status: "active", devices: {}
+        };
+        try {
+            const response = await fetch(`${DB_URL}apk_access/${key}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error('Gagal menyimpan');
+            const success = await deductCredit();
+            if (!success) {
+                await fetch(`${DB_URL}apk_access/${key}.json`, { method: 'DELETE' });
+                return;
+            }
+            alert(`✅ APK LICENSE CREATED\n🔑 KEY: ${key}\n👤 USER: ${username}\n🔒 PASS: ${password}\n🏷️ TIER: ${tier}\n📅 EXP: ${exp}`);
+            document.getElementById('apkUser').value = '';
+            document.getElementById('apkExp').value = '';
+            document.getElementById('apkPass').value = '';
+            loadApkKeys();
+        } catch (err) {
+            alert("❌ Gagal: " + err.message);
+        }
+    }
+
+    function setModuleTier(tier) {
+        currentModuleTier = tier;
+        document.querySelectorAll('#moduleTierTabs .tier-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tier === tier);
+        });
+        loadModuleKeys(tier);
+    }
+
+    async function loadModuleKeys(tier = 'all') {
+        const tbody = document.getElementById('moduleTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-500">Loading...</td></tr>';
+        let nodesToFetch = [];
+        if (tier === 'all') {
+            nodesToFetch = Object.values(TIER_NODE_MAP);
+        } else {
+            const node = TIER_NODE_MAP[tier];
+            if (node) nodesToFetch.push(node);
+            else { tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-500">Invalid tier</td></tr>'; return; }
+        }
+        try {
+            const allData = [];
+            const fetchPromises = nodesToFetch.map(async (nodeName) => {
+                const res = await fetch(`${DB_URL}${nodeName}.json`);
+                if (!res.ok) throw new Error(`HTTP ${res.status} on ${nodeName}`);
+                const data = await res.json();
+                if (data && data !== 'null') {
+                    for (let key in data) {
+                        data[key]._node = nodeName;
+                        allData.push({ key, ...data[key] });
+                    }
+                }
+            });
+            await Promise.all(fetchPromises);
+            if (allData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center text-slate-500">No module licenses found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            for (let item of allData) {
+                if (!item.key) continue;
+                const devices = item.devices || {};
+                const deviceIds = Object.keys(devices);
+                const registeredCount = deviceIds.length;
+                const limit = item.device_limit;
+                const hwidHtml = deviceIds.length
+                    ? `<div class="device-list-container">${deviceIds.map(id => `<span class="device-chip" title="${id}">${id.substring(0,12)}...</span>`).join('')}</div>`
+                    : '<span class="text-slate-500 text-xs">None</span>';
+                const slotInfo = `<span class="slot-indicator text-${registeredCount >= limit ? 'rose' : 'emerald'}-400">${registeredCount}/${limit}</span>`;
+                const statusBadge = item.status === 'active'
+                    ? '<span class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">ACTIVE</span>'
+                    : '<span class="bg-rose-950 text-rose-400 px-2 py-0.5 rounded">BANNED</span>';
+                const expiredClass = (new Date(item.expired) < new Date()) ? 'text-rose-400' : 'text-emerald-400';
+                const tierDisplay = item.tier ? item.tier.toUpperCase() : (item._node.replace('license_','').toUpperCase());
+                const deleteBtn = (USER_ROLE !== 'reseller')
+                    ? `<button onclick="deleteModule('${item.key}', '${item._node}')" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash-can"></i></button>`
+                    : '';
+                const row = `<tr class="border-b border-slate-800 hover:bg-slate-900/40">
+                    <td class="p-3 font-mono font-bold text-amber-400">${escapeHtml(item.key)}</td>
+                    <td class="p-3 text-yellow-400">${tierDisplay}</td>
+                    <td class="p-3 text-blue-400">${limit}${slotInfo}</td>
+                    <td class="p-3">${hwidHtml}</td>
+                    <td class="p-3 font-mono">${escapeHtml(item.password)}</td>
+                    <td class="p-3 ${expiredClass}">${item.expired}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="editModule('${item.key}', '${item._node}')" class="text-amber-400 hover:text-amber-300 mr-2"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="resetModuleDevices('${item.key}', '${item._node}')" class="text-cyan-400 hover:text-cyan-300 mr-2"><i class="fa-solid fa-arrows-rotate"></i></button>
+                        <button onclick="toggleModuleStatus('${item.key}', '${item.status}', '${item._node}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fa-solid fa-ban"></i></button>
+                        ${deleteBtn}
+                    </td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            }
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="8" class="p-4 text-center text-red-400">Error: ${e.message}</td></tr>`;
+        }
+    }
+
+    async function loadApkKeys() {
+        const tbody = document.getElementById('apkTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-slate-500">Loading...</td></tr>';
+        try {
+            const res = await fetch(`${DB_URL}apk_access.json`);
+            const data = await res.json();
+            if (!data || data === 'null') {
+                tbody.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-slate-500">No APK licenses found</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            for (let nodeId in data) {
+                const item = data[nodeId];
+                if (!item.key) continue;
+                const devices = item.devices || {};
+                const deviceIds = Object.keys(devices);
+                const registeredCount = deviceIds.length;
+                const limit = item.device_limit;
+                const hwidHtml = deviceIds.length
+                    ? `<div class="device-list-container">${deviceIds.map(id => `<span class="device-chip" title="${id}">${id.substring(0,12)}...</span>`).join('')}</div>`
+                    : '<span class="text-slate-500 text-xs">None</span>';
+                const slotInfo = `<span class="slot-indicator text-${registeredCount >= limit ? 'rose' : 'emerald'}-400">${registeredCount}/${limit}</span>`;
+                const statusBadge = item.status === 'active'
+                    ? '<span class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded">ACTIVE</span>'
+                    : '<span class="bg-rose-950 text-rose-400 px-2 py-0.5 rounded">BANNED</span>';
+                const expiredClass = (new Date(item.expired) < new Date()) ? 'text-rose-400' : 'text-emerald-400';
+                const tierClass = getTierClass(item.tier);
+                const deleteBtn = (USER_ROLE !== 'reseller')
+                    ? `<button onclick="deleteApk('${nodeId}')" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash-can"></i></button>`
+                    : '';
+                const row = `<tr class="border-b border-slate-800 hover:bg-slate-900/40">
+                    <td class="p-3 font-mono text-slate-500 text-[11px]">${escapeHtml(nodeId)}</td>
+                    <td class="p-3 font-mono font-bold text-emerald-400">${escapeHtml(item.key)}</td>
+                    <td class="p-3 text-white">${escapeHtml(item.username || '-')}</td>
+                    <td class="p-3"><span class="${tierClass} text-xs font-bold">${item.tier}</span></td>
+                    <td class="p-3 text-cyan-400">${limit}${slotInfo}</td>
+                    <td class="p-3">${hwidHtml}</td>
+                    <td class="p-3 font-mono">${escapeHtml(item.password)}</td>
+                    <td class="p-3 ${expiredClass}">${item.expired}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="editApk('${nodeId}')" class="text-amber-400 hover:text-amber-300 mr-2"><i class="fa-solid fa-edit"></i></button>
+                        <button onclick="resetApkDevices('${nodeId}')" class="text-cyan-400 hover:text-cyan-300 mr-2"><i class="fa-solid fa-arrows-rotate"></i></button>
+                        <button onclick="toggleApkStatus('${nodeId}', '${item.status}')" class="text-indigo-400 hover:text-indigo-300 mr-2"><i class="fa-solid fa-ban"></i></button>
+                        ${deleteBtn}
+                    </td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
+            }
+        } catch(e) {
+            tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-red-400">Error: ${e.message}</td></tr>`;
+        }
+    }
+
+    function getTierClass(tier) {
+        const map = { Basic:'text-slate-400', Ultra:'text-blue-400', Vixo:'text-cyan-400', Delta:'text-yellow-500', Sonic:'text-orange-500', Lunar:'text-purple-400', Athena:'text-red-500', Private:'text-green-400' };
+        return map[tier] || 'text-white';
+    }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m])); }
+
+    async function editModule(key, nodeName) {
+        const url = `${DB_URL}${nodeName}/${key}.json`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data) return;
+        let newLimit = prompt("Device limit:", data.device_limit);
+        if (newLimit === null) return;
+        let newExp = prompt("Expired (YYYY-MM-DD):", data.expired);
+        if (newExp === null) return;
+        let newPass = prompt("Password:", data.password);
+        if (newPass === null) return;
+        const update = { device_limit: parseInt(newLimit), expired: newExp, password: newPass, status: data.status, key: data.key, tier: data.tier };
+        await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(update) });
+        loadModuleKeys(currentModuleTier);
+    }
+    async function resetModuleDevices(key, nodeName) {
+        if (confirm("Reset semua HWID yang terdaftar untuk module ini?")) {
+            await fetch(`${DB_URL}${nodeName}/${key}/devices.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+            loadModuleKeys(currentModuleTier);
+        }
+    }
+    async function toggleModuleStatus(key, current, nodeName) {
+        const newStatus = current === 'active' ? 'banned' : 'active';
+        if (confirm(`Ubah status menjadi ${newStatus.toUpperCase()}?`))
+            await fetch(`${DB_URL}${nodeName}/${key}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) });
+        loadModuleKeys(currentModuleTier);
+    }
+    async function deleteModule(key, nodeName) {
+        if (USER_ROLE === 'reseller') {
+            alert('❌ Reseller tidak bisa menghapus lisensi.');
+            return;
+        }
+        if (confirm(`Hapus license module ${key} permanen?`))
+            await fetch(`${DB_URL}${nodeName}/${key}.json`, { method: 'DELETE' });
+        loadModuleKeys(currentModuleTier);
+    }
+
+    async function editApk(nodeId) {
+        const url = `${DB_URL}apk_access/${nodeId}.json`;
+        const res = await fetch(url);
+        const data = await res.json();
+        if (!data) return;
+        let newUser = prompt("Username:", data.username);
+        if (newUser === null) return;
+        let newTier = prompt("Tier (Basic/Ultra/...):", data.tier);
+        if (newTier === null) return;
+        let newLimit = prompt("Device limit:", data.device_limit);
+        if (newLimit === null) return;
+        let newExp = prompt("Expired (YYYY-MM-DD):", data.expired);
+        if (newExp === null) return;
+        let newPass = prompt("Password:", data.password);
+        if (newPass === null) return;
+        const update = { username: newUser, tier: newTier, device_limit: parseInt(newLimit), expired: newExp, password: newPass };
+        await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(update) });
+        loadApkKeys();
+    }
+    async function resetApkDevices(nodeId) {
+        if (confirm("Reset semua HWID yang terdaftar untuk APK ini?")) {
+            await fetch(`${DB_URL}apk_access/${nodeId}/devices.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+            loadApkKeys();
+        }
+    }
+    async function toggleApkStatus(nodeId, current) {
+        const newStatus = current === 'active' ? 'banned' : 'active';
+        if (confirm(`Ubah status menjadi ${newStatus.toUpperCase()}?`))
+            await fetch(`${DB_URL}apk_access/${nodeId}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: newStatus }) });
+        loadApkKeys();
+    }
+    async function deleteApk(nodeId) {
+        if (USER_ROLE === 'reseller') {
+            alert('❌ Reseller tidak bisa menghapus lisensi.');
+            return;
+        }
+        if (confirm(`Hapus APK license ${nodeId} permanen?`))
+            await fetch(`${DB_URL}apk_access/${nodeId}.json`, { method: 'DELETE' });
+        loadApkKeys();
+    }
+
+    window.onload = initDashboard;
+</script>
+</body>
+</html>
