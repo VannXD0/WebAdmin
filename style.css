@@ -1,0 +1,113 @@
+html { scroll-behavior: smooth; }
+body {
+    background-color: #05070f;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-image: radial-gradient(circle at 10% 20%, rgba(243, 156, 18, 0.05) 0%, transparent 40%),
+                      radial-gradient(circle at 90% 80%, rgba(34, 197, 94, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+.glass-card {
+    background: rgba(11, 15, 30, 0.65);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+}
+.glass-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(243, 156, 18, 0.25);
+}
+.glow-btn-mod {
+    box-shadow: 0 4px 14px 0 rgba(243, 156, 18, 0.2);
+}
+.glow-btn-mod:hover {
+    box-shadow: 0 6px 20px 0 rgba(243, 156, 18, 0.4);
+    background-color: #fbbf24;
+}
+.glow-btn-apk {
+    box-shadow: 0 4px 14px 0 rgba(34, 197, 94, 0.2);
+}
+.glow-btn-apk:hover {
+    box-shadow: 0 6px 20px 0 rgba(34, 197, 94, 0.4);
+    background-color: #4ade80;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #05070f;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+input,
+select {
+    background-color: #090d16 !important;
+    border: 1px solid #1e293b !important;
+    transition: all 0.2s ease;
+}
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(243, 156, 18, 0.15);
+}
+.apk-field:focus {
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
+}
+.device-chip {
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-family: monospace;
+    display: inline-block;
+    margin: 2px;
+    border: 1px solid #334155;
+}
+.device-list-container {
+    max-width: 220px;
+    max-height: 70px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.tier-tab {
+    transition: all 0.2s;
+    border: 1px solid transparent;
+    background: #0f172a;
+    color: #94a3b8;
+}
+.tier-tab.active {
+    background: #451a03;
+    border-color: #f59e0b;
+    color: #fbbf24;
+    font-weight: bold;
+}
+.slot-indicator {
+    font-size: 10px;
+    background: #1e293b;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 6px;
+}
+.credit-badge {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #000;
+    font-weight: bold;
+    padding: 4px 14px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+}
+@media (max-width: 768px) {
+    .glass-card { padding: 1.5rem; }
+    .glass-card .absolute { display: none; }
+}

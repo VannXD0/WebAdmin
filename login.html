@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login • XK TEAM</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at 20% 30%, #0A0F1E, #03060C);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(12, 20, 35, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid #bc13fe;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
+            color: #eee;
+        }
+        h2 {
+            text-align: center;
+            font-family: monospace;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #bc13fe;
+            border-radius: 40px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus {
+            border-color: #d580ff;
+            box-shadow: 0 0 8px rgba(188,19,254,0.5);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #bc13fe;
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+        }
+        button:hover { background: #9a0cd3; }
+        .msg {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .error { color: #ff6b6b; }
+        .success { color: #6bff8e; }
+        #resellerFields {
+            display: none;
+            margin-top: 5px;
+        }
+        .info-text {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>🔐 LOGIN</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="off">
+    <input type="password" id="password" placeholder="Password">
+    <div id="resellerFields">
+        <p class="info-text">🔒 Akun Reseller terdeteksi. Masukkan Device ID.</p>
+        <input type="text" id="deviceId" placeholder="Device ID" autocomplete="off">
+    </div>
+    <button id="loginBtn">MASUK</button>
+    <div id="msg" class="msg"></div>
+</div>
+
+<script>
+    const DB_URL = "https://admin-login-ab66b-default-rtdb.firebaseio.com/";
+    const msg = document.getElementById('msg');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const deviceIdInput = document.getElementById('deviceId');
+    const resellerFields = document.getElementById('resellerFields');
+
+    usernameInput.addEventListener('input', async () => {
+        const username = usernameInput.value.trim();
+        if (!username) {
+            resellerFields.style.display = 'none';
+            return;
+        }
+        try {
+            const res = await fetch(`${DB_URL}users/${username}.json`);
+            const user = await res.json();
+            if (user && user.role === 'reseller') {
+                resellerFields.style.display = 'block';
+            } else {
+                resellerFields.style.display = 'none';
+            }
+        } catch (e) {
+            console.log('Gagal cek username');
+        }
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        const deviceId = deviceIdInput.value.trim();
+
+        if (!username || !password) {
+            msg.textContent = '❌ Username dan password harus diisi.';
+            msg.className = 'msg error';
+            return;
+        }
+
+        try {
+            const res = await fetch(`${DB_URL}users/${username}.json`);
+            const user = await res.json();
+
+            if (!user) {
+                msg.textContent = '❌ User tidak ditemukan.';
+                msg.className = 'msg error';
+                return;
+            }
+
+            if (user.password !== password) {
+                msg.textContent = '❌ Password salah.';
+                msg.className = 'msg error';
+                return;
+            }
+
+            if (user.role === 'reseller') {
+                if (!deviceId || deviceId !== user.device_id) {
+                    msg.textContent = '❌ Device ID tidak cocok atau belum diisi.';
+                    msg.className = 'msg error';
+                    return;
+                }
+            }
+
+            localStorage.setItem('xk_username', username);
+            localStorage.setItem('xk_role', user.role);
+            localStorage.setItem('xk_credit', user.role === 'reseller' ? (user.credit || 0) : -1);
+            localStorage.setItem('xk_device_id', user.device_id || '');
+
+            msg.textContent = `✅ Login berhasil sebagai ${user.role.toUpperCase()}. Mengalihkan...`;
+            msg.className = 'msg success';
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 800);
+        } catch (err) {
+            console.error(err);
+            msg.textContent = '❌ Gagal terhubung ke database.';
+            msg.className = 'msg error';
+        }
+    });
+</script>
+</body>
+</html>
